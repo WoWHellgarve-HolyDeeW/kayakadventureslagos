@@ -1,21 +1,21 @@
 :root {
-  --primary: #E8751A;
-  --primary-dark: #C96210;
-  --primary-light: #F4943D;
-  --secondary: #0077B6;
-  --secondary-dark: #005f8f;
-  --accent: #F9A825;
-  --dark: #1B1B2F;
-  --dark-light: #2a2a44;
-  --text: #333333;
-  --text-light: #6b7280;
+  --primary: #D4731C;
+  --primary-dark: #B8600F;
+  --primary-light: #E8892E;
+  --secondary: #1A1A2E;
+  --secondary-dark: #121225;
+  --accent: #D4731C;
+  --dark: #1A1A2E;
+  --dark-light: #2D2D44;
+  --text: #2D3436;
+  --text-light: #636E72;
   --bg: #FFFFFF;
-  --bg-alt: #FFF9F5;
-  --bg-dark: #1A0F05;
-  --border: #E2E8F0;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --bg-alt: #F8F9FA;
+  --bg-dark: #1A1A2E;
+  --border: #E9ECEF;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
   --radius: 12px;
   --radius-sm: 8px;
   --radius-lg: 20px;
@@ -125,7 +125,7 @@ button {
 .section-header .accent-line {
   width: 60px;
   height: 4px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
+  background: var(--primary);
   border-radius: 2px;
   margin: 16px auto 0;
 }
@@ -144,25 +144,27 @@ button {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  background: var(--primary);
   color: #fff;
-  box-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
+  box-shadow: 0 4px 12px rgba(212, 115, 28, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 119, 182, 0.4);
+  background: var(--primary-dark);
+  box-shadow: 0 6px 20px rgba(212, 115, 28, 0.4);
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: var(--primary);
   color: #fff;
-  box-shadow: 0 4px 15px rgba(232, 117, 26, 0.3);
+  box-shadow: 0 4px 12px rgba(212, 115, 28, 0.3);
 }
 
 .btn-secondary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(232, 117, 26, 0.4);
+  background: var(--primary-dark);
+  box-shadow: 0 6px 20px rgba(212, 115, 28, 0.4);
 }
 
 .btn-outline {
@@ -280,7 +282,7 @@ button {
 .header.scrolled .nav a:hover,
 .header.scrolled .nav a.active {
   color: var(--primary);
-  background: rgba(0, 119, 182, 0.08);
+  background: rgba(212, 115, 28, 0.08);
 }
 
 .nav-actions {
@@ -304,7 +306,7 @@ button {
 }
 
 .header.scrolled .lang-switcher {
-  background: rgba(0, 119, 182, 0.08);
+  background: rgba(212, 115, 28, 0.08);
   color: var(--primary);
 }
 
@@ -313,7 +315,7 @@ button {
 }
 
 .header.scrolled .lang-switcher:hover {
-  background: rgba(0, 119, 182, 0.15);
+  background: rgba(212, 115, 28, 0.15);
 }
 
 .lang-switcher .lang-option {
@@ -516,7 +518,7 @@ button {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
+  background: var(--primary);
   transform: scaleX(0);
   transition: var(--transition);
 }
@@ -534,7 +536,7 @@ button {
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(0, 119, 182, 0.1), rgba(72, 202, 228, 0.1));
+  background: rgba(212, 115, 28, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -590,7 +592,7 @@ button {
   border-radius: 50px;
   font-weight: 700;
   font-size: 0.9rem;
-  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
+  box-shadow: 0 4px 15px rgba(212, 115, 28, 0.4);
 }
 
 .tour-info h2 {
@@ -701,7 +703,7 @@ button {
   width: 55px;
   height: 55px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -792,7 +794,7 @@ button {
 }
 
 .cta-section {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  background: var(--primary);
   padding: 80px 0;
   text-align: center;
   position: relative;
@@ -1490,7 +1492,7 @@ button {
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
-  box-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
+  box-shadow: 0 4px 15px rgba(212, 115, 28, 0.3);
   transition: var(--transition);
   opacity: 0;
   pointer-events: none;
@@ -1617,7 +1619,7 @@ button {
 .form-group select:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.1);
+  box-shadow: 0 0 0 3px rgba(212, 115, 28, 0.1);
 }
 
 .form-group textarea {
@@ -2058,7 +2060,7 @@ button {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2165,7 +2167,7 @@ button {
   font-size: 1.5rem;
   position: relative;
   z-index: 2;
-  box-shadow: 0 8px 30px rgba(232,117,26,.5);
+  box-shadow: 0 8px 30px rgba(212,115,28,.5);
   transition: var(--transition);
   animation: playPulse 2s infinite;
 }
@@ -2175,12 +2177,12 @@ button {
 }
 
 @keyframes playPulse {
-  0%, 100% { box-shadow: 0 8px 30px rgba(232,117,26,.4); }
-  50% { box-shadow: 0 8px 50px rgba(232,117,26,.6); }
+  0%, 100% { box-shadow: 0 8px 30px rgba(212,115,28,.4); }
+  50% { box-shadow: 0 8px 50px rgba(212,115,28,.6); }
 }
 
 .countdown-bar {
-  background: linear-gradient(135deg, var(--bg-dark), #2a1a0a);
+  background: linear-gradient(135deg, var(--bg-dark), #1a1a2e);
   padding: 16px 0;
   text-align: center;
 }
@@ -2203,7 +2205,7 @@ button {
 }
 
 .countdown-label i {
-  color: var(--secondary);
+  color: var(--primary);
   animation: blink 1.5s infinite;
 }
 
@@ -2244,11 +2246,11 @@ button {
   align-items: center;
   gap: 6px;
   padding: 6px 16px;
-  background: rgba(232,117,26,.15);
+  background: rgba(212,115,28,.15);
   border-radius: 50px;
   font-size: .82rem;
   font-weight: 600;
-  color: var(--secondary);
+  color: var(--primary-light);
 }
 
 .countdown-spots i {

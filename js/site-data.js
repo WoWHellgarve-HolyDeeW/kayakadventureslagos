@@ -1,8 +1,10 @@
 var SiteData = (function() {
 
   var STORAGE_KEY = 'kayak_site_data';
+  var DATA_VERSION = 2;
 
   var defaults = {
+    _dataVersion: DATA_VERSION,
     contact: {
       phone: '+351 912 345 678',
       phoneRaw: '351912345678',
@@ -180,7 +182,7 @@ var SiteData = (function() {
   }
 
   function load() {
-    if (_serverData) {
+    if (_serverData && _serverData._dataVersion >= DATA_VERSION) {
       return deepMerge(defaults, _serverData);
     }
     if (_serverLoaded) {
@@ -190,7 +192,9 @@ var SiteData = (function() {
       var stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         var parsed = JSON.parse(stored);
-        return deepMerge(defaults, parsed);
+        if (parsed._dataVersion >= DATA_VERSION) {
+          return deepMerge(defaults, parsed);
+        }
       }
     } catch (e) {}
     return deepClone(defaults);
