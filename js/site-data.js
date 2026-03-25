@@ -182,25 +182,31 @@ var SiteData = (function() {
   }
 
   function load() {
-    if (_serverData && _serverData._dataVersion >= DATA_VERSION) {
+    // Always use server data if available (admin saves always win)
+    if (_serverData) {
       return deepMerge(defaults, _serverData);
     }
+    // If server was checked but had no data, try localStorage
     if (_serverLoaded) {
-      return deepClone(defaults);
+      try {
+        var stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          return deepMerge(defaults, JSON.parse(stored));
+        }
+      } catch (e) {}
     }
+    // Try localStorage before server responds
     try {
       var stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        var parsed = JSON.parse(stored);
-        if (parsed._dataVersion >= DATA_VERSION) {
-          return deepMerge(defaults, parsed);
-        }
+        return deepMerge(defaults, JSON.parse(stored));
       }
     } catch (e) {}
     return deepClone(defaults);
   }
 
   function save(data) {
+    data._dataVersion = DATA_VERSION;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (e) {}
