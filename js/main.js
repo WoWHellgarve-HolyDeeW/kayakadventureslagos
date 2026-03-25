@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-  const heroSlides = document.querySelectorAll('.hero-slide');
-  const heroIndicators = document.querySelectorAll('.hero-indicators button');
+  var heroSlides = Array.prototype.slice.call(document.querySelectorAll('.hero-slide'));
+  var heroIndicators = Array.prototype.slice.call(document.querySelectorAll('.hero-indicators button'));
   let currentSlide = 0;
   let slideInterval;
 
@@ -428,10 +428,43 @@ document.addEventListener('DOMContentLoaded', function() {
       if (heroSub) heroSub.innerHTML = isPt ? d.homepage.heroSubPt : d.homepage.heroSubEn;
       var slides = heroEl.querySelectorAll('.hero-slide');
       var imgs = d.homepage.heroImages || [];
-      slides.forEach(function(slide, i) {
-        var img = slide.querySelector('.hero-slide-bg');
-        if (img && imgs[i]) img.src = imgs[i];
-      });
+      if (imgs.length > 0) {
+        var indicators = heroEl.querySelector('.hero-indicators');
+        slides.forEach(function(s) { s.remove(); });
+        var heroContent = heroEl.querySelector('.hero-content') || heroEl.querySelector('.container');
+        imgs.forEach(function(url, i) {
+          var div = document.createElement('div');
+          div.className = 'hero-slide' + (i === 0 ? ' active' : '');
+          div.innerHTML = '<img src="' + url + '" alt="Kayak Adventures Lagos" class="hero-slide-bg"><div class="hero-overlay"></div>';
+          heroEl.insertBefore(div, heroContent);
+        });
+        if (indicators) {
+          indicators.innerHTML = '';
+          imgs.forEach(function(url, i) {
+            var btn = document.createElement('button');
+            btn.dataset.slide = i;
+            if (i === 0) btn.classList.add('active');
+            btn.setAttribute('aria-label', 'Slide ' + (i + 1));
+            indicators.appendChild(btn);
+          });
+        }
+        var newSlides = Array.prototype.slice.call(heroEl.querySelectorAll('.hero-slide'));
+        var newBtns = indicators ? Array.prototype.slice.call(indicators.querySelectorAll('button')) : [];
+        clearInterval(slideInterval);
+        currentSlide = 0;
+        heroSlides.length = 0;
+        Array.prototype.push.apply(heroSlides, newSlides);
+        heroIndicators.length = 0;
+        Array.prototype.push.apply(heroIndicators, newBtns);
+        newBtns.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            clearInterval(slideInterval);
+            showSlide(parseInt(this.dataset.slide));
+            startSlider();
+          });
+        });
+        if (newSlides.length > 1) startSlider();
+      }
       var tourPrice = document.querySelector('#tour-preview .tour-price');
       if (tourPrice) tourPrice.innerHTML = '€' + d.tour.price + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa' : '/ person') + '</small>';
       var tourTitle = document.querySelector('#tour-preview [data-i18n="tour_preview_title"]');
