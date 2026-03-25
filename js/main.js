@@ -630,11 +630,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (instaHandleEl && d.social.instagramHandle) {
       instaHandleEl.textContent = '@' + d.social.instagramHandle.replace(/^@/, '');
     }
-    var ldScript = document.querySelector('script[type="application/ld+json"]');
-    if (ldScript) {
+    document.querySelectorAll('script[type="application/ld+json"]').forEach(function(ldScript) {
       try {
         var ld = JSON.parse(ldScript.textContent);
-        ld.telephone = d.contact.phoneRaw || d.contact.phone;
+        if (ld['@type'] === 'FAQPage' && d.faq && d.faq.length > 0) {
+          ld.mainEntity = d.faq.map(function(f) {
+            return {'@type':'Question','name':isPt?f.qPt:f.qEn,'acceptedAnswer':{'@type':'Answer','text':isPt?f.aPt:f.aEn}};
+          });
+        }
+        if (ld.telephone) ld.telephone = d.contact.phoneRaw || d.contact.phone;
         if (ld.address) {
           ld.address.streetAddress = d.contact.address.split(',')[0] || d.contact.address;
         }
@@ -643,6 +647,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         ldScript.textContent = JSON.stringify(ld);
       } catch(e) {}
+    });
+    var pageHero = document.querySelector('.page-hero');
+    if (pageHero && d.homepage.heroImages && d.homepage.heroImages.length > 0) {
+      pageHero.style.backgroundImage = "url('" + d.homepage.heroImages[0] + "')";
+    }
+    var tourMainImg = document.querySelector('.tour-main-image img');
+    if (tourMainImg && d.about.image) {
+      tourMainImg.src = d.about.image;
+    }
+    var tourPreviewImg = document.querySelector('#tour-preview .tour-preview-image img');
+    if (tourPreviewImg && d.about.image) {
+      tourPreviewImg.src = d.about.image;
+    }
+    var ctaSection = document.querySelector('.cta-section[style*="background-image"]');
+    if (ctaSection && d.homepage.heroImages && d.homepage.heroImages.length > 0) {
+      ctaSection.style.backgroundImage = "url('" + d.homepage.heroImages[0] + "')";
     }
     var faqList = document.getElementById('faqList');
     if (faqList && d.faq && d.faq.length > 0) {
