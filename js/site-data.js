@@ -183,6 +183,9 @@ var SiteData = (function() {
     if (_serverData) {
       return deepMerge(defaults, _serverData);
     }
+    if (_serverLoaded) {
+      return deepClone(defaults);
+    }
     try {
       var stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
