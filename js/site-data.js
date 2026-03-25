@@ -1,7 +1,7 @@
 var SiteData = (function() {
 
   var STORAGE_KEY = 'kayak_site_data';
-  var DATA_VERSION = 2;
+  var DATA_VERSION = 3;
 
   var defaults = {
     _dataVersion: DATA_VERSION,
@@ -40,8 +40,8 @@ var SiteData = (function() {
       levelPt: 'Fácil / Moderado',
       levelEn: 'Easy / Moderate',
       languages: 'PT, EN, ES, IT',
-      descPt: 'Embarque numa aventura inesquecível de kayak pela costa mais espetacular do Algarve. O nosso tour de 2 horas leva-o através das impressionantes formações rochosas da Ponta da Piedade, um dos locais mais emblemáticos de Portugal.',
-      descEn: 'Embark on an unforgettable kayak adventure along the most spectacular coast in the Algarve. Our 2-hour tour takes you through the impressive rock formations of Ponta da Piedade, one of Portugal\'s most iconic locations.',
+      descPt: 'Embarque numa aventura inesquecível de kayak pela costa mais espetacular do Algarve. O nosso tour de 2 horas e meia leva-o através das impressionantes formações rochosas da Ponta da Piedade, um dos locais mais emblemáticos de Portugal.',
+      descEn: 'Embark on an unforgettable kayak adventure along the most spectacular coast in the Algarve. Our 2.5-hour tour takes you through the impressive rock formations of Ponta da Piedade, one of Portugal\'s most iconic locations.',
       fareharbor: ''
     },
     homepage: {
@@ -65,9 +65,9 @@ var SiteData = (function() {
       statTours: 2000,
       statRating: '4.9',
       team: [
-        { name: 'Marco Silva', rolePt: 'Fundador & Guia Principal', roleEn: 'Founder & Head Guide', image: 'images/gallery/about-us-1.jpg' },
-        { name: 'Inês Costa', rolePt: 'Guia & Instrutora', roleEn: 'Guide & Instructor', image: 'images/gallery/about-us-2.jpg' },
-        { name: 'Pedro Santos', rolePt: 'Guia & Fotógrafo', roleEn: 'Guide & Photographer', image: 'images/gallery/about-us-3.jpg' }
+        { name: 'Sónia Moisão', rolePt: 'Socia/Gerente', roleEn: 'Partner/Manager', image: 'images/gallery/about-us-1.jpg' },
+        { name: 'Jorge Costa', rolePt: 'Guia & Instrutor', roleEn: 'Guide & Instructor', image: 'images/gallery/about-us-2.jpg' },
+        { name: 'Filipe', rolePt: 'Guia & Barco de Apoio', roleEn: 'Guide & Support Boat', image: 'images/gallery/about-us-3.jpg' }
       ]
     },
     testimonials: [
@@ -123,12 +123,12 @@ var SiteData = (function() {
     ],
     faq: [
       { id: 1, qPt: 'Preciso de experiência em kayak?', qEn: 'Do I need kayaking experience?', aPt: 'Não! O nosso tour é adequado para todos os níveis, incluindo iniciantes completos. Antes de partirmos, damos um briefing completo com todas as técnicas necessárias. Os nossos guias estão sempre presentes para ajudar durante todo o percurso.', aEn: 'No! Our tour is suitable for all levels, including complete beginners. Before we set off, we give a full briefing with all the necessary techniques. Our guides are always present to help throughout the route.' },
-      { id: 2, qPt: 'Qual é a idade mínima para participar?', qEn: 'What is the minimum age to participate?', aPt: 'A idade mínima é 6 anos, sempre acompanhados por um adulto no mesmo kayak (kayak duplo). Crianças abaixo de 12 anos devem estar acompanhadas por um tutor legal.', aEn: 'The minimum age is 6 years, always accompanied by an adult in the same kayak (double kayak). Children under 12 must be accompanied by a legal guardian.' },
+      { id: 2, qPt: 'Qual é a idade mínima para participar?', qEn: 'What is the minimum age to participate?', aPt: 'A idade mínima é 4 anos, sempre acompanhados por um adulto no mesmo kayak (kayak duplo). Crianças abaixo de 12 anos devem estar acompanhadas por um tutor legal.', aEn: 'The minimum age is 4 years, always accompanied by an adult in the same kayak (double kayak). Children under 12 must be accompanied by a legal guardian.' },
       { id: 3, qPt: 'O que acontece se o tempo estiver mau?', qEn: 'What happens if the weather is bad?', aPt: 'A segurança é a nossa prioridade. Se as condições meteorológicas não forem adequadas para o tour, contactamo-lo com antecedência e oferecemos reagendamento gratuito para outra data ou reembolso total.', aEn: 'Safety is our priority. If weather conditions are not suitable for the tour, we contact you in advance and offer free rescheduling to another date or a full refund.' },
       { id: 4, qPt: 'Posso levar o meu telemóvel?', qEn: 'Can I bring my phone?', aPt: 'Sim! Fornecemos sacos estanques para proteger os seus pertences. No entanto, recomendamos utilizar uma capa à prova de água adicional. Não nos responsabilizamos por danos em dispositivos eletrónicos. O nosso fotógrafo tira fotos profissionais que são enviadas gratuitamente após o tour.', aEn: 'Yes! We provide dry bags to protect your belongings. However, we recommend using an additional waterproof case. We are not responsible for damage to electronic devices. Our photographer takes professional photos that are sent free of charge after the tour.' },
       { id: 5, qPt: 'Preciso de saber nadar?', qEn: 'Do I need to know how to swim?', aPt: 'Recomendamos que saiba nadar, embora todos os participantes usem colete salva-vidas obrigatório durante todo o tour. O kayak é muito estável e é raro alguém cair à água.', aEn: 'We recommend that you know how to swim, although all participants wear a mandatory life jacket throughout the tour. The kayak is very stable and it is rare for anyone to fall into the water.' },
-      { id: 6, qPt: 'Quanto tempo dura o tour?', qEn: 'How long does the tour last?', aPt: 'O tour tem duração de aproximadamente 2 horas. Pedimos que chegue 15 minutos antes do horário marcado para o check-in e briefing de segurança.', aEn: 'The tour lasts approximately 2 hours. We ask you to arrive 15 minutes before the scheduled time for check-in and safety briefing.' },
-      { id: 7, qPt: 'Onde é o ponto de encontro?', qEn: 'Where is the meeting point?', aPt: 'O ponto de encontro é na Marina de Lagos. Após a reserva, enviamos as instruções detalhadas com mapa e indicações para chegar facilmente.', aEn: 'The meeting point is at Lagos Marina. After booking, we send detailed instructions with a map and directions for easy arrival.' },
+      { id: 6, qPt: 'Quanto tempo dura o tour?', qEn: 'How long does the tour last?', aPt: 'O tour tem duração de aproximadamente 2 horas e meia. Pedimos que chegue 15 minutos antes do horário marcado para o check-in e briefing de segurança.', aEn: 'The tour lasts approximately 2 hours and 30 minutes. We ask you to arrive 15 minutes before the scheduled time for check-in and safety briefing.' },
+      { id: 7, qPt: 'Onde é o ponto de encontro?', qEn: 'Where is the meeting point?', aPt: 'O ponto de encontro é na Praia cais da solaria. Após a reserva, enviamos as instruções detalhadas com mapa e indicações para chegar facilmente.', aEn: 'The meeting point is at Praia cais da solaria. After booking, we send detailed instructions with a map and directions for easy arrival.' },
       { id: 8, qPt: 'Qual é a política de cancelamento?', qEn: 'What is the cancellation policy?', aPt: 'Cancelamento gratuito até 24 horas antes do tour. Cancelamentos com menos de 24 horas de antecedência não são reembolsáveis, exceto por motivos meteorológicos (cancelado por nós) onde oferecem reembolso total ou reagendamento.', aEn: 'Free cancellation up to 24 hours before the tour. Cancellations less than 24 hours in advance are non-refundable, except for weather reasons (cancelled by us) where we offer a full refund or rescheduling.' },
       { id: 9, qPt: 'Os kayaks são individuais ou duplos?', qEn: 'Are the kayaks single or double?', aPt: 'Utilizamos kayaks duplos (sit-on-top) que são muito estáveis e fáceis de manobrar. São perfeitos tanto para casais como para pais com filhos.', aEn: 'We use double (sit-on-top) kayaks that are very stable and easy to manoeuvre. They are perfect for both couples and parents with children.' },
       { id: 10, qPt: 'O que devo vestir/trazer?', qEn: 'What should I wear/bring?', aPt: 'Recomendamos roupa confortável que possa molhar, fato de banho por baixo, sapatos de água ou sandálias com tira, protetor solar, chapéu e óculos de sol com cordão. Nós fornecemos tudo o resto: kayak, pagaia, colete salva-vidas e saco estanque.', aEn: 'We recommend comfortable clothing that can get wet, a swimsuit underneath, water shoes or sandals with a strap, sunscreen, a hat and sunglasses with a cord. We provide everything else: kayak, paddle, life jacket and dry bag.' }

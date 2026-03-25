@@ -669,7 +669,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (tourMainImg && d.about.image) {
       tourMainImg.src = d.about.image;
     }
-    var tourPreviewImg = document.querySelector('#tour-preview .tour-preview-image img');
+    var tourPreviewImg = document.querySelector('#tour-preview .tour-image img');
     if (tourPreviewImg && d.about.image) {
       tourPreviewImg.src = d.about.image;
     }
