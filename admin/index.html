@@ -757,7 +757,7 @@
     r.onload=function(ev){try{var d=JSON.parse(ev.target.result);SiteData.save(d);loadAll();serverSave();}catch(err){toast('Ficheiro inválido!',true);}};
     r.readAsText(f);e.target.value='';
   });
-  document.getElementById('resetBtn').addEventListener('click',function(){if(!confirm('ATENÇÃO: Isto apaga TODOS os dados e repõe os valores originais. Continuar?'))return;SiteData.reset();loadAll();serverSave();});
+  document.getElementById('resetBtn').addEventListener('click',function(){if(!confirm('ATENÇÃO: Isto apaga TODOS os dados e repõe os valores originais. Continuar?'))return;SiteData.resetToServer(adminToken,function(ok){SiteData.reset();var d=SiteData.load();SiteData.save(d);loadAll();serverSave();toast(ok?'Dados repostos!':'Erro ao repor no servidor.',!ok);});});
 
 })();
 </script>

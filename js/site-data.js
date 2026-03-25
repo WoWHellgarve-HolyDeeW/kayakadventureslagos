@@ -26,18 +26,18 @@ var SiteData = (function() {
       namePt: 'Tour Kayak Grutas da Ponta da Piedade',
       nameEn: 'Kayak Tour Ponta da Piedade Caves',
       price: 35,
-      duration: '2 Horas',
-      durationEn: '2 Hours',
+      duration: '2:30 Horas',
+      durationEn: '2:30 Hours',
       maxGroup: 12,
-      minAge: 6,
-      schedules: '09:00 | 11:00 | 14:00 | 16:30',
+      minAge: 4,
+      schedules: '10:00 | 13:00 | 15:30 | 18:00',
       season: 'Abril - Outubro',
       seasonEn: 'April - October',
-      meetingPt: 'Marina de Lagos',
+      meetingPt: 'Praia cais da solaria',
       meetingEn: 'Lagos Marina',
       levelPt: 'Fácil / Moderado',
       levelEn: 'Easy / Moderate',
-      languages: 'PT, EN, ES',
+      languages: 'PT, EN, ES, IT',
       descPt: 'Embarque numa aventura inesquecível de kayak pela costa mais espetacular do Algarve. O nosso tour de 2 horas leva-o através das impressionantes formações rochosas da Ponta da Piedade, um dos locais mais emblemáticos de Portugal.',
       descEn: 'Embark on an unforgettable kayak adventure along the most spectacular coast in the Algarve. Our 2-hour tour takes you through the impressive rock formations of Ponta da Piedade, one of Portugal\'s most iconic locations.',
       fareharbor: ''
@@ -241,6 +241,20 @@ var SiteData = (function() {
 
   function reset() {
     localStorage.removeItem(STORAGE_KEY);
+    _serverData = null;
+    _serverLoaded = false;
+  }
+
+  function resetToServer(token, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/api/data.php', true);
+    if (token) xhr.setRequestHeader('X-Admin-Token', token);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (callback) callback(xhr.status === 200);
+      }
+    };
+    xhr.send();
   }
 
   function getDefaults() {
@@ -255,6 +269,7 @@ var SiteData = (function() {
     get: get,
     update: update,
     reset: reset,
+    resetToServer: resetToServer,
     getDefaults: getDefaults,
     STORAGE_KEY: STORAGE_KEY
   };

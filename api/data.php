@@ -54,6 +54,19 @@ if ($method === 'GET') {
     exit;
 }
 
+if ($method === 'DELETE') {
+    if (!checkAuth()) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        exit;
+    }
+    if (file_exists($DATA_FILE)) {
+        unlink($DATA_FILE);
+    }
+    echo json_encode(['success' => true, 'message' => 'Data reset. Defaults will be used.']);
+    exit;
+}
+
 if ($method === 'POST') {
     if (!checkAuth()) {
         http_response_code(401);

@@ -716,6 +716,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mapIframe && d.contact.mapEmbed) {
       mapIframe.src = d.contact.mapEmbed;
     }
+    // Hide video section if no video URL is set
+    var videoSec = document.getElementById('videoSection');
+    if (videoSec) {
+      videoSec.style.display = d.homepage.videoUrl ? '' : 'none';
+    }
     if (d.settings.googleAnalytics && !document.getElementById('ga-script')) {
       var gaId = d.settings.googleAnalytics;
       var gaScript = document.createElement('script');

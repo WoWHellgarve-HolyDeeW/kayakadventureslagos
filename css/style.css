@@ -155,14 +155,14 @@ button {
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, var(--secondary), #FFA940);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #fff;
-  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(232, 117, 26, 0.3);
 }
 
 .btn-secondary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
+  box-shadow: 0 8px 25px rgba(232, 117, 26, 0.4);
 }
 
 .btn-outline {
