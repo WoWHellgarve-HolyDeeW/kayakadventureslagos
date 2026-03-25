@@ -143,7 +143,6 @@
 </head>
 <body>
 
-<!-- ========== LOGIN ========== -->
 <div class="admin-login" id="adminLogin">
   <div class="login-card">
     <div class="login-logo"><img src="../images/logo.png" alt="Kayak Adventures Lagos"></div>
@@ -158,11 +157,9 @@
   </div>
 </div>
 
-<!-- ========== DASHBOARD ========== -->
 <div id="adminDashboard">
 <div class="admin-wrap">
 
-<!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand"><img src="../images/logo.png" alt="Kayak Adventures" style="height:60px;width:auto;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))"></div>
   <nav class="sidebar-nav">
@@ -175,20 +172,19 @@
     <div class="divider"></div>
     <a href="#" data-sec="social"><i class="fas fa-share-alt"></i> Redes Sociais</a>
     <a href="#" data-sec="contact"><i class="fas fa-address-book"></i> Contactos</a>
+    <a href="#" data-sec="faq"><i class="fas fa-question-circle"></i> FAQ</a>
     <a href="#" data-sec="settings"><i class="fas fa-cog"></i> Configurações</a>
     <div class="divider"></div>
     <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a>
   </nav>
 </aside>
 
-<!-- Main Content -->
 <main class="main">
   <div class="topbar">
     <h1><button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button><span id="pageTitle">Dashboard</span></h1>
     <div class="topbar-right"><a href="../index.html" target="_blank" class="preview-link"><i class="fas fa-external-link-alt"></i> Ver Site</a></div>
   </div>
 
-  <!-- ===== DASHBOARD ===== -->
   <div class="sec active" id="s-dashboard">
     <div class="stat-grid">
       <div class="stat-box"><i class="fas fa-images"></i><div class="sv" id="dGallery">0</div><div class="sl">Imagens na Galeria</div></div>
@@ -198,7 +194,7 @@
     </div>
     <div class="card">
       <h3><i class="fas fa-rocket"></i> Acesso Rápido</h3>
-      <div class="info"><i class="fas fa-info-circle"></i><p>Bem-vindo ao painel! Todas as alterações são guardadas no browser e aplicadas automaticamente no site. Use o menu para navegar.</p></div>
+      <div class="info"><i class="fas fa-info-circle"></i><p>Bem-vindo ao painel! Todas as alterações são guardadas no servidor e aplicadas automaticamente no site. Use o menu para navegar.</p></div>
       <div class="quick-grid">
         <a href="#" class="qlink" data-go="homepage"><i class="fas fa-home" style="color:var(--primary)"></i><div><strong>Homepage</strong><small>Título, subtítulo, imagens hero</small></div></a>
         <a href="#" class="qlink" data-go="tour"><i class="fas fa-route" style="color:var(--secondary)"></i><div><strong>Tour</strong><small>Preço, duração, horários, FareHarbor</small></div></a>
@@ -212,7 +208,6 @@
     </div>
   </div>
 
-  <!-- ===== HOMEPAGE ===== -->
   <div class="sec" id="s-homepage">
     <div class="card">
       <h3><i class="fas fa-heading"></i> Hero / Banner Principal</h3>
@@ -236,7 +231,6 @@
     <button class="btn btn-primary" id="saveHomepageBtn"><i class="fas fa-save"></i> Guardar Homepage</button>
   </div>
 
-  <!-- ===== TOUR ===== -->
   <div class="sec" id="s-tour">
     <div class="card">
       <h3><i class="fas fa-route"></i> Informações do Tour</h3>
@@ -280,8 +274,13 @@
     <button class="btn btn-primary" id="saveTourBtn"><i class="fas fa-save"></i> Guardar Tour</button>
   </div>
 
-  <!-- ===== ABOUT ===== -->
   <div class="sec" id="s-about">
+    <div class="card">
+      <h3><i class="fas fa-image"></i> Imagem da Página</h3>
+      <div class="info"><i class="fas fa-camera"></i><p>URL da imagem principal que aparece na página "Sobre Nós". Use images/nome.jpg para imagens locais ou URL completo para externas.</p></div>
+      <div class="form-group"><label>URL da Imagem</label><input type="text" id="a_img" placeholder="images/about.jpg ou https://..."></div>
+      <div id="a_imgPreview" style="margin-top:8px;"></div>
+    </div>
     <div class="card">
       <h3><i class="fas fa-book-open"></i> A Nossa História</h3>
       <div class="form-group"><label>Texto (PT)</label><textarea id="a_storyPt" style="min-height:160px;"></textarea></div>
@@ -306,7 +305,6 @@
     <button class="btn btn-primary" id="saveAboutBtn"><i class="fas fa-save"></i> Guardar Sobre Nós</button>
   </div>
 
-  <!-- ===== GALLERY ===== -->
   <div class="sec" id="s-gallery">
     <div class="card">
       <h3><i class="fas fa-images"></i> Gestão da Galeria</h3>
@@ -316,7 +314,6 @@
     </div>
   </div>
 
-  <!-- ===== TESTIMONIALS ===== -->
   <div class="sec" id="s-testimonials">
     <div class="card">
       <h3><i class="fas fa-star"></i> Testemunhos / Reviews</h3>
@@ -336,7 +333,6 @@
     </div>
   </div>
 
-  <!-- ===== SOCIAL ===== -->
   <div class="sec" id="s-social">
     <div class="card">
       <h3><i class="fas fa-share-alt"></i> Redes Sociais</h3>
@@ -356,7 +352,6 @@
     </div>
   </div>
 
-  <!-- ===== CONTACT ===== -->
   <div class="sec" id="s-contact">
     <div class="card">
       <h3><i class="fas fa-address-book"></i> Informações de Contacto</h3>
@@ -382,7 +377,15 @@
     </div>
   </div>
 
-  <!-- ===== SETTINGS ===== -->
+  <div class="sec" id="s-faq">
+    <div class="card">
+      <h3><i class="fas fa-question-circle"></i> Perguntas Frequentes</h3>
+      <div class="info"><i class="fas fa-lightbulb"></i><p>Gerir as perguntas e respostas da página FAQ. Cada pergunta tem versão PT e EN.</p></div>
+      <button class="btn btn-primary btn-sm" id="addFaqBtn"><i class="fas fa-plus"></i> Adicionar Pergunta</button>
+      <div id="faqAdminList" style="margin-top:16px;"></div>
+    </div>
+  </div>
+
   <div class="sec" id="s-settings">
     <div class="card">
       <h3><i class="fas fa-cog"></i> Configurações</h3>
@@ -390,6 +393,9 @@
       <div class="form-row">
         <div class="form-group"><label>Google Analytics ID</label><input type="text" id="x_ga" placeholder="G-XXXXXXXXXX"></div>
         <div class="form-group"><label>Facebook Pixel ID</label><input type="text" id="x_fp" placeholder="123456789"></div>
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;margin-top:14px;">
+        <input type="checkbox" id="x_sp" style="width:auto;" checked><label for="x_sp" style="margin:0;font-size:.85rem;">Mostrar notificações de reservas (simuladas) no site</label>
       </div>
       <div style="margin-top:22px;"><button class="btn btn-primary" id="saveSettingsBtn"><i class="fas fa-save"></i> Guardar</button></div>
     </div>
@@ -416,9 +422,7 @@
 </div>
 </div>
 
-<!-- ========== MODALS ========== -->
 
-<!-- Gallery Modal -->
 <div class="modal-bg" id="galModal">
   <div class="modal">
     <h3 id="galModalTitle"><i class="fas fa-image"></i> Adicionar Imagem</h3>
@@ -439,7 +443,6 @@
   </div>
 </div>
 
-<!-- Testimonial Modal -->
 <div class="modal-bg" id="testModal">
   <div class="modal">
     <h3 id="testModalTitle"><i class="fas fa-star"></i> Adicionar Testemunho</h3>
@@ -462,31 +465,48 @@
   </div>
 </div>
 
-<!-- Toast -->
+<div class="modal-bg" id="faqModal">
+  <div class="modal">
+    <h3 id="faqModalTitle"><i class="fas fa-question-circle"></i> Adicionar Pergunta</h3>
+    <div class="form-group"><label>Pergunta (PT)</label><input type="text" id="fq_qPt"></div>
+    <div class="form-group"><label>Pergunta (EN)</label><input type="text" id="fq_qEn"></div>
+    <div class="form-group"><label>Resposta (PT)</label><textarea id="fq_aPt"></textarea></div>
+    <div class="form-group"><label>Resposta (EN)</label><textarea id="fq_aEn"></textarea></div>
+    <input type="hidden" id="fq_id">
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="faqModalCancel">Cancelar</button>
+      <button class="btn btn-primary" id="faqModalSave"><i class="fas fa-save"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Guardado!</span></div>
 
 <script src="../js/site-data.js"></script>
 <script>
 (function(){
-  var CRED_KEY='kayak_admin_creds';
-  var defCreds={user:'admin',pass:'admin123'};
-  function getCreds(){try{var c=localStorage.getItem(CRED_KEY);return c?JSON.parse(c):defCreds;}catch(e){return defCreds;}}
+  var adminToken = sessionStorage.getItem('admin_token') || '';
   function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
 
-  // TOAST
   function toast(msg,err){var t=document.getElementById('toast'),m=document.getElementById('toastMsg');m.textContent=msg||'Guardado!';t.className=err?'toast show err':'toast show';setTimeout(function(){t.classList.remove('show');},3000);}
 
-  // AUTH
+  function serverSave(callback) {
+    var d = SiteData.load();
+    SiteData.saveToServer(d, adminToken, function(ok) {
+      if (ok) { toast('Guardado!'); if (callback) callback(); }
+      else toast('Erro ao guardar no servidor!', true);
+    });
+  }
+
   var loginForm=document.getElementById('loginForm'),loginErr=document.getElementById('loginError');
   var loginDiv=document.getElementById('adminLogin'),dashDiv=document.getElementById('adminDashboard');
-  if(sessionStorage.getItem('admin_logged_in')==='true')showDash();
-  loginForm.addEventListener('submit',function(e){e.preventDefault();var cr=getCreds(),u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;if(u===cr.user&&p===cr.pass){sessionStorage.setItem('admin_logged_in','true');loginErr.style.display='none';showDash();}else{loginErr.style.display='block';}});
-  document.getElementById('logoutBtn').addEventListener('click',function(e){e.preventDefault();sessionStorage.removeItem('admin_logged_in');dashDiv.style.display='none';loginDiv.style.display='flex';});
-  function showDash(){loginDiv.style.display='none';dashDiv.style.display='block';loadAll();}
+  if(adminToken)showDash();
+  loginForm.addEventListener('submit',function(e){e.preventDefault();var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;sessionStorage.setItem('admin_token',adminToken);loginErr.style.display='none';showDash();}}catch(ex){loginErr.style.display='block';}}else{loginErr.style.display='block';}}};xhr.send(JSON.stringify({action:'login',user:u,pass:p}));});
+  document.getElementById('logoutBtn').addEventListener('click',function(e){e.preventDefault();adminToken='';sessionStorage.removeItem('admin_token');dashDiv.style.display='none';loginDiv.style.display='flex';});
+  function showDash(){loginDiv.style.display='none';dashDiv.style.display='block';SiteData.loadFromServer(function(){loadAll();});}
 
-  // NAV
-  var secTitles={dashboard:'Dashboard',homepage:'Homepage',tour:'Detalhes do Tour',about:'Sobre Nós',gallery:'Galeria',testimonials:'Testemunhos',social:'Redes Sociais',contact:'Contactos',settings:'Configurações'};
+  var secTitles={dashboard:'Dashboard',homepage:'Homepage',tour:'Detalhes do Tour',about:'Sobre Nós',gallery:'Galeria',testimonials:'Testemunhos',social:'Redes Sociais',contact:'Contactos',settings:'Configurações',faq:'Perguntas Frequentes'};
   function goTo(name){document.querySelectorAll('.sidebar-nav a').forEach(function(a){a.classList.remove('active');});var nl=document.querySelector('.sidebar-nav a[data-sec="'+name+'"]');if(nl)nl.classList.add('active');document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active');});var el=document.getElementById('s-'+name);if(el)el.classList.add('active');document.getElementById('pageTitle').textContent=secTitles[name]||name;document.getElementById('sidebar').classList.remove('open');}
   document.querySelectorAll('.sidebar-nav a[data-sec]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();goTo(this.dataset.sec);});});
   document.querySelectorAll('.qlink[data-go]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();goTo(this.dataset.go);});});
@@ -497,9 +517,10 @@
   document.querySelectorAll('.modal-bg').forEach(function(bg){bg.addEventListener('click',function(e){if(e.target===bg)bg.classList.remove('active');});});
   document.getElementById('galModalCancel').addEventListener('click',function(){closeM('galModal');});
   document.getElementById('testModalCancel').addEventListener('click',function(){closeM('testModal');});
+  document.getElementById('faqModalCancel').addEventListener('click',function(){closeM('faqModal');});
 
   // ============================= LOAD ALL =============================
-  function loadAll(){var d=SiteData.load();loadStats(d);loadHP(d);loadTour(d);loadAbout(d);loadGal(d);loadTest(d);loadSoc(d);loadCont(d);loadSett(d);}
+  function loadAll(){var d=SiteData.load();loadStats(d);loadHP(d);loadTour(d);loadAbout(d);loadGal(d);loadTest(d);loadSoc(d);loadCont(d);loadSett(d);loadFaq(d);}
 
   function loadStats(d){
     document.getElementById('dGallery').textContent=d.gallery.length;
@@ -536,18 +557,18 @@
     var tPt=document.getElementById('hp_titlePt').value.replace(/\s*\|\s*/g,'<br>');
     var tEn=document.getElementById('hp_titleEn').value.replace(/\s*\|\s*/g,'<br>');
     SiteData.update('homepage',{heroTitlePt:tPt,heroTitleEn:tEn,heroSubPt:document.getElementById('hp_subPt').value,heroSubEn:document.getElementById('hp_subEn').value,heroImages:imgs,videoUrl:document.getElementById('hp_videoUrl').value.trim()});
-    toast('Homepage guardada!');loadStats(SiteData.load());
+    serverSave();loadStats(SiteData.load());
   });
 
   // ========================= TOUR =========================
   function loadTour(d){var t=d.tour;document.getElementById('t_namePt').value=t.namePt||'';document.getElementById('t_nameEn').value=t.nameEn||'';document.getElementById('t_price').value=t.price||0;document.getElementById('t_dur').value=t.duration||'';document.getElementById('t_durEn').value=t.durationEn||'';document.getElementById('t_max').value=t.maxGroup||12;document.getElementById('t_age').value=t.minAge||6;document.getElementById('t_langs').value=t.languages||'';document.getElementById('t_lvlPt').value=t.levelPt||'';document.getElementById('t_lvlEn').value=t.levelEn||'';document.getElementById('t_meetPt').value=t.meetingPt||'';document.getElementById('t_meetEn').value=t.meetingEn||'';document.getElementById('t_sched').value=t.schedules||'';document.getElementById('t_season').value=t.season||'';document.getElementById('t_seasonEn').value=t.seasonEn||'';document.getElementById('t_descPt').value=t.descPt||'';document.getElementById('t_descEn').value=t.descEn||'';document.getElementById('t_fh').value=t.fareharbor||'';}
   document.getElementById('saveTourBtn').addEventListener('click',function(){
     SiteData.update('tour',{namePt:document.getElementById('t_namePt').value,nameEn:document.getElementById('t_nameEn').value,price:parseInt(document.getElementById('t_price').value)||0,duration:document.getElementById('t_dur').value,durationEn:document.getElementById('t_durEn').value,maxGroup:parseInt(document.getElementById('t_max').value)||12,minAge:parseInt(document.getElementById('t_age').value)||6,languages:document.getElementById('t_langs').value,levelPt:document.getElementById('t_lvlPt').value,levelEn:document.getElementById('t_lvlEn').value,meetingPt:document.getElementById('t_meetPt').value,meetingEn:document.getElementById('t_meetEn').value,schedules:document.getElementById('t_sched').value,season:document.getElementById('t_season').value,seasonEn:document.getElementById('t_seasonEn').value,descPt:document.getElementById('t_descPt').value,descEn:document.getElementById('t_descEn').value,fareharbor:document.getElementById('t_fh').value});
-    toast('Tour guardado!');loadStats(SiteData.load());
+    serverSave();loadStats(SiteData.load());
   });
 
   // ========================= ABOUT =========================
-  function loadAbout(d){var a=d.about;document.getElementById('a_storyPt').value=a.storyPt||'';document.getElementById('a_storyEn').value=a.storyEn||'';document.getElementById('a_clients').value=a.statClients||0;document.getElementById('a_years').value=a.statYears||0;document.getElementById('a_tours').value=a.statTours||0;document.getElementById('a_rating').value=a.statRating||'';renderTeam(a.team||[]);}
+  function loadAbout(d){var a=d.about;document.getElementById('a_img').value=a.image||'';var pv=document.getElementById('a_imgPreview');pv.innerHTML=a.image?'<img src="'+esc(a.image)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;" onerror="this.style.display=\'none\'">':'';document.getElementById('a_storyPt').value=a.storyPt||'';document.getElementById('a_storyEn').value=a.storyEn||'';document.getElementById('a_clients').value=a.statClients||0;document.getElementById('a_years').value=a.statYears||0;document.getElementById('a_tours').value=a.statTours||0;document.getElementById('a_rating').value=a.statRating||'';renderTeam(a.team||[]);}
   function renderTeam(team){
     var c=document.getElementById('teamList');c.innerHTML='';
     team.forEach(function(m,i){
@@ -563,8 +584,8 @@
   document.getElementById('saveAboutBtn').addEventListener('click',function(){
     var ns=document.querySelectorAll('.tm-n'),is=document.querySelectorAll('.tm-img'),rp=document.querySelectorAll('.tm-rp'),re=document.querySelectorAll('.tm-re'),team=[];
     ns.forEach(function(n,i){team.push({name:n.value,image:is[i].value,rolePt:rp[i].value,roleEn:re[i].value});});
-    SiteData.update('about',{storyPt:document.getElementById('a_storyPt').value,storyEn:document.getElementById('a_storyEn').value,statClients:parseInt(document.getElementById('a_clients').value)||0,statYears:parseInt(document.getElementById('a_years').value)||0,statTours:parseInt(document.getElementById('a_tours').value)||0,statRating:document.getElementById('a_rating').value,team:team});
-    toast('Sobre Nós guardado!');
+    SiteData.update('about',{image:document.getElementById('a_img').value.trim(),storyPt:document.getElementById('a_storyPt').value,storyEn:document.getElementById('a_storyEn').value,statClients:parseInt(document.getElementById('a_clients').value)||0,statYears:parseInt(document.getElementById('a_years').value)||0,statTours:parseInt(document.getElementById('a_tours').value)||0,statRating:document.getElementById('a_rating').value,team:team});
+    serverSave();
   });
 
   // ========================= GALLERY =========================
@@ -593,14 +614,14 @@
     document.getElementById('galModalTitle').innerHTML='<i class="fas fa-edit"></i> Editar Imagem';
     document.getElementById('galModal').classList.add('active');
   }
-  function delGal(id){if(!confirm('Remover esta imagem?'))return;var d=SiteData.load();d.gallery=d.gallery.filter(function(g){return g.id!==id;});SiteData.save(d);loadGal(d);loadStats(d);toast('Imagem removida!');}
+  function delGal(id){if(!confirm('Remover esta imagem?'))return;var d=SiteData.load();d.gallery=d.gallery.filter(function(g){return g.id!==id;});SiteData.save(d);loadGal(d);loadStats(d);serverSave();}
   document.getElementById('galModalSave').addEventListener('click',function(){
     var url=document.getElementById('gm_url').value.trim();if(!url){toast('Preencha o URL!',true);return;}
     var d=SiteData.load(),eid=document.getElementById('gm_id').value;
     var obj={url:url,category:document.getElementById('gm_cat').value,captionPt:document.getElementById('gm_capPt').value,captionEn:document.getElementById('gm_capEn').value};
     if(eid){var it=d.gallery.find(function(g){return g.id===parseInt(eid);});if(it)Object.assign(it,obj);}
     else{var mx=d.gallery.reduce(function(m,g){return g.id>m?g.id:m;},0);obj.id=mx+1;d.gallery.push(obj);}
-    SiteData.save(d);loadGal(d);loadStats(d);closeM('galModal');toast(eid?'Imagem atualizada!':'Imagem adicionada!');
+    SiteData.save(d);loadGal(d);loadStats(d);closeM('galModal');serverSave();
   });
   document.getElementById('gm_url').addEventListener('input',function(){var u=this.value.trim(),p=document.getElementById('gm_preview');p.innerHTML=u?'<img src="'+esc(u)+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:8px;" onerror="this.parentNode.innerHTML=\'<p style=color:#EF4444;font-size:.8rem;margin-top:8px>Imagem não encontrada</p>\'">':'';});
 
@@ -630,45 +651,77 @@
     document.getElementById('tm_name').value=it.name;document.getElementById('tm_loc').value=it.location;document.getElementById('tm_rat').value=it.rating;document.getElementById('tm_src').value=it.source||'direct';document.getElementById('tm_srcUrl').value=it.sourceUrl||'';document.getElementById('tm_txtPt').value=it.textPt;document.getElementById('tm_txtEn').value=it.textEn;document.getElementById('tm_id').value=id;
     document.getElementById('testModalTitle').innerHTML='<i class="fas fa-edit"></i> Editar Testemunho';document.getElementById('testModal').classList.add('active');
   }
-  function delTest(id){if(!confirm('Remover este testemunho?'))return;var d=SiteData.load();d.testimonials=d.testimonials.filter(function(t){return t.id!==id;});SiteData.save(d);loadTest(d);loadStats(d);toast('Testemunho removido!');}
+  function delTest(id){if(!confirm('Remover este testemunho?'))return;var d=SiteData.load();d.testimonials=d.testimonials.filter(function(t){return t.id!==id;});SiteData.save(d);loadTest(d);loadStats(d);serverSave();}
   document.getElementById('testModalSave').addEventListener('click',function(){
     var name=document.getElementById('tm_name').value.trim();if(!name){toast('Preencha o nome!',true);return;}
     var d=SiteData.load(),eid=document.getElementById('tm_id').value;
     var obj={name:name,location:document.getElementById('tm_loc').value,rating:parseInt(document.getElementById('tm_rat').value),source:document.getElementById('tm_src').value,sourceUrl:document.getElementById('tm_srcUrl').value,textPt:document.getElementById('tm_txtPt').value,textEn:document.getElementById('tm_txtEn').value};
     if(eid){var it=d.testimonials.find(function(t){return t.id===parseInt(eid);});if(it)Object.assign(it,obj);}
     else{var mx=d.testimonials.reduce(function(m,t){return t.id>m?t.id:m;},0);obj.id=mx+1;d.testimonials.push(obj);}
-    SiteData.save(d);loadTest(d);loadStats(d);closeM('testModal');toast(eid?'Testemunho atualizado!':'Testemunho adicionado!');
+    SiteData.save(d);loadTest(d);loadStats(d);closeM('testModal');serverSave();
   });
   document.getElementById('saveTaBtn').addEventListener('click',function(){
     SiteData.update('tripadvisorWidget',{url:document.getElementById('ta_url').value,widgetCode:document.getElementById('ta_widget').value,enabled:document.getElementById('ta_enabled').checked});
-    toast('TripAdvisor guardado!');
+    serverSave();
   });
 
   // ========================= SOCIAL =========================
   function loadSoc(d){var s=d.social;document.getElementById('s_fb').value=s.facebook||'';document.getElementById('s_ig').value=s.instagram||'';document.getElementById('s_ta').value=s.tripadvisor||'';document.getElementById('s_yt').value=s.youtube||'';document.getElementById('s_tk').value=s.tiktok||'';document.getElementById('s_gl').value=s.google||'';document.getElementById('s_igHandle').value=s.instagramHandle||'';}
   document.getElementById('saveSocialBtn').addEventListener('click',function(){
     SiteData.update('social',{facebook:document.getElementById('s_fb').value.trim(),instagram:document.getElementById('s_ig').value.trim(),tripadvisor:document.getElementById('s_ta').value.trim(),youtube:document.getElementById('s_yt').value.trim(),tiktok:document.getElementById('s_tk').value.trim(),google:document.getElementById('s_gl').value.trim(),instagramHandle:document.getElementById('s_igHandle').value.trim()});
-    toast('Redes sociais guardadas!');loadStats(SiteData.load());
+    serverSave();loadStats(SiteData.load());
   });
 
   // ========================= CONTACT =========================
   function loadCont(d){var c=d.contact;document.getElementById('c_phone').value=c.phone||'';document.getElementById('c_phoneRaw').value=c.phoneRaw||'';document.getElementById('c_email').value=c.email||'';document.getElementById('c_wa').value=c.whatsapp||'';document.getElementById('c_addr').value=c.address||'';document.getElementById('c_hours').value=c.hours||'';document.getElementById('c_hoursEn').value=c.hoursEn||'';document.getElementById('c_mapEmbed').value=c.mapEmbed||'';}
   document.getElementById('saveContactBtn').addEventListener('click',function(){
     SiteData.update('contact',{phone:document.getElementById('c_phone').value,phoneRaw:document.getElementById('c_phoneRaw').value,email:document.getElementById('c_email').value,whatsapp:document.getElementById('c_wa').value,address:document.getElementById('c_addr').value,hours:document.getElementById('c_hours').value,hoursEn:document.getElementById('c_hoursEn').value,mapEmbed:document.getElementById('c_mapEmbed').value.trim()});
-    toast('Contactos guardados!');
+    serverSave();
   });
 
   // ========================= SETTINGS =========================
-  function loadSett(d){var s=d.settings;document.getElementById('x_name').value=s.companyName||'';document.getElementById('x_ga').value=s.googleAnalytics||'';document.getElementById('x_fp').value=s.facebookPixel||'';}
+  function loadSett(d){var s=d.settings;document.getElementById('x_name').value=s.companyName||'';document.getElementById('x_ga').value=s.googleAnalytics||'';document.getElementById('x_fp').value=s.facebookPixel||'';document.getElementById('x_sp').checked=s.socialProof!==false;}
   document.getElementById('saveSettingsBtn').addEventListener('click',function(){
-    SiteData.update('settings',{companyName:document.getElementById('x_name').value,googleAnalytics:document.getElementById('x_ga').value,facebookPixel:document.getElementById('x_fp').value});
-    toast('Configurações guardadas!');
+    SiteData.update('settings',{companyName:document.getElementById('x_name').value,googleAnalytics:document.getElementById('x_ga').value,facebookPixel:document.getElementById('x_fp').value,socialProof:document.getElementById('x_sp').checked});
+    serverSave();
   });
   document.getElementById('chgPassBtn').addEventListener('click',function(){
-    var cur=document.getElementById('x_curPass').value,np=document.getElementById('x_newPass').value,cp=document.getElementById('x_confPass').value,cr=getCreds();
-    if(cur!==cr.pass){toast('Password atual incorreta!',true);return;}if(np.length<4){toast('Mínimo 4 caracteres!',true);return;}if(np!==cp){toast('Passwords não coincidem!',true);return;}
-    localStorage.setItem(CRED_KEY,JSON.stringify({user:cr.user,pass:np}));
-    document.getElementById('x_curPass').value='';document.getElementById('x_newPass').value='';document.getElementById('x_confPass').value='';toast('Password alterada!');
+    var cur=document.getElementById('x_curPass').value,np=document.getElementById('x_newPass').value,cp=document.getElementById('x_confPass').value;
+    if(!cur){toast('Preencha a password atual!',true);return;}if(np.length<4){toast('Mínimo 4 caracteres!',true);return;}if(np!==cp){toast('Passwords não coincidem!',true);return;}
+    var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.setRequestHeader('X-Admin-Token',adminToken);
+    xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;sessionStorage.setItem('admin_token',adminToken);document.getElementById('x_curPass').value='';document.getElementById('x_newPass').value='';document.getElementById('x_confPass').value='';toast('Password alterada!');}}catch(e){toast('Erro!',true);}}else{toast('Password atual incorreta!',true);}}};
+    xhr.send(JSON.stringify({action:'change_password',current:cur,newPass:np}));
+  });
+
+  document.getElementById('a_img').addEventListener('input',function(){var u=this.value.trim(),p=document.getElementById('a_imgPreview');p.innerHTML=u?'<img src="'+esc(u)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;" onerror="this.parentNode.innerHTML=\'<p style=color:#EF4444;font-size:.8rem>Imagem não encontrada</p>\'">':'';});
+
+  // ========================= FAQ =========================
+  function loadFaq(d){
+    var faq=d.faq||[],c=document.getElementById('faqAdminList');c.innerHTML='';
+    faq.forEach(function(f,i){
+      var div=document.createElement('div');div.className='test-card';
+      div.innerHTML='<div class="test-head"><div><h4>'+esc(f.qPt)+'</h4><span class="sub">'+esc(f.qEn)+'</span></div><div class="actions"><button class="btn-edit" data-fe="'+f.id+'"><i class="fas fa-edit"></i></button><button class="btn-del" data-fd="'+f.id+'"><i class="fas fa-trash"></i></button></div></div>'+
+        '<div class="test-text" style="font-style:normal;">'+esc(f.aPt).substring(0,120)+(f.aPt&&f.aPt.length>120?'...':'')+'</div>';
+      c.appendChild(div);
+    });
+    c.querySelectorAll('[data-fe]').forEach(function(b){b.addEventListener('click',function(){editFaq(parseInt(this.dataset.fe));});});
+    c.querySelectorAll('[data-fd]').forEach(function(b){b.addEventListener('click',function(){delFaq(parseInt(this.dataset.fd));});});
+  }
+  document.getElementById('addFaqBtn').addEventListener('click',function(){openFaqM();});
+  function openFaqM(){document.getElementById('fq_qPt').value='';document.getElementById('fq_qEn').value='';document.getElementById('fq_aPt').value='';document.getElementById('fq_aEn').value='';document.getElementById('fq_id').value='';document.getElementById('faqModalTitle').innerHTML='<i class="fas fa-question-circle"></i> Adicionar Pergunta';document.getElementById('faqModal').classList.add('active');}
+  function editFaq(id){
+    var d=SiteData.load(),it=(d.faq||[]).find(function(f){return f.id===id;});if(!it)return;
+    document.getElementById('fq_qPt').value=it.qPt;document.getElementById('fq_qEn').value=it.qEn;document.getElementById('fq_aPt').value=it.aPt;document.getElementById('fq_aEn').value=it.aEn;document.getElementById('fq_id').value=id;
+    document.getElementById('faqModalTitle').innerHTML='<i class="fas fa-edit"></i> Editar Pergunta';document.getElementById('faqModal').classList.add('active');
+  }
+  function delFaq(id){if(!confirm('Remover esta pergunta?'))return;var d=SiteData.load();d.faq=(d.faq||[]).filter(function(f){return f.id!==id;});SiteData.save(d);loadFaq(d);serverSave();}
+  document.getElementById('faqModalSave').addEventListener('click',function(){
+    var qPt=document.getElementById('fq_qPt').value.trim();if(!qPt){toast('Preencha a pergunta!',true);return;}
+    var d=SiteData.load(),eid=document.getElementById('fq_id').value;d.faq=d.faq||[];
+    var obj={qPt:qPt,qEn:document.getElementById('fq_qEn').value,aPt:document.getElementById('fq_aPt').value,aEn:document.getElementById('fq_aEn').value};
+    if(eid){var it=d.faq.find(function(f){return f.id===parseInt(eid);});if(it)Object.assign(it,obj);}
+    else{var mx=d.faq.reduce(function(m,f){return f.id>m?f.id:m;},0);obj.id=mx+1;d.faq.push(obj);}
+    SiteData.save(d);loadFaq(d);closeM('faqModal');serverSave();
   });
 
   // EXPORT/IMPORT/RESET
@@ -678,10 +731,10 @@
   document.getElementById('importBtn').addEventListener('click',function(){document.getElementById('importFile').click();});
   document.getElementById('importFile').addEventListener('change',function(e){
     var f=e.target.files[0];if(!f)return;var r=new FileReader();
-    r.onload=function(ev){try{var d=JSON.parse(ev.target.result);SiteData.save(d);loadAll();toast('Dados importados!');}catch(err){toast('Ficheiro inválido!',true);}};
+    r.onload=function(ev){try{var d=JSON.parse(ev.target.result);SiteData.save(d);loadAll();serverSave();}catch(err){toast('Ficheiro inválido!',true);}};
     r.readAsText(f);e.target.value='';
   });
-  document.getElementById('resetBtn').addEventListener('click',function(){if(!confirm('ATENÇÃO: Isto apaga TODOS os dados e repõe os valores originais. Continuar?'))return;SiteData.reset();loadAll();toast('Dados repostos!');});
+  document.getElementById('resetBtn').addEventListener('click',function(){if(!confirm('ATENÇÃO: Isto apaga TODOS os dados e repõe os valores originais. Continuar?'))return;SiteData.reset();loadAll();serverSave();});
 
 })();
 </script>

@@ -1,10 +1,4 @@
-/* ============================================
-   Kayak Adventures Lagos - Main JavaScript
-   ============================================ */
-
 document.addEventListener('DOMContentLoaded', function() {
-
-  // ---------- Preloader ----------
   const preloader = document.getElementById('preloader');
   if (preloader) {
     window.addEventListener('load', function() {
@@ -12,13 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
         preloader.classList.add('hidden');
       }, 500);
     });
-    // Fallback: hide after 3s
     setTimeout(function() {
       preloader.classList.add('hidden');
     }, 3000);
   }
-
-  // ---------- Header Scroll Effect ----------
   const header = document.getElementById('header');
   function handleHeaderScroll() {
     if (window.scrollY > 50) {
@@ -29,8 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   window.addEventListener('scroll', handleHeaderScroll);
   handleHeaderScroll();
-
-  // ---------- Mobile Navigation ----------
   const mobileToggle = document.getElementById('mobileToggle');
   const mainNav = document.getElementById('mainNav');
 
@@ -38,20 +27,19 @@ document.addEventListener('DOMContentLoaded', function() {
     mobileToggle.addEventListener('click', function() {
       mobileToggle.classList.toggle('active');
       mainNav.classList.toggle('mobile-active');
-      document.body.style.overflow = mainNav.classList.contains('mobile-active') ? 'hidden' : '';
+      var isOpen = mainNav.classList.contains('mobile-active');
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+      header.classList.toggle('menu-open', isOpen);
     });
-
-    // Close mobile nav when clicking a link
     mainNav.querySelectorAll('a').forEach(function(link) {
       link.addEventListener('click', function() {
         mobileToggle.classList.remove('active');
         mainNav.classList.remove('mobile-active');
         document.body.style.overflow = '';
+        header.classList.remove('menu-open');
       });
     });
   }
-
-  // ---------- Hero Slider ----------
   const heroSlides = document.querySelectorAll('.hero-slide');
   const heroIndicators = document.querySelectorAll('.hero-indicators button');
   let currentSlide = 0;
@@ -90,8 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
   if (heroSlides.length > 0) {
     startSlider();
   }
-
-  // ---------- Testimonials Slider ----------
   const testimonialCards = document.querySelectorAll('.testimonial-card');
   const testimonialNav = document.querySelectorAll('.testimonials-nav button');
   let currentTestimonial = 0;
@@ -130,23 +116,17 @@ document.addEventListener('DOMContentLoaded', function() {
   if (testimonialCards.length > 0) {
     startTestimonials();
   }
-
-  // ---------- FAQ Accordion ----------
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach(function(item) {
     var question = item.querySelector('.faq-question');
     if (question) {
       question.addEventListener('click', function() {
         var isActive = item.classList.contains('active');
-
-        // Close all
         faqItems.forEach(function(other) {
           other.classList.remove('active');
           var answer = other.querySelector('.faq-answer');
           if (answer) answer.style.maxHeight = null;
         });
-
-        // Open if was closed
         if (!isActive) {
           item.classList.add('active');
           var answer = item.querySelector('.faq-answer');
@@ -155,8 +135,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   });
-
-  // ---------- Gallery Filter ----------
   const filterBtns = document.querySelectorAll('.gallery-filter-btn');
   const galleryItems = document.querySelectorAll('.gallery-page-item');
 
@@ -175,8 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
-
-  // ---------- Lightbox ----------
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxClose = document.getElementById('lightboxClose');
@@ -231,8 +207,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (e.target === lightbox) closeLightbox();
     });
   }
-
-  // Keyboard navigation for lightbox
   document.addEventListener('keydown', function(e) {
     if (lightbox && lightbox.classList.contains('active')) {
       if (e.key === 'Escape') closeLightbox();
@@ -240,8 +214,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (e.key === 'ArrowRight' && lightboxNext) lightboxNext.click();
     }
   });
-
-  // ---------- Back to Top ----------
   const backToTop = document.getElementById('backToTop');
   if (backToTop) {
     window.addEventListener('scroll', function() {
@@ -256,8 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
-
-  // ---------- Cookie Banner ----------
   const cookieBanner = document.getElementById('cookieBanner');
   const cookieAccept = document.getElementById('cookieAccept');
   const cookieReject = document.getElementById('cookieReject');
@@ -284,13 +254,9 @@ document.addEventListener('DOMContentLoaded', function() {
       cookieBanner.classList.remove('active');
     });
   }
-
-  // ---------- Language Switcher ----------
   const langSwitcher = document.getElementById('langSwitcher');
   if (langSwitcher) {
     var langOptions = langSwitcher.querySelectorAll('.lang-option');
-
-    // Load saved language
     var savedLang = localStorage.getItem('lang_preference') || 'pt';
     setLanguage(savedLang);
 
@@ -299,7 +265,6 @@ document.addEventListener('DOMContentLoaded', function() {
         var lang = this.dataset.lang;
         setLanguage(lang);
         localStorage.setItem('lang_preference', lang);
-        // Re-apply admin data after language switch so dynamic elements update
         if (typeof SiteData !== 'undefined') {
           applySiteData();
         }
@@ -312,13 +277,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.documentElement.setAttribute('data-lang', lang);
     document.documentElement.setAttribute('lang', lang);
-
-    // Update lang switcher active state
     document.querySelectorAll('.lang-option').forEach(function(opt) {
       opt.classList.toggle('active', opt.dataset.lang === lang);
     });
-
-    // Update all translatable elements
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
       var key = el.getAttribute('data-i18n');
       if (translations[lang][key]) {
@@ -326,8 +287,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-
-  // ---------- Scroll Animations ----------
   var animElements = document.querySelectorAll('.fade-in, .slide-left, .slide-right');
 
   var observerOptions = {
@@ -349,13 +308,10 @@ document.addEventListener('DOMContentLoaded', function() {
       observer.observe(el);
     });
   } else {
-    // Fallback for older browsers
     animElements.forEach(function(el) {
       el.classList.add('visible');
     });
   }
-
-  // ---------- Counter Animation (About page) ----------
   var statNumbers = document.querySelectorAll('.stat-number[data-count]');
   if (statNumbers.length > 0 && 'IntersectionObserver' in window) {
     var counterObserver = new IntersectionObserver(function(entries) {
@@ -392,8 +348,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     requestAnimationFrame(step);
   }
-
-  // ---------- Smooth scroll for anchor links ----------
   document.querySelectorAll('a[href^="#"]').forEach(function(link) {
     link.addEventListener('click', function(e) {
       var target = document.querySelector(this.getAttribute('href'));
@@ -403,21 +357,17 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
-
-  // ---------- Apply Admin Data from localStorage ----------
   if (typeof SiteData !== 'undefined') {
-    applySiteData();
+    SiteData.loadFromServer(function() {
+      applySiteData();
+    });
   }
 
   function applySiteData() {
     var d = SiteData.load();
     var lang = localStorage.getItem('lang_preference') || 'pt';
     var isPt = (lang === 'pt');
-
-    // Helper to escape HTML special characters for safe insertion
     function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-    // --- Footer social links (all pages) ---
     var footerSocials = document.querySelectorAll('.footer-social');
     footerSocials.forEach(function(container) {
       var socMap = {
@@ -428,7 +378,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'fa-tiktok': d.social.tiktok,
         'fa-google': d.social.google
       };
-      // Update existing links
       container.querySelectorAll('a').forEach(function(a) {
         var icon = a.querySelector('i');
         if (!icon) return;
@@ -443,7 +392,6 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
       });
-      // Add missing social links (tiktok, google if not in original HTML)
       var missing = { 'fa-tiktok': d.social.tiktok, 'fa-google': d.social.google };
       for (var ic in missing) {
         if (missing[ic] && !container.querySelector('.' + ic)) {
@@ -454,8 +402,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     });
-
-    // --- Footer contact info (all pages) ---
     var footerContacts = document.querySelectorAll('.footer-contact-item');
     footerContacts.forEach(function(item) {
       var icon = item.querySelector('i');
@@ -470,37 +416,26 @@ document.addEventListener('DOMContentLoaded', function() {
         item.querySelector('span').textContent = isPt ? d.contact.hours : d.contact.hoursEn;
       }
     });
-
-    // --- WhatsApp float (all pages) ---
     var waFloat = document.querySelector('.whatsapp-float');
     if (waFloat && d.contact.whatsapp) {
       waFloat.href = 'https://wa.me/' + d.contact.whatsapp + '?text=' + encodeURIComponent('Olá! Gostaria de saber mais sobre os tours de kayak.');
     }
-
-    // --- INDEX.HTML specific ---
     var heroEl = document.getElementById('hero');
     if (heroEl) {
-      // Hero content
       var heroTitle = heroEl.querySelector('[data-i18n="hero_title"]');
       if (heroTitle) heroTitle.innerHTML = isPt ? d.homepage.heroTitlePt : d.homepage.heroTitleEn;
       var heroSub = heroEl.querySelector('[data-i18n="hero_subtitle"]');
       if (heroSub) heroSub.innerHTML = isPt ? d.homepage.heroSubPt : d.homepage.heroSubEn;
-
-      // Hero slider images
       var slides = heroEl.querySelectorAll('.hero-slide');
       var imgs = d.homepage.heroImages || [];
       slides.forEach(function(slide, i) {
         var img = slide.querySelector('.hero-slide-bg');
         if (img && imgs[i]) img.src = imgs[i];
       });
-
-      // Tour preview section
       var tourPrice = document.querySelector('#tour-preview .tour-price');
       if (tourPrice) tourPrice.innerHTML = '€' + d.tour.price + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa' : '/ person') + '</small>';
       var tourTitle = document.querySelector('#tour-preview [data-i18n="tour_preview_title"]');
       if (tourTitle) tourTitle.textContent = isPt ? d.tour.namePt : d.tour.nameEn;
-
-      // Tour details on homepage
       var tourDetails = document.querySelectorAll('#tour-preview .tour-detail');
       tourDetails.forEach(function(det) {
         var icon = det.querySelector('i');
@@ -511,8 +446,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (icon.classList.contains('fa-signal')) span.textContent = isPt ? d.tour.levelPt : d.tour.levelEn;
         if (icon.classList.contains('fa-language')) span.textContent = d.tour.languages;
       });
-
-      // Testimonials
       var testSlider = document.querySelector('.testimonials-slider');
       if (testSlider && d.testimonials.length > 0) {
         testSlider.innerHTML = '';
@@ -532,7 +465,6 @@ document.addEventListener('DOMContentLoaded', function() {
             '<div class="testimonial-author-info"><h4>' + esc(t.name) + '</h4><span>' + esc(t.location) + '</span>' + badge + '</div></div>';
           testSlider.appendChild(card);
         });
-        // Re-init nav dots
         var testNav = document.querySelector('.testimonials-nav');
         if (testNav) {
           testNav.innerHTML = '';
@@ -543,10 +475,8 @@ document.addEventListener('DOMContentLoaded', function() {
             testNav.appendChild(btn);
           });
         }
-        // TripAdvisor link
         if (d.tripadvisorWidget.enabled && d.tripadvisorWidget.url) {
           var taUrl = d.tripadvisorWidget.url;
-          // Only allow http/https URLs
           if (/^https?:\/\//i.test(taUrl)) {
             var taLink = document.createElement('div');
             taLink.style.cssText = 'text-align:center;margin-top:20px;';
@@ -554,12 +484,9 @@ document.addEventListener('DOMContentLoaded', function() {
             testSlider.parentNode.insertBefore(taLink, testNav);
           }
         }
-        // Re-bind testimonial slider
         reinitTestimonials();
       }
     }
-
-    // --- TOUR.HTML specific ---
     var tourSidebar = document.querySelector('.tour-sidebar');
     if (tourSidebar) {
       var details = tourSidebar.querySelectorAll('.tour-sidebar-detail');
@@ -580,8 +507,10 @@ document.addEventListener('DOMContentLoaded', function() {
       var sSchedule = tourSidebar.querySelector('[data-i18n="tour_sidebar_schedule"]');
       if (sSchedule) sSchedule.textContent = (isPt ? 'Horários: ' : 'Schedules: ') + d.tour.schedules;
     }
-
-    // --- ABOUT.HTML specific ---
+    var aboutImg = document.querySelector('.about-image img');
+    if (aboutImg && d.about.image) {
+      aboutImg.src = d.about.image;
+    }
     var aboutStats = document.querySelector('.about-stats');
     if (aboutStats) {
       var statCards = aboutStats.querySelectorAll('.stat-card');
@@ -601,8 +530,6 @@ document.addEventListener('DOMContentLoaded', function() {
         teamGrid.appendChild(card);
       });
     }
-
-    // --- GALLERY.HTML specific ---
     var galGrid = document.getElementById('galleryGrid');
     if (galGrid && d.gallery.length > 0) {
       galGrid.innerHTML = '';
@@ -613,7 +540,6 @@ document.addEventListener('DOMContentLoaded', function() {
         div.innerHTML = '<img src="' + esc(img.url) + '" alt="' + esc(isPt ? img.captionPt : img.captionEn) + '" loading="lazy">';
         galGrid.appendChild(div);
       });
-      // Re-bind lightbox
       lightboxImages = [];
       galGrid.querySelectorAll('.gallery-page-item').forEach(function(item, i) {
         var img = item.querySelector('img');
@@ -622,7 +548,6 @@ document.addEventListener('DOMContentLoaded', function() {
           item.addEventListener('click', function() { openLightbox(i); });
         }
       });
-      // Re-bind gallery filters
       document.querySelectorAll('.gallery-filter-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
           document.querySelectorAll('.gallery-filter-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -634,8 +559,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       });
     }
-
-    // --- INDEX.HTML Gallery Preview (dynamic from admin) ---
     var homeGal = document.getElementById('homeGalleryGrid');
     if (homeGal && d.gallery.length > 0) {
       homeGal.innerHTML = '';
@@ -649,17 +572,13 @@ document.addEventListener('DOMContentLoaded', function() {
         homeGal.appendChild(gDiv);
       }
     }
-
-    // --- Trust bar dynamic data (index.html) ---
     var trustBar = document.getElementById('trustBar');
     if (trustBar) {
       var trustItems = trustBar.querySelectorAll('.trust-item');
-      // TripAdvisor rating
       if (trustItems[0]) {
         var taInfo = trustItems[0].querySelector('.trust-item-info strong');
         if (taInfo) taInfo.textContent = d.about.statRating + ' TripAdvisor';
       }
-      // Google rating
       if (trustItems[1]) {
         var gInfo = trustItems[1].querySelector('.trust-item-info strong');
         if (gInfo) gInfo.textContent = d.about.statRating + ' Google';
@@ -667,8 +586,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (gSub) gSub.textContent = (isPt ? 'Baseado em ' : 'Based on ') + d.about.statClients + '+ reviews';
       }
     }
-
-    // --- Sticky CTA meta (index.html) ---
     var stickyMeta = document.querySelector('.sticky-cta-left .tour-meta');
     if (stickyMeta) {
       var dur = isPt ? d.tour.duration : (d.tour.durationEn || d.tour.duration);
@@ -676,14 +593,10 @@ document.addEventListener('DOMContentLoaded', function() {
         ' <i class="fas fa-star" style="color:#FBBF24"></i> ' + esc(String(d.about.statRating)) +
         ' <i class="fas fa-users"></i> ' + (isPt ? 'Máx. ' : 'Max. ') + esc(String(d.tour.maxGroup));
     }
-
-    // --- Instagram handle (index.html) ---
     var instaHandleEl = document.querySelector('.insta-header p[data-i18n="insta_handle"]');
     if (instaHandleEl && d.social.instagramHandle) {
       instaHandleEl.textContent = '@' + d.social.instagramHandle.replace(/^@/, '');
     }
-
-    // --- JSON-LD structured data (index.html) ---
     var ldScript = document.querySelector('script[type="application/ld+json"]');
     if (ldScript) {
       try {
@@ -698,15 +611,30 @@ document.addEventListener('DOMContentLoaded', function() {
         ldScript.textContent = JSON.stringify(ld);
       } catch(e) {}
     }
-
-    // --- FAQ CTA buttons (faq.html) ---
+    var faqList = document.getElementById('faqList');
+    if (faqList && d.faq && d.faq.length > 0) {
+      faqList.innerHTML = '';
+      d.faq.forEach(function(f) {
+        var item = document.createElement('div');
+        item.className = 'faq-item fade-in visible';
+        item.innerHTML = '<button class="faq-question"><span>' + esc(isPt ? f.qPt : f.qEn) + '</span><i class="fas fa-chevron-down"></i></button>' +
+          '<div class="faq-answer"><div class="faq-answer-content">' + esc(isPt ? f.aPt : f.aEn) + '</div></div>';
+        faqList.appendChild(item);
+      });
+      faqList.querySelectorAll('.faq-question').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var item = this.parentElement;
+          var wasActive = item.classList.contains('active');
+          faqList.querySelectorAll('.faq-item').forEach(function(fi) { fi.classList.remove('active'); });
+          if (!wasActive) item.classList.add('active');
+        });
+      });
+    }
     var faqCtas = document.querySelectorAll('.faq-cta a, .cta-section a[href*="wa.me"], .cta-section a[href*="mailto:"]');
     faqCtas.forEach(function(a) {
       if (a.href.indexOf('wa.me') > -1) a.href = 'https://wa.me/' + d.contact.whatsapp;
       if (a.href.indexOf('mailto:') > -1) a.href = 'mailto:' + d.contact.email;
     });
-
-    // --- Legal pages: replace hardcoded contact info in body text ---
     document.querySelectorAll('.legal-content p, .legal-content li').forEach(function(el) {
       var t = el.innerHTML;
       if (t.indexOf('info@kayakadventureslagos.com') > -1) {
@@ -718,14 +646,10 @@ document.addEventListener('DOMContentLoaded', function() {
         el.innerHTML = t;
       }
     });
-
-    // --- Google Maps (tour.html) ---
     var mapIframe = document.querySelector('.map-wrapper iframe, .map-section iframe');
     if (mapIframe && d.contact.mapEmbed) {
       mapIframe.src = d.contact.mapEmbed;
     }
-
-    // --- Google Analytics injection ---
     if (d.settings.googleAnalytics && !document.getElementById('ga-script')) {
       var gaId = d.settings.googleAnalytics;
       var gaScript = document.createElement('script');
@@ -737,8 +661,6 @@ document.addEventListener('DOMContentLoaded', function() {
       gaInit.textContent = 'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","' + gaId.replace(/[^a-zA-Z0-9-]/g, '') + '");';
       document.head.appendChild(gaInit);
     }
-
-    // --- Facebook Pixel injection ---
     if (d.settings.facebookPixel && !document.getElementById('fb-pixel')) {
       var fpId = d.settings.facebookPixel.replace(/[^0-9]/g, '');
       var fpScript = document.createElement('script');
@@ -746,11 +668,8 @@ document.addEventListener('DOMContentLoaded', function() {
       fpScript.textContent = "!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','" + fpId + "');fbq('track','PageView');";
       document.head.appendChild(fpScript);
     }
-
-    // --- FareHarbor Lightframe integration ---
     var fhShortname = (d.tour.fareharbor || d.settings.fareharbor || '').replace(/[^a-zA-Z0-9_-]/g, '');
     if (fhShortname && !document.getElementById('fh-lightframe')) {
-      // Inject FareHarbor lightframe API script
       var fhScript = document.createElement('script');
       fhScript.id = 'fh-lightframe';
       fhScript.src = 'https://fareharbor.com/embeds/api/v1/?autolightframe=yes';
@@ -758,13 +677,9 @@ document.addEventListener('DOMContentLoaded', function() {
       document.head.appendChild(fhScript);
 
       var fhBookUrl = 'https://fareharbor.com/embeds/book/' + fhShortname + '/items/?ref=website';
-
-      // Convert all booking links to FareHarbor URLs (lightframe auto-intercepts these)
       document.querySelectorAll('a[href*="#booking"]').forEach(function(a) {
         a.href = fhBookUrl;
       });
-
-      // Tour.html: replace placeholder booking div with FareHarbor calendar embed
       var fhDiv = document.getElementById('fareharbor-booking');
       if (fhDiv) {
         fhDiv.innerHTML = '<a href="' + fhBookUrl + '" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center;" data-i18n="tour_book_now">' +
@@ -772,8 +687,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   }
-
-  // Re-initialize testimonial auto-slide after dynamic render
   function reinitTestimonials() {
     var cards = document.querySelectorAll('.testimonial-card');
     var navBtns = document.querySelectorAll('.testimonials-nav button');
@@ -804,8 +717,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     start();
   }
-
-  // ---------- Sticky Booking CTA Bar ----------
   var stickyCta = document.getElementById('stickyCta');
   if (stickyCta) {
     var stickyTrigger = document.getElementById('tour-preview') || document.getElementById('features');
@@ -818,8 +729,6 @@ document.addEventListener('DOMContentLoaded', function() {
         stickyCta.classList.remove('visible');
       }
     });
-
-    // Apply dynamic data to sticky bar
     if (typeof SiteData !== 'undefined') {
       var sd = SiteData.load();
       var lang = localStorage.getItem('lang_preference') || 'pt';
@@ -829,8 +738,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (sPrice) sPrice.innerHTML = '€' + sd.tour.price + ' <small>' + (lang === 'pt' ? '/ pessoa' : '/ person') + '</small>';
     }
   }
-
-  // ---------- Next Tour Countdown ----------
   var countdownBar = document.getElementById('countdownBar');
   if (countdownBar) {
     function updateCountdown() {
@@ -849,7 +756,6 @@ document.addEventListener('DOMContentLoaded', function() {
         t.setHours(parseInt(parts[0]), parseInt(parts[1]) || 0, 0, 0);
         if (t > now) { nextTour = t; break; }
       }
-      // If no tour today, show first tour tomorrow
       if (!nextTour) {
         var parts = schedules[0].trim().split(':');
         nextTour = new Date(now);
@@ -866,17 +772,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     updateCountdown();
     setInterval(updateCountdown, 1000);
-
-    // Random spots left (3-8)
     var spots = Math.floor(Math.random() * 6) + 3;
     var spotsEl = document.getElementById('spotsLeft');
     var lang = localStorage.getItem('lang_preference') || 'pt';
     if (spotsEl) spotsEl.textContent = lang === 'pt' ? ('Últimos ' + spots + ' lugares!') : ('Last ' + spots + ' spots!');
   }
-
-  // ---------- Social Proof Notifications ----------
   var proofNotif = document.getElementById('proofNotification');
   if (proofNotif) {
+    var sd = typeof SiteData !== 'undefined' ? SiteData.load() : {};
+    var spEnabled = sd.settings && sd.settings.socialProof !== false;
+    if (!spEnabled) { proofNotif.style.display = 'none'; }
+    else {
     var proofNames = [
       { name: 'Maria S.', city: 'Lisboa', avatar: 'MS' },
       { name: 'John D.', city: 'London', avatar: 'JD' },
@@ -913,17 +819,14 @@ document.addEventListener('DOMContentLoaded', function() {
         proofNotif.classList.remove('show');
       }, 5000);
     }
-
-    // First notification after 8s, then every 25-40s
     setTimeout(function() {
       showProofNotif();
       setInterval(function() {
         showProofNotif();
       }, 25000 + Math.random() * 15000);
     }, 8000);
+    }
   }
-
-  // ---------- Video Section ----------
   var videoPlaceholder = document.getElementById('videoPlaceholder');
   if (videoPlaceholder) {
     videoPlaceholder.addEventListener('click', function() {
@@ -933,7 +836,6 @@ document.addEventListener('DOMContentLoaded', function() {
         videoUrl = sd.homepage.videoUrl || '';
       }
       if (!videoUrl) return;
-      // Extract YouTube video ID from various URL formats
       var videoId = '';
       var match = videoUrl.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
       if (match) videoId = match[1];
@@ -943,20 +845,16 @@ document.addEventListener('DOMContentLoaded', function() {
       wrapper.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="Kayak Adventures Lagos"></iframe>';
     });
   }
-
-  // ---------- Instagram Photo Strip ----------
   var instaStrip = document.getElementById('instaStrip');
   if (instaStrip) {
     var images = [];
     if (typeof SiteData !== 'undefined') {
       var sd = SiteData.load();
       images = sd.gallery.slice(0, 8).map(function(g) { return g.url; });
-      // Update Instagram handle from admin
       var instaHandleEl = document.querySelector('[data-i18n="insta_handle"]');
       if (instaHandleEl && sd.social.instagramHandle) {
         instaHandleEl.textContent = sd.social.instagramHandle;
       }
-      // Link Instagram strip to Instagram profile
       var instaLink = sd.social.instagram;
       if (instaLink) {
         var instaHeader = document.querySelector('.insta-header');
@@ -978,7 +876,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80'
       ];
     }
-    // Double the images for infinite scroll
     var allImgs = images.concat(images);
     allImgs.forEach(function(url) {
       var item = document.createElement('div');

@@ -1,9 +1,3 @@
-/* ============================================
-   KAYAK ADVENTURES LAGOS - Main Stylesheet
-   Modern, Responsive, Professional
-   ============================================ */
-
-/* ---------- CSS Variables ---------- */
 :root {
   --primary: #0077B6;
   --primary-dark: #005f8f;
@@ -32,7 +26,6 @@
   --header-height: 140px;
 }
 
-/* ---------- Reset & Base ---------- */
 *,
 *::before,
 *::after {
@@ -80,7 +73,6 @@ button {
   font-family: inherit;
 }
 
-/* ---------- Utility ---------- */
 .container {
   width: 100%;
   max-width: var(--max-width);
@@ -138,7 +130,6 @@ button {
   margin: 16px auto 0;
 }
 
-/* ---------- Buttons ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -195,7 +186,6 @@ button {
   font-size: 1.1rem;
 }
 
-/* ---------- Header / Navigation ---------- */
 .header {
   position: fixed;
   top: 0;
@@ -261,8 +251,6 @@ button {
 .header.scrolled .logo-text {
   color: var(--dark);
 }
-
-/* (logo-text removed - using image logo) */
 
 .nav {
   display: flex;
@@ -382,7 +370,6 @@ button {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* ---------- Hero / Slider ---------- */
 .hero {
   position: relative;
   height: 100vh;
@@ -505,7 +492,6 @@ button {
   50% { transform: translateY(8px); }
 }
 
-/* ---------- Features / Highlights ---------- */
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -569,7 +555,6 @@ button {
   color: var(--text-light);
 }
 
-/* ---------- Tour Preview ---------- */
 .tour-preview {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -660,7 +645,6 @@ button {
   color: var(--text-light);
 }
 
-/* ---------- Testimonials ---------- */
 .testimonials-slider {
   max-width: 800px;
   margin: 0 auto;
@@ -757,7 +741,6 @@ button {
   border-radius: 5px;
 }
 
-/* ---------- Gallery Preview ---------- */
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -808,7 +791,6 @@ button {
   font-weight: 600;
 }
 
-/* ---------- CTA Section ---------- */
 .cta-section {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
   padding: 80px 0;
@@ -844,7 +826,6 @@ button {
   margin-right: auto;
 }
 
-/* ---------- Footer ---------- */
 .footer {
   background: var(--bg-dark);
   padding: 80px 0 0;
@@ -957,7 +938,6 @@ button {
   margin-top: 8px;
 }
 
-/* ---------- Page Hero (inner pages) ---------- */
 .page-hero {
   height: 50vh;
   min-height: 350px;
@@ -1013,7 +993,6 @@ button {
   color: var(--accent);
 }
 
-/* ---------- About Page ---------- */
 .about-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1123,7 +1102,6 @@ button {
   color: var(--primary);
 }
 
-/* ---------- Gallery Page ---------- */
 .gallery-filters {
   display: flex;
   justify-content: center;
@@ -1174,7 +1152,6 @@ button {
   transform: scale(1.1);
 }
 
-/* Lightbox */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -1242,7 +1219,6 @@ button {
 .lightbox-prev { left: 20px; }
 .lightbox-next { right: 20px; }
 
-/* ---------- FAQ Page ---------- */
 .faq-list {
   max-width: 800px;
   margin: 0 auto;
@@ -1296,7 +1272,6 @@ button {
   line-height: 1.8;
 }
 
-/* ---------- Tour Page ---------- */
 .tour-hero-section {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
@@ -1390,7 +1365,6 @@ button {
   color: #EF4444;
 }
 
-/* ---------- Privacy / Legal Pages ---------- */
 .legal-content {
   max-width: 800px;
   margin: 0 auto;
@@ -1430,7 +1404,6 @@ button {
   line-height: 1.7;
 }
 
-/* ---------- Cookie Banner ---------- */
 .cookie-banner {
   position: fixed;
   bottom: 0;
@@ -1474,7 +1447,6 @@ button {
   gap: 12px;
 }
 
-/* ---------- WhatsApp Float ---------- */
 .whatsapp-float {
   position: fixed;
   bottom: 30px;
@@ -1504,7 +1476,6 @@ button {
   50% { box-shadow: 0 4px 30px rgba(37, 211, 102, 0.6); }
 }
 
-/* ---------- Back to Top ---------- */
 .back-to-top {
   position: fixed;
   bottom: 100px;
@@ -1537,7 +1508,6 @@ button {
   transform: translateY(-3px);
 }
 
-/* ---------- Admin Backoffice ---------- */
 .admin-layout {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -1661,7 +1631,6 @@ button {
   gap: 20px;
 }
 
-/* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
   .nav {
     display: none;
@@ -1675,11 +1644,22 @@ button {
     display: flex;
   }
 
+  .header.menu-open {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-dark) !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+
   .nav.mobile-active {
     display: flex;
     flex-direction: column;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     background: var(--bg-dark);
     align-items: center;
     justify-content: center;
@@ -1848,7 +1828,6 @@ button {
   }
 }
 
-/* ---------- Animations ---------- */
 .fade-in {
   opacity: 0;
   transform: translateY(30px);
@@ -1882,7 +1861,6 @@ button {
   transform: translateX(0);
 }
 
-/* ---------- Loading Screen ---------- */
 .preloader {
   position: fixed;
   inset: 0;
@@ -1926,7 +1904,6 @@ button {
   to { transform: rotate(360deg); }
 }
 
-/* ---------- Trust / Social Proof Bar ---------- */
 .trust-bar {
   background: #fff;
   padding: 20px 0;
@@ -1985,7 +1962,6 @@ button {
   letter-spacing: 1px;
 }
 
-/* ---------- Sticky Booking Bar ---------- */
 .sticky-cta {
   position: fixed;
   bottom: 0;
@@ -2056,7 +2032,6 @@ button {
   color: var(--text-light);
 }
 
-/* ---------- Social Proof Notification ---------- */
 .proof-notification {
   position: fixed;
   bottom: 30px;
@@ -2132,7 +2107,6 @@ button {
   background: var(--bg-alt);
 }
 
-/* ---------- Video Section ---------- */
 .video-section {
   position: relative;
   padding: 100px 0;
@@ -2205,7 +2179,6 @@ button {
   50% { box-shadow: 0 8px 50px rgba(255,140,0,.6); }
 }
 
-/* ---------- Next Tour Countdown ---------- */
 .countdown-bar {
   background: linear-gradient(135deg, #0F172A, #1e293b);
   padding: 16px 0;
@@ -2283,7 +2256,6 @@ button {
   animation: blink 1s infinite;
 }
 
-/* ---------- Instagram Photo Strip ---------- */
 .insta-section {
   padding: 60px 0 0;
   text-align: center;
@@ -2367,7 +2339,6 @@ button {
   100% { transform: translateX(-50%); }
 }
 
-/* ---------- Google Maps ---------- */
 .map-wrapper {
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -2381,14 +2352,12 @@ button {
   border: none;
 }
 
-/* ---------- Parallax Text ---------- */
 .parallax-cta {
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
 }
 
-/* ---------- Number Highlight Badge ---------- */
 .highlight-badge {
   display: inline-flex;
   align-items: center;
@@ -2407,7 +2376,6 @@ button {
   font-size: .7rem;
 }
 
-/* ---------- Responsive: New Components ---------- */
 @media (max-width: 768px) {
   .trust-grid {
     gap: 20px;

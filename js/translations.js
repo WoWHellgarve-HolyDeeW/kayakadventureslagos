@@ -1,26 +1,16 @@
-/* ============================================
-   Kayak Adventures Lagos - Translation System
-   PT (Portuguese) & EN (English)
-   ============================================ */
-
 const translations = {
   pt: {
-    // Navigation
     nav_home: "Início",
     nav_tour: "Tour",
     nav_about: "Sobre Nós",
     nav_gallery: "Galeria",
     nav_faq: "FAQ",
     nav_book: "Reservar",
-
-    // Hero
     hero_title: "Explore as Grutas<br>de Lagos de Kayak",
     hero_subtitle: "Descubra a magia da Ponta da Piedade e as praias secretas do Algarve numa aventura inesquecível de kayak.",
     hero_cta: '<i class="fas fa-calendar-check"></i> Reservar Agora',
     hero_cta2: '<i class="fas fa-info-circle"></i> Saber Mais',
     hero_scroll: "Scroll",
-
-    // Features
     features_title: "Porquê Escolher-nos",
     features_subtitle: "Experiências únicas na costa mais bonita de Portugal",
     feature1_title: "Segurança em Primeiro",
@@ -31,8 +21,6 @@ const translations = {
     feature3_text: "Máximo 12 pessoas por tour para uma experiência personalizada e exclusiva.",
     feature4_title: "Fotos Incluídas",
     feature4_text: "Fotos profissionais do seu tour enviadas no mesmo dia gratuitamente.",
-
-    // Tour Preview
     tour_badge: "Mais Popular",
     tour_preview_title: "Tour Kayak Grutas da Ponta da Piedade",
     tour_preview_text: "Embarque numa aventura de 2 horas pelas impressionantes formações rochosas da Ponta da Piedade. Explore grutas escondidas, arcos naturais e praias secretas enquanto os nossos guias lhe contam a história desta costa mágica.",
@@ -42,15 +30,11 @@ const translations = {
     tour_languages: "PT / EN / ES",
     tour_price_per: "/ pessoa",
     tour_book_btn: '<i class="fas fa-calendar-check"></i> Reservar Este Tour',
-
-    // Testimonials
     testimonials_title: "O Que Dizem os Nossos Clientes",
     testimonials_subtitle: "Centenas de aventureiros felizes compartilham as suas experiências",
     testimonial1_text: "Uma experiência absolutamente incrível! Os guias foram fantásticos, as grutas são de tirar o fôlego e sentimo-nos sempre seguros. Recomendo a 100%!",
     testimonial2_text: "Melhor experiência no Algarve! As grutas são deslumbrantes e os guias tornaram tudo muito divertido e informativo. Vale cada cêntimo. Imperdível!",
     testimonial3_text: "Fizemos o tour ao pôr do sol e foi mágico! As cores nas rochas, a água cristalina... um dos melhores momentos das nossas férias no Algarve.",
-
-    // Gallery
     gallery_title: "Galeria",
     gallery_subtitle: "Momentos capturados nas nossas aventuras",
     gallery_img1: "Grutas da Ponta da Piedade",
@@ -59,13 +43,9 @@ const translations = {
     gallery_img4: "Praias Secretas",
     gallery_img5: "Aventura",
     gallery_view_all: '<i class="fas fa-images"></i> Ver Galeria Completa',
-
-    // CTA
     cta_title: "Pronto Para a Aventura?",
     cta_text: "Reserve o seu tour de kayak e descubra a costa mais bonita de Portugal.",
     cta_button: '<i class="fas fa-calendar-check"></i> Reservar Agora',
-
-    // Footer
     footer_about: "Desde 2018 a proporcionar experiências inesquecíveis de kayak nas grutas e praias de Lagos, Algarve. Venha descobrir a magia da Ponta da Piedade connosco.",
     footer_links_title: "Links Rápidos",
     footer_legal_title: "Legal",
@@ -76,13 +56,9 @@ const translations = {
     footer_complaints: "Livro de Reclamações",
     footer_hours: "Todos os dias: 08:00 - 19:00<br>(Abr - Out)",
     footer_rights: "Todos os direitos reservados.",
-
-    // Cookie Banner
     cookie_text: 'Este website utiliza cookies para melhorar a sua experiência. Ao continuar a navegar, concorda com a nossa <a href="cookies.html">Política de Cookies</a> e <a href="privacy.html">Política de Privacidade</a>.',
     cookie_accept: "Aceitar",
     cookie_reject: "Rejeitar",
-
-    // Tour Page
     tour_page_title: "O Nosso Tour",
     tour_page_subtitle: "Explore as famosas grutas da Ponta da Piedade",
     tour_desc_title: "Sobre Este Tour",
@@ -126,8 +102,6 @@ const translations = {
     tour_step4_text: "Paramos numa praia secreta para um mergulho rápido antes de regressar ao ponto de partida.",
     cta_tour_title: "Não Perca Esta Experiência!",
     cta_tour_text: "Os lugares são limitados. Reserve agora e garanta a sua aventura no Algarve.",
-
-    // About Page
     about_page_title: "Sobre Nós",
     about_page_subtitle: "A nossa paixão pela costa do Algarve",
     about_story_title: "A Nossa História",
@@ -153,8 +127,6 @@ const translations = {
     team1_role: "Fundador & Guia Principal",
     team2_role: "Guia & Instrutora",
     team3_role: "Guia & Fotógrafo",
-
-    // Gallery Page
     gallery_page_title: "Galeria",
     gallery_page_subtitle: "Momentos capturados nas nossas aventuras",
     gallery_filter_all: "Todas",
@@ -164,8 +136,6 @@ const translations = {
     gallery_filter_adventure: "Aventura",
     cta_gallery_title: "Quer Fazer Parte da Galeria?",
     cta_gallery_text: "Reserve o seu tour e crie as suas próprias memórias inesquecíveis!",
-
-    // FAQ Page
     faq_page_title: "Perguntas Frequentes",
     faq_page_subtitle: "Tudo o que precisa de saber antes da aventura",
     faq1_q: "Preciso de experiência em kayak?",
@@ -190,13 +160,9 @@ const translations = {
     faq10_a: "Recomendamos roupa confortável que possa molhar, fato de banho por baixo, sapatos de água ou sandálias com tira, protetor solar, chapéu e óculos de sol com cordão. Nós fornecemos tudo o resto: kayak, pagaia, colete salva-vidas e saco estanque.",
     faq_cta_title: "Ainda Tem Dúvidas?",
     faq_cta_text: "Contacte-nos por WhatsApp ou email. Estamos disponíveis para ajudar!",
-
-    // Legal Pages
     privacy_page_title: "Política de Privacidade",
     cookies_page_title: "Política de Cookies",
     gdpr_page_title: "Política GDPR",
-
-    // Countdown / Video / Instagram / Sticky CTA
     countdown_label: "Próximo tour começa em",
     countdown_spots: "Últimos 4 lugares!",
     video_title: "Veja a Experiência",
@@ -210,22 +176,17 @@ const translations = {
   },
 
   en: {
-    // Navigation
     nav_home: "Home",
     nav_tour: "Tour",
     nav_about: "About Us",
     nav_gallery: "Gallery",
     nav_faq: "FAQ",
     nav_book: "Book Now",
-
-    // Hero
     hero_title: "Explore the Caves<br>of Lagos by Kayak",
     hero_subtitle: "Discover the magic of Ponta da Piedade and the secret beaches of the Algarve on an unforgettable kayak adventure.",
     hero_cta: '<i class="fas fa-calendar-check"></i> Book Now',
     hero_cta2: '<i class="fas fa-info-circle"></i> Learn More',
     hero_scroll: "Scroll",
-
-    // Features
     features_title: "Why Choose Us",
     features_subtitle: "Unique experiences on Portugal's most beautiful coast",
     feature1_title: "Safety First",
@@ -236,8 +197,6 @@ const translations = {
     feature3_text: "Maximum 12 people per tour for a personalised and exclusive experience.",
     feature4_title: "Photos Included",
     feature4_text: "Professional photos from your tour sent the same day for free.",
-
-    // Tour Preview
     tour_badge: "Most Popular",
     tour_preview_title: "Kayak Tour Ponta da Piedade Caves",
     tour_preview_text: "Embark on a 2-hour adventure through the stunning rock formations of Ponta da Piedade. Explore hidden caves, natural arches and secret beaches while our guides tell you the history of this magical coast.",
@@ -247,15 +206,11 @@ const translations = {
     tour_languages: "PT / EN / ES",
     tour_price_per: "/ person",
     tour_book_btn: '<i class="fas fa-calendar-check"></i> Book This Tour',
-
-    // Testimonials
     testimonials_title: "What Our Customers Say",
     testimonials_subtitle: "Hundreds of happy adventurers share their experiences",
     testimonial1_text: "An absolutely incredible experience! The guides were fantastic, the caves are breathtaking and we always felt safe. 100% recommended!",
     testimonial2_text: "Best experience in the Algarve! The caves are stunning and the guides made it really fun and informative. Worth every penny. A must-do!",
     testimonial3_text: "We did the sunset tour and it was magical! The colours on the rocks, the crystal-clear water... one of the best moments of our Algarve holiday.",
-
-    // Gallery
     gallery_title: "Gallery",
     gallery_subtitle: "Moments captured during our adventures",
     gallery_img1: "Ponta da Piedade Caves",
@@ -264,13 +219,9 @@ const translations = {
     gallery_img4: "Secret Beaches",
     gallery_img5: "Adventure",
     gallery_view_all: '<i class="fas fa-images"></i> View Full Gallery',
-
-    // CTA
     cta_title: "Ready For Adventure?",
     cta_text: "Book your kayak tour and discover Portugal's most beautiful coast.",
     cta_button: '<i class="fas fa-calendar-check"></i> Book Now',
-
-    // Footer
     footer_about: "Since 2018 providing unforgettable kayak experiences in the caves and beaches of Lagos, Algarve. Come discover the magic of Ponta da Piedade with us.",
     footer_links_title: "Quick Links",
     footer_legal_title: "Legal",
@@ -281,13 +232,9 @@ const translations = {
     footer_complaints: "Complaints Book",
     footer_hours: "Every day: 08:00 - 19:00<br>(Apr - Oct)",
     footer_rights: "All rights reserved.",
-
-    // Cookie
     cookie_text: 'This website uses cookies to improve your experience. By continuing to browse, you agree to our <a href="cookies.html">Cookie Policy</a> and <a href="privacy.html">Privacy Policy</a>.',
     cookie_accept: "Accept",
     cookie_reject: "Reject",
-
-    // Tour Page
     tour_page_title: "Our Tour",
     tour_page_subtitle: "Explore the famous caves of Ponta da Piedade",
     tour_desc_title: "About This Tour",
@@ -331,8 +278,6 @@ const translations = {
     tour_step4_text: "We stop at a secret beach for a quick swim before returning to the starting point.",
     cta_tour_title: "Don't Miss This Experience!",
     cta_tour_text: "Places are limited. Book now and secure your Algarve adventure.",
-
-    // About Page
     about_page_title: "About Us",
     about_page_subtitle: "Our passion for the Algarve coast",
     about_story_title: "Our Story",
@@ -358,8 +303,6 @@ const translations = {
     team1_role: "Founder & Lead Guide",
     team2_role: "Guide & Instructor",
     team3_role: "Guide & Photographer",
-
-    // Gallery Page
     gallery_page_title: "Gallery",
     gallery_page_subtitle: "Moments captured during our adventures",
     gallery_filter_all: "All",
@@ -369,8 +312,6 @@ const translations = {
     gallery_filter_adventure: "Adventure",
     cta_gallery_title: "Want to Be Part of the Gallery?",
     cta_gallery_text: "Book your tour and create your own unforgettable memories!",
-
-    // FAQ Page
     faq_page_title: "Frequently Asked Questions",
     faq_page_subtitle: "Everything you need to know before the adventure",
     faq1_q: "Do I need kayaking experience?",
@@ -395,13 +336,9 @@ const translations = {
     faq10_a: "We recommend comfortable clothes that can get wet, swimwear underneath, water shoes or sandals with straps, sunscreen, hat and sunglasses with a strap. We provide everything else: kayak, paddle, life jacket and dry bag.",
     faq_cta_title: "Still Have Questions?",
     faq_cta_text: "Contact us via WhatsApp or email. We're here to help!",
-
-    // Legal Pages
     privacy_page_title: "Privacy Policy",
     cookies_page_title: "Cookie Policy",
     gdpr_page_title: "GDPR Policy",
-
-    // Countdown / Video / Instagram / Sticky CTA
     countdown_label: "Next tour starts in",
     countdown_spots: "Last 4 spots!",
     video_title: "See the Experience",

@@ -1,8 +1,3 @@
-/* ============================================
-   Kayak Adventures Lagos - Site Data Manager
-   Stores/loads all editable content via localStorage
-   ============================================ */
-
 var SiteData = (function() {
 
   var STORAGE_KEY = 'kayak_site_data';
@@ -60,6 +55,7 @@ var SiteData = (function() {
       videoUrl: ''
     },
     about: {
+      image: 'https://images.unsplash.com/photo-1604715892639-929f832ac4d0?w=800&q=80',
       storyPt: 'A Kayak Adventures Lagos nasceu em 2018 da paixão de um grupo de amigos pela costa algarvia. Crescemos na região, passámos a infância a explorar as grutas e praias escondidas de Lagos, e quisemos partilhar esta magia com o mundo.',
       storyEn: 'Kayak Adventures Lagos was born in 2018 from a group of friends\' passion for the Algarve coast. We grew up in the region, spent our childhood exploring the caves and hidden beaches of Lagos, and wanted to share this magic with the world.',
       statClients: 5000,
@@ -123,6 +119,18 @@ var SiteData = (function() {
       { id: 11, url: 'https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?w=800&q=80', category: 'adventure', captionPt: 'Explorando a Costa', captionEn: 'Exploring the Coast' },
       { id: 12, url: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80', category: 'sunset', captionPt: 'Final do Dia', captionEn: 'End of Day' }
     ],
+    faq: [
+      { id: 1, qPt: 'Preciso de experiência em kayak?', qEn: 'Do I need kayaking experience?', aPt: 'Não! O nosso tour é adequado para todos os níveis, incluindo iniciantes completos. Antes de partirmos, damos um briefing completo com todas as técnicas necessárias. Os nossos guias estão sempre presentes para ajudar durante todo o percurso.', aEn: 'No! Our tour is suitable for all levels, including complete beginners. Before we set off, we give a full briefing with all the necessary techniques. Our guides are always present to help throughout the route.' },
+      { id: 2, qPt: 'Qual é a idade mínima para participar?', qEn: 'What is the minimum age to participate?', aPt: 'A idade mínima é 6 anos, sempre acompanhados por um adulto no mesmo kayak (kayak duplo). Crianças abaixo de 12 anos devem estar acompanhadas por um tutor legal.', aEn: 'The minimum age is 6 years, always accompanied by an adult in the same kayak (double kayak). Children under 12 must be accompanied by a legal guardian.' },
+      { id: 3, qPt: 'O que acontece se o tempo estiver mau?', qEn: 'What happens if the weather is bad?', aPt: 'A segurança é a nossa prioridade. Se as condições meteorológicas não forem adequadas para o tour, contactamo-lo com antecedência e oferecemos reagendamento gratuito para outra data ou reembolso total.', aEn: 'Safety is our priority. If weather conditions are not suitable for the tour, we contact you in advance and offer free rescheduling to another date or a full refund.' },
+      { id: 4, qPt: 'Posso levar o meu telemóvel?', qEn: 'Can I bring my phone?', aPt: 'Sim! Fornecemos sacos estanques para proteger os seus pertences. No entanto, recomendamos utilizar uma capa à prova de água adicional. Não nos responsabilizamos por danos em dispositivos eletrónicos. O nosso fotógrafo tira fotos profissionais que são enviadas gratuitamente após o tour.', aEn: 'Yes! We provide dry bags to protect your belongings. However, we recommend using an additional waterproof case. We are not responsible for damage to electronic devices. Our photographer takes professional photos that are sent free of charge after the tour.' },
+      { id: 5, qPt: 'Preciso de saber nadar?', qEn: 'Do I need to know how to swim?', aPt: 'Recomendamos que saiba nadar, embora todos os participantes usem colete salva-vidas obrigatório durante todo o tour. O kayak é muito estável e é raro alguém cair à água.', aEn: 'We recommend that you know how to swim, although all participants wear a mandatory life jacket throughout the tour. The kayak is very stable and it is rare for anyone to fall into the water.' },
+      { id: 6, qPt: 'Quanto tempo dura o tour?', qEn: 'How long does the tour last?', aPt: 'O tour tem duração de aproximadamente 2 horas. Pedimos que chegue 15 minutos antes do horário marcado para o check-in e briefing de segurança.', aEn: 'The tour lasts approximately 2 hours. We ask you to arrive 15 minutes before the scheduled time for check-in and safety briefing.' },
+      { id: 7, qPt: 'Onde é o ponto de encontro?', qEn: 'Where is the meeting point?', aPt: 'O ponto de encontro é na Marina de Lagos. Após a reserva, enviamos as instruções detalhadas com mapa e indicações para chegar facilmente.', aEn: 'The meeting point is at Lagos Marina. After booking, we send detailed instructions with a map and directions for easy arrival.' },
+      { id: 8, qPt: 'Qual é a política de cancelamento?', qEn: 'What is the cancellation policy?', aPt: 'Cancelamento gratuito até 24 horas antes do tour. Cancelamentos com menos de 24 horas de antecedência não são reembolsáveis, exceto por motivos meteorológicos (cancelado por nós) onde oferecem reembolso total ou reagendamento.', aEn: 'Free cancellation up to 24 hours before the tour. Cancellations less than 24 hours in advance are non-refundable, except for weather reasons (cancelled by us) where we offer a full refund or rescheduling.' },
+      { id: 9, qPt: 'Os kayaks são individuais ou duplos?', qEn: 'Are the kayaks single or double?', aPt: 'Utilizamos kayaks duplos (sit-on-top) que são muito estáveis e fáceis de manobrar. São perfeitos tanto para casais como para pais com filhos.', aEn: 'We use double (sit-on-top) kayaks that are very stable and easy to manoeuvre. They are perfect for both couples and parents with children.' },
+      { id: 10, qPt: 'O que devo vestir/trazer?', qEn: 'What should I wear/bring?', aPt: 'Recomendamos roupa confortável que possa molhar, fato de banho por baixo, sapatos de água ou sandálias com tira, protetor solar, chapéu e óculos de sol com cordão. Nós fornecemos tudo o resto: kayak, pagaia, colete salva-vidas e saco estanque.', aEn: 'We recommend comfortable clothing that can get wet, a swimsuit underneath, water shoes or sandals with a strap, sunscreen, a hat and sunglasses with a cord. We provide everything else: kayak, paddle, life jacket and dry bag.' }
+    ],
     settings: {
       companyName: 'Kayak Adventures Lagos',
       currency: 'EUR',
@@ -151,27 +159,60 @@ var SiteData = (function() {
     return result;
   }
 
+  var _serverData = null;
+  var _serverLoaded = false;
+
+  function loadFromServer(callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/data.php', true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          try {
+            _serverData = JSON.parse(xhr.responseText);
+          } catch(e) { _serverData = null; }
+        }
+        _serverLoaded = true;
+        if (callback) callback();
+      }
+    };
+    xhr.send();
+  }
+
   function load() {
+    if (_serverData) {
+      return deepMerge(defaults, _serverData);
+    }
     try {
       var stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         var parsed = JSON.parse(stored);
         return deepMerge(defaults, parsed);
       }
-    } catch (e) {
-      console.warn('SiteData: Could not load from localStorage', e);
-    }
+    } catch (e) {}
     return deepClone(defaults);
   }
 
   function save(data) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      return true;
-    } catch (e) {
-      console.error('SiteData: Could not save to localStorage', e);
-      return false;
-    }
+    } catch (e) {}
+    return true;
+  }
+
+  function saveToServer(data, token, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/data.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    if (token) xhr.setRequestHeader('X-Admin-Token', token);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        var ok = xhr.status === 200;
+        if (ok) _serverData = deepClone(data);
+        if (callback) callback(ok);
+      }
+    };
+    xhr.send(JSON.stringify(data));
   }
 
   function get(section) {
@@ -205,6 +246,8 @@ var SiteData = (function() {
   return {
     load: load,
     save: save,
+    saveToServer: saveToServer,
+    loadFromServer: loadFromServer,
     get: get,
     update: update,
     reset: reset,
