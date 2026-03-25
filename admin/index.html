@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    :root{--primary:#0077B6;--primary-dark:#005f8f;--secondary:#FF8C00;--accent:#48CAE4;--dark:#1B1B2F;--text:#333;--text-light:#6b7280;--bg:#f0f2f5;--bg-card:#fff;--border:#E2E8F0;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.08);}
+    :root{--primary:#E8751A;--primary-dark:#C96210;--secondary:#0077B6;--accent:#F9A825;--dark:#1B1B2F;--text:#333;--text-light:#6b7280;--bg:#f0f2f5;--bg-card:#fff;--border:#E2E8F0;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.08);}
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
     a{text-decoration:none;color:inherit;}
@@ -278,7 +278,7 @@
     <div class="card">
       <h3><i class="fas fa-image"></i> Imagem da Página</h3>
       <div class="info"><i class="fas fa-camera"></i><p>URL da imagem principal que aparece na página "Sobre Nós". Use images/nome.jpg para imagens locais ou URL completo para externas.</p></div>
-      <div class="form-group"><label>URL da Imagem</label><input type="text" id="a_img" placeholder="images/about.jpg ou https://..."></div>
+      <div class="form-group"><label>URL da Imagem</label><div style="display:flex;gap:8px;align-items:center;"><input type="text" id="a_img" placeholder="images/about.jpg ou https://..." style="flex:1;"><label class="btn btn-outline btn-sm" style="cursor:pointer;white-space:nowrap;"><i class="fas fa-upload"></i> Upload<input type="file" accept="image/*" id="a_img_file" style="display:none;"></label></div></div>
       <div id="a_imgPreview" style="margin-top:8px;"></div>
     </div>
     <div class="card">
@@ -426,7 +426,7 @@
 <div class="modal-bg" id="galModal">
   <div class="modal">
     <h3 id="galModalTitle"><i class="fas fa-image"></i> Adicionar Imagem</h3>
-    <div class="form-group"><label>URL da Imagem</label><input type="url" id="gm_url" placeholder="https://... ou images/foto.jpg"></div>
+    <div class="form-group"><label>URL da Imagem</label><div style="display:flex;gap:8px;align-items:center;"><input type="url" id="gm_url" placeholder="https://... ou images/foto.jpg" style="flex:1;"><label class="btn btn-outline btn-sm" style="cursor:pointer;white-space:nowrap;"><i class="fas fa-upload"></i> Upload<input type="file" accept="image/*" id="gm_url_file" style="display:none;"></label></div></div>
     <div class="form-row">
       <div class="form-group"><label>Categoria</label><select id="gm_cat"><option value="caves">Grutas</option><option value="beaches">Praias</option><option value="sunset">Pôr do Sol</option><option value="adventure">Aventura</option></select></div>
     </div>
@@ -499,6 +499,22 @@
     });
   }
 
+  function uploadImage(file, callback) {
+    var fd = new FormData();
+    fd.append('image', file);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/upload.php', true);
+    xhr.setRequestHeader('X-Admin-Token', adminToken);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          try { var r = JSON.parse(xhr.responseText); callback(r.url || null); } catch(e) { callback(null); }
+        } else { toast('Erro ao enviar imagem!', true); callback(null); }
+      }
+    };
+    xhr.send(fd);
+  }
+
   var loginForm=document.getElementById('loginForm'),loginErr=document.getElementById('loginError');
   var loginDiv=document.getElementById('adminLogin'),dashDiv=document.getElementById('adminDashboard');
   if(adminToken)showDash();
@@ -544,10 +560,15 @@
     var c=document.getElementById('heroImgList');c.innerHTML='';
     imgs.forEach(function(url,i){
       var div=document.createElement('div');div.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:8px;';
-      div.innerHTML='<input type="text" class="hi-inp" value="'+esc(url)+'" style="flex:1;padding:10px 12px;border:2px solid var(--border);border-radius:8px;font-size:.82rem;" placeholder="URL">'+
+      div.innerHTML='<input type="text" class="hi-inp" value="'+esc(url)+'" style="flex:1;padding:10px 12px;border:2px solid var(--border);border-radius:8px;font-size:.82rem;" placeholder="URL ou upload">'+
+        '<label class="btn btn-outline btn-sm" style="cursor:pointer;white-space:nowrap;"><i class="fas fa-upload"></i><input type="file" accept="image/*" style="display:none;" class="hi-file"></label>'+
         '<img src="'+esc(url)+'" style="width:56px;height:36px;object-fit:cover;border-radius:6px;" onerror="this.style.display=\'none\'">'+
         '<button class="btn btn-danger btn-sm" data-hi="'+i+'"><i class="fas fa-times"></i></button>';
       c.appendChild(div);
+      div.querySelector('.hi-file').addEventListener('change',function(){
+        var f=this.files[0];if(!f)return;var inp=div.querySelector('.hi-inp');var img=div.querySelector('img');
+        uploadImage(f,function(u){if(u){inp.value=u;img.src=u;img.style.display='';toast('Imagem enviada!');}});
+      });
       div.querySelector('button').addEventListener('click',function(){var d=SiteData.load();d.homepage.heroImages.splice(i,1);SiteData.save(d);renderHeroImgs(d.homepage.heroImages);});
     });
   }
@@ -694,6 +715,8 @@
   });
 
   document.getElementById('a_img').addEventListener('input',function(){var u=this.value.trim(),p=document.getElementById('a_imgPreview');p.innerHTML=u?'<img src="'+esc(u)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;" onerror="this.parentNode.innerHTML=\'<p style=color:#EF4444;font-size:.8rem>Imagem não encontrada</p>\'">':'';});
+  document.getElementById('a_img_file').addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){document.getElementById('a_img').value=u;var p=document.getElementById('a_imgPreview');p.innerHTML='<img src="'+esc(u)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;">';toast('Imagem enviada!');}});});
+  document.getElementById('gm_url_file').addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){document.getElementById('gm_url').value=u;toast('Imagem enviada!');}});});
 
   // ========================= FAQ =========================
   function loadFaq(d){

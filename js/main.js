@@ -919,14 +919,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (images.length === 0) {
       images = [
-        'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&q=80',
-        'https://images.unsplash.com/photo-1572111024955-76f23dec4bde?w=400&q=80',
-        'https://images.unsplash.com/photo-1468956398224-6d6f66e22c35?w=400&q=80',
-        'https://images.unsplash.com/photo-1604715892639-929f832ac4d0?w=400&q=80',
-        'https://images.unsplash.com/photo-1530053969600-caed2596d242?w=400&q=80',
-        'https://images.unsplash.com/photo-1499242165961-41c2e5b3a73b?w=400&q=80',
-        'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&q=80',
-        'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80'
+        'images/gallery/ponta-da-piedade.jpg',
+        'images/gallery/camilo.jpg',
+        'images/gallery/dona-ana.jpg',
+        'images/gallery/20190924134811.jpg',
+        'images/gallery/20190301123541.jpg',
+        'images/gallery/20200622104606.jpg',
+        'images/gallery/secluded.jpg',
+        'images/gallery/20190924135001.jpg'
       ];
     }
     var allImgs = images.concat(images);

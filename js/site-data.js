@@ -48,14 +48,14 @@ var SiteData = (function() {
       heroSubPt: 'Descubra a magia da Ponta da Piedade e as praias secretas do Algarve numa aventura inesquecível de kayak.',
       heroSubEn: 'Discover the magic of Ponta da Piedade and the secret beaches of the Algarve on an unforgettable kayak adventure.',
       heroImages: [
-        'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1920&q=80',
-        'https://images.unsplash.com/photo-1572111024955-76f23dec4bde?w=1920&q=80',
-        'https://images.unsplash.com/photo-1468956398224-6d6f66e22c35?w=1920&q=80'
+        'images/gallery/main.jpg',
+        'images/gallery/ponta-da-piedade.jpg',
+        'images/gallery/top2.jpg'
       ],
       videoUrl: ''
     },
     about: {
-      image: 'https://images.unsplash.com/photo-1604715892639-929f832ac4d0?w=800&q=80',
+      image: 'images/gallery/about-us-1.jpg',
       storyPt: 'A Kayak Adventures Lagos nasceu em 2018 da paixão de um grupo de amigos pela costa algarvia. Crescemos na região, passámos a infância a explorar as grutas e praias escondidas de Lagos, e quisemos partilhar esta magia com o mundo.',
       storyEn: 'Kayak Adventures Lagos was born in 2018 from a group of friends\' passion for the Algarve coast. We grew up in the region, spent our childhood exploring the caves and hidden beaches of Lagos, and wanted to share this magic with the world.',
       statClients: 5000,
@@ -63,9 +63,9 @@ var SiteData = (function() {
       statTours: 2000,
       statRating: '4.9',
       team: [
-        { name: 'Marco Silva', rolePt: 'Fundador & Guia Principal', roleEn: 'Founder & Head Guide', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80' },
-        { name: 'Inês Costa', rolePt: 'Guia & Instrutora', roleEn: 'Guide & Instructor', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80' },
-        { name: 'Pedro Santos', rolePt: 'Guia & Fotógrafo', roleEn: 'Guide & Photographer', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80' }
+        { name: 'Marco Silva', rolePt: 'Fundador & Guia Principal', roleEn: 'Founder & Head Guide', image: 'images/gallery/about-us-1.jpg' },
+        { name: 'Inês Costa', rolePt: 'Guia & Instrutora', roleEn: 'Guide & Instructor', image: 'images/gallery/about-us-2.jpg' },
+        { name: 'Pedro Santos', rolePt: 'Guia & Fotógrafo', roleEn: 'Guide & Photographer', image: 'images/gallery/about-us-3.jpg' }
       ]
     },
     testimonials: [
@@ -106,18 +106,18 @@ var SiteData = (function() {
       widgetCode: ''
     },
     gallery: [
-      { id: 1, url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80', category: 'caves', captionPt: 'Grutas da Ponta da Piedade', captionEn: 'Ponta da Piedade Caves' },
-      { id: 2, url: 'https://images.unsplash.com/photo-1572111024955-76f23dec4bde?w=800&q=80', category: 'beaches', captionPt: 'Costa Dourada de Lagos', captionEn: 'Golden Coast of Lagos' },
-      { id: 3, url: 'https://images.unsplash.com/photo-1468956398224-6d6f66e22c35?w=800&q=80', category: 'sunset', captionPt: 'Pôr do Sol na Costa', captionEn: 'Coastal Sunset' },
-      { id: 4, url: 'https://images.unsplash.com/photo-1604715892639-929f832ac4d0?w=800&q=80', category: 'caves', captionPt: 'Arcos Naturais', captionEn: 'Natural Arches' },
-      { id: 5, url: 'https://images.unsplash.com/photo-1530053969600-caed2596d242?w=800&q=80', category: 'adventure', captionPt: 'Aventura no Mar', captionEn: 'Sea Adventure' },
-      { id: 6, url: 'https://images.unsplash.com/photo-1499242165961-41c2e5b3a73b?w=800&q=80', category: 'adventure', captionPt: 'Kayak em Grupo', captionEn: 'Group Kayaking' },
-      { id: 7, url: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80', category: 'sunset', captionPt: 'Tour ao Pôr do Sol', captionEn: 'Sunset Tour' },
-      { id: 8, url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80', category: 'caves', captionPt: 'Interior das Grutas', captionEn: 'Inside the Caves' },
-      { id: 9, url: 'https://images.unsplash.com/photo-1509023464722-18d996393ca8?w=800&q=80', category: 'beaches', captionPt: 'Praia Secreta', captionEn: 'Secret Beach' },
-      { id: 10, url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', category: 'beaches', captionPt: 'Águas Cristalinas', captionEn: 'Crystal Clear Waters' },
-      { id: 11, url: 'https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?w=800&q=80', category: 'adventure', captionPt: 'Explorando a Costa', captionEn: 'Exploring the Coast' },
-      { id: 12, url: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80', category: 'sunset', captionPt: 'Final do Dia', captionEn: 'End of Day' }
+      { id: 1, url: 'images/gallery/ponta-da-piedade.jpg', category: 'caves', captionPt: 'Grutas da Ponta da Piedade', captionEn: 'Ponta da Piedade Caves' },
+      { id: 2, url: 'images/gallery/camilo.jpg', category: 'beaches', captionPt: 'Praia do Camilo', captionEn: 'Camilo Beach' },
+      { id: 3, url: 'images/gallery/dona-ana.jpg', category: 'beaches', captionPt: 'Praia Dona Ana', captionEn: 'Dona Ana Beach' },
+      { id: 4, url: 'images/gallery/20190924134811.jpg', category: 'caves', captionPt: 'Interior das Grutas', captionEn: 'Inside the Caves' },
+      { id: 5, url: 'images/gallery/20190301123541.jpg', category: 'adventure', captionPt: 'Aventura no Mar', captionEn: 'Sea Adventure' },
+      { id: 6, url: 'images/gallery/20200622104606.jpg', category: 'adventure', captionPt: 'Kayak em Grupo', captionEn: 'Group Kayaking' },
+      { id: 7, url: 'images/gallery/secluded.jpg', category: 'beaches', captionPt: 'Praia Secreta', captionEn: 'Secret Beach' },
+      { id: 8, url: 'images/gallery/20190924135001.jpg', category: 'caves', captionPt: 'Formações Rochosas', captionEn: 'Rock Formations' },
+      { id: 9, url: 'images/gallery/20190301124356.jpg', category: 'adventure', captionPt: 'Tour de Kayak', captionEn: 'Kayak Tour' },
+      { id: 10, url: 'images/gallery/20200622104802.jpg', category: 'adventure', captionPt: 'Explorando a Costa', captionEn: 'Exploring the Coast' },
+      { id: 11, url: 'images/gallery/20200622104939.jpg', category: 'adventure', captionPt: 'Costa Dourada', captionEn: 'Golden Coast' },
+      { id: 12, url: 'images/gallery/20190924142240.jpg', category: 'caves', captionPt: 'Arcos Naturais', captionEn: 'Natural Arches' }
     ],
     faq: [
       { id: 1, qPt: 'Preciso de experiência em kayak?', qEn: 'Do I need kayaking experience?', aPt: 'Não! O nosso tour é adequado para todos os níveis, incluindo iniciantes completos. Antes de partirmos, damos um briefing completo com todas as técnicas necessárias. Os nossos guias estão sempre presentes para ajudar durante todo o percurso.', aEn: 'No! Our tour is suitable for all levels, including complete beginners. Before we set off, we give a full briefing with all the necessary techniques. Our guides are always present to help throughout the route.' },
