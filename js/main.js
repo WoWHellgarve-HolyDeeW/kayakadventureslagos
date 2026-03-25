@@ -540,6 +540,19 @@ document.addEventListener('DOMContentLoaded', function() {
       var sSchedule = tourSidebar.querySelector('[data-i18n="tour_sidebar_schedule"]');
       if (sSchedule) sSchedule.textContent = (isPt ? 'Horários: ' : 'Schedules: ') + d.tour.schedules;
     }
+    // Apply tour description from admin to tour page
+    var tourDesc = isPt ? d.tour.descPt : d.tour.descEn;
+    if (tourDesc) {
+      var desc1 = document.querySelector('[data-i18n="tour_desc1"]');
+      if (desc1) desc1.textContent = tourDesc;
+      var desc2 = document.querySelector('[data-i18n="tour_desc2"]');
+      if (desc2) desc2.style.display = 'none';
+      var desc3 = document.querySelector('[data-i18n="tour_desc3"]');
+      if (desc3) desc3.style.display = 'none';
+    }
+    // Apply tour name to tour page title
+    var tourPageTitle = document.querySelector('[data-i18n="tour_page_title"]');
+    if (tourPageTitle) tourPageTitle.textContent = isPt ? d.tour.namePt : d.tour.nameEn;
     var aboutImg = document.querySelector('.about-image img');
     if (aboutImg && d.about.image) {
       aboutImg.src = d.about.image;

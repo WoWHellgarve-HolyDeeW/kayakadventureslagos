@@ -200,6 +200,7 @@ var SiteData = (function() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (e) {}
+    _serverData = deepClone(data);
     return true;
   }
 
