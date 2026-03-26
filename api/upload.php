@@ -17,7 +17,14 @@ function checkAuth() {
     if (!$token) return false;
     if (!file_exists($AUTH_FILE)) return false;
     $auth = json_decode(file_get_contents($AUTH_FILE), true);
-    return isset($auth['token']) && hash_equals($auth['token'], $token);
+    if (!isset($auth['token']) || !hash_equals($auth['token'], $token)) return false;
+
+    // CSRF check
+    $csrf = isset($headers['X-CSRF-Token']) ? $headers['X-CSRF-Token'] : '';
+    if (!$csrf) $csrf = isset($headers['x-csrf-token']) ? $headers['x-csrf-token'] : '';
+    if (!$csrf || !isset($auth['csrf_token']) || !hash_equals($auth['csrf_token'], $csrf)) return false;
+
+    return true;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

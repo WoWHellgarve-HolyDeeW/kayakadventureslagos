@@ -259,10 +259,11 @@ var SiteData = (function() {
     _serverLoaded = false;
   }
 
-  function resetToServer(token, callback) {
+  function resetToServer(token, callback, csrfToken) {
     var xhr = new XMLHttpRequest();
     xhr.open('DELETE', '/api/data.php', true);
     if (token) xhr.setRequestHeader('X-Admin-Token', token);
+    if (csrfToken) xhr.setRequestHeader('X-CSRF-Token', csrfToken);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
         if (callback) callback(xhr.status === 200);

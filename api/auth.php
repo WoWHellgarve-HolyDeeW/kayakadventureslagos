@@ -12,12 +12,26 @@ $LOCKOUT_MINUTES = 15;
 function getAuth() {
     global $AUTH_FILE;
     if (!file_exists($AUTH_FILE)) {
-        $default = ['user' => 'admin', 'pass_hash' => password_hash('admin123', PASSWORD_DEFAULT), 'token' => bin2hex(random_bytes(32))];
+        $default = [
+            'user' => 'admin',
+            'pass_hash' => password_hash('admin123', PASSWORD_DEFAULT),
+            'token' => bin2hex(random_bytes(32)),
+            'csrf_token' => bin2hex(random_bytes(32)),
+            'must_change' => true
+        ];
         file_put_contents($AUTH_FILE, json_encode($default, JSON_PRETTY_PRINT), LOCK_EX);
         chmod($AUTH_FILE, 0600);
         return $default;
     }
-    return json_decode(file_get_contents($AUTH_FILE), true);
+    $auth = json_decode(file_get_contents($AUTH_FILE), true);
+    if (!isset($auth['csrf_token'])) {
+        $auth['csrf_token'] = bin2hex(random_bytes(32));
+        file_put_contents($AUTH_FILE, json_encode($auth, JSON_PRETTY_PRINT), LOCK_EX);
+    }
+    if (!isset($auth['must_change'])) {
+        $auth['must_change'] = false;
+    }
+    return $auth;
 }
 
 function getClientIp() {
@@ -123,7 +137,11 @@ if ($action === 'login') {
 
     if ($user === $auth['user'] && password_verify($pass, $auth['pass_hash'])) {
         clearRateLimit();
-        echo json_encode(['success' => true, 'token' => $auth['token']]);
+        $resp = ['success' => true, 'token' => $auth['token'], 'csrf_token' => $auth['csrf_token']];
+        if (!empty($auth['must_change'])) {
+            $resp['must_change'] = true;
+        }
+        echo json_encode($resp);
     } else {
         recordFailedAttempt();
         sleep(1);
@@ -162,9 +180,11 @@ if ($action === 'change_password') {
 
     $auth['pass_hash'] = password_hash($newPass, PASSWORD_DEFAULT);
     $auth['token'] = bin2hex(random_bytes(32));
+    $auth['csrf_token'] = bin2hex(random_bytes(32));
+    $auth['must_change'] = false;
     file_put_contents($AUTH_FILE, json_encode($auth, JSON_PRETTY_PRINT), LOCK_EX);
 
-    echo json_encode(['success' => true, 'token' => $auth['token']]);
+    echo json_encode(['success' => true, 'token' => $auth['token'], 'csrf_token' => $auth['csrf_token']]);
     exit;
 }
 

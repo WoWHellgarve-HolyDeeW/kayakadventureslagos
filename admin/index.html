@@ -506,6 +506,7 @@
 <script>
 (function(){
   var adminToken = sessionStorage.getItem('admin_token') || '';
+  var csrfToken = sessionStorage.getItem('csrf_token') || '';
   function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
 
@@ -513,10 +514,22 @@
 
   function serverSave(callback) {
     var d = SiteData.load();
-    SiteData.saveToServer(d, adminToken, function(ok) {
-      if (ok) { toast('Guardado!'); if (callback) callback(); }
-      else toast('Erro ao guardar no servidor!', true);
-    });
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/data.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-Admin-Token', adminToken);
+    xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          toast('Guardado!');
+          if (callback) callback();
+        } else {
+          toast('Erro ao guardar no servidor!', true);
+        }
+      }
+    };
+    xhr.send(JSON.stringify(d));
   }
 
   function uploadImage(file, callback) {
@@ -525,6 +538,7 @@
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/upload.php', true);
     xhr.setRequestHeader('X-Admin-Token', adminToken);
+    xhr.setRequestHeader('X-CSRF-Token', csrfToken);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -537,10 +551,34 @@
 
   var loginForm=document.getElementById('loginForm'),loginErr=document.getElementById('loginError');
   var loginDiv=document.getElementById('adminLogin'),dashDiv=document.getElementById('adminDashboard');
-  if(adminToken)showDash();
-  loginForm.addEventListener('submit',function(e){e.preventDefault();var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;sessionStorage.setItem('admin_token',adminToken);loginErr.style.display='none';showDash();}}catch(ex){loginErr.style.display='block';}}else{loginErr.style.display='block';}}};xhr.send(JSON.stringify({action:'login',user:u,pass:p}));});
-  document.getElementById('logoutBtn').addEventListener('click',function(e){e.preventDefault();adminToken='';sessionStorage.removeItem('admin_token');dashDiv.style.display='none';loginDiv.style.display='flex';});
-  function showDash(){loginDiv.style.display='none';dashDiv.style.display='block';SiteData.loadFromServer(function(){loadAll();});}
+  if(adminToken && csrfToken)showDash();
+  loginForm.addEventListener('submit',function(e){e.preventDefault();var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;csrfToken=r.csrf_token||'';sessionStorage.setItem('admin_token',adminToken);sessionStorage.setItem('csrf_token',csrfToken);loginErr.style.display='none';if(r.must_change){showForceChange();}else{showDash();}}}catch(ex){loginErr.style.display='block';}}else{loginErr.style.display='block';}}};xhr.send(JSON.stringify({action:'login',user:u,pass:p}));});
+  document.getElementById('logoutBtn').addEventListener('click',function(e){e.preventDefault();adminToken='';csrfToken='';sessionStorage.removeItem('admin_token');sessionStorage.removeItem('csrf_token');dashDiv.style.display='none';loginDiv.style.display='flex';});
+
+  function showForceChange(){
+    loginDiv.style.display='none';dashDiv.style.display='none';
+    var overlay=document.createElement('div');overlay.id='forceChangeOverlay';overlay.style.cssText='position:fixed;inset:0;background:linear-gradient(135deg,#0F172A,#1a1a3e);display:flex;align-items:center;justify-content:center;z-index:99999;padding:24px;';
+    overlay.innerHTML='<div style="background:#fff;padding:48px 40px;border-radius:20px;box-shadow:0 25px 50px rgba(0,0,0,.25);width:100%;max-width:420px;text-align:center;">'
+      +'<h2 style="font-family:Montserrat,sans-serif;font-size:1.2rem;margin-bottom:8px;color:#1A1A2E;">⚠️ Alterar Password Obrigatório</h2>'
+      +'<p style="color:#666;font-size:.9rem;margin-bottom:24px;">A password padrão deve ser alterada por segurança.</p>'
+      +'<div style="text-align:left;margin-bottom:12px;"><label style="font-weight:600;font-size:.85rem;">Nova Password (mínimo 8 caracteres)</label><input type="password" id="fcNewPass" style="width:100%;padding:12px;border:2px solid #e2e8f0;border-radius:10px;margin-top:4px;" placeholder="Nova password"></div>'
+      +'<div style="text-align:left;margin-bottom:20px;"><label style="font-weight:600;font-size:.85rem;">Confirmar Password</label><input type="password" id="fcConfirmPass" style="width:100%;padding:12px;border:2px solid #e2e8f0;border-radius:10px;margin-top:4px;" placeholder="Repetir password"></div>'
+      +'<p id="fcError" style="color:#e74c3c;font-size:.85rem;display:none;margin-bottom:12px;"></p>'
+      +'<button id="fcSubmit" style="width:100%;padding:14px;background:#D4731C;color:#fff;border:none;border-radius:10px;font-weight:700;font-size:1rem;cursor:pointer;">Alterar Password</button>'
+      +'</div>';
+    document.body.appendChild(overlay);
+    document.getElementById('fcSubmit').addEventListener('click',function(){
+      var np=document.getElementById('fcNewPass').value,cp=document.getElementById('fcConfirmPass').value,err=document.getElementById('fcError');
+      if(np.length<8){err.textContent='Mínimo 8 caracteres!';err.style.display='block';return;}
+      if(np!==cp){err.textContent='As passwords não coincidem!';err.style.display='block';return;}
+      if(np==='admin123'){err.textContent='Escolha uma password diferente da padrão!';err.style.display='block';return;}
+      var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.setRequestHeader('X-Admin-Token',adminToken);
+      xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;csrfToken=r.csrf_token||'';sessionStorage.setItem('admin_token',adminToken);sessionStorage.setItem('csrf_token',csrfToken);overlay.remove();showDash();toast('Password alterada com sucesso!');}}catch(ex){err.textContent='Erro inesperado';err.style.display='block';}}else{err.textContent='Erro ao alterar password';err.style.display='block';}}};
+      xhr.send(JSON.stringify({action:'change_password',current:'admin123',newPass:np}));
+    });
+  }
+
+  function showDash(){loginDiv.style.display='none';dashDiv.style.display='block';var fco=document.getElementById('forceChangeOverlay');if(fco)fco.remove();SiteData.loadFromServer(function(){loadAll();});}
 
   var secTitles={dashboard:'Dashboard',homepage:'Homepage',tour:'Detalhes do Tour',about:'Sobre Nós',gallery:'Galeria',testimonials:'Testemunhos',social:'Redes Sociais',contact:'Contactos',settings:'Configurações',faq:'Perguntas Frequentes'};
   function goTo(name){document.querySelectorAll('.sidebar-nav a').forEach(function(a){a.classList.remove('active');});var nl=document.querySelector('.sidebar-nav a[data-sec="'+name+'"]');if(nl)nl.classList.add('active');document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active');});var el=document.getElementById('s-'+name);if(el)el.classList.add('active');document.getElementById('pageTitle').textContent=secTitles[name]||name;document.getElementById('sidebar').classList.remove('open');}
@@ -765,7 +803,7 @@
     var cur=document.getElementById('x_curPass').value,np=document.getElementById('x_newPass').value,cp=document.getElementById('x_confPass').value;
     if(!cur){toast('Preencha a password atual!',true);return;}if(np.length<8){toast('Mínimo 8 caracteres!',true);return;}if(np!==cp){toast('Passwords não coincidem!',true);return;}
     var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.setRequestHeader('X-Admin-Token',adminToken);
-    xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;sessionStorage.setItem('admin_token',adminToken);document.getElementById('x_curPass').value='';document.getElementById('x_newPass').value='';document.getElementById('x_confPass').value='';toast('Password alterada!');}}catch(e){toast('Erro!',true);}}else{toast('Password atual incorreta!',true);}}};
+    xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;csrfToken=r.csrf_token||'';sessionStorage.setItem('admin_token',adminToken);sessionStorage.setItem('csrf_token',csrfToken);document.getElementById('x_curPass').value='';document.getElementById('x_newPass').value='';document.getElementById('x_confPass').value='';toast('Password alterada!');}}catch(e){toast('Erro!',true);}}else{toast('Password atual incorreta!',true);}}};
     xhr.send(JSON.stringify({action:'change_password',current:cur,newPass:np}));
   });
 
@@ -812,7 +850,7 @@
     r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(typeof d!=='object'||d===null||Array.isArray(d)){toast('Ficheiro JSON inválido!',true);return;}function sanitizeStrings(obj){if(typeof obj==='string')return obj.replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/on\w+\s*=/gi,'');if(Array.isArray(obj))return obj.map(sanitizeStrings);if(typeof obj==='object'&&obj!==null){var r={};for(var k in obj)if(obj.hasOwnProperty(k))r[k]=sanitizeStrings(obj[k]);return r;}return obj;}d=sanitizeStrings(d);if(!confirm('Importar irá substituir todos os dados. Continuar?'))return;SiteData.save(d);loadAll();serverSave();toast('Dados importados!');}catch(err){toast('Ficheiro inválido!',true);}};
     r.readAsText(f);e.target.value='';
   });
-  document.getElementById('resetBtn').addEventListener('click',function(){if(!confirm('ATENÇÃO: Isto apaga TODOS os dados e repõe os valores originais. Continuar?'))return;SiteData.resetToServer(adminToken,function(ok){SiteData.reset();var d=SiteData.load();SiteData.save(d);loadAll();serverSave();toast(ok?'Dados repostos!':'Erro ao repor no servidor.',!ok);});});
+  document.getElementById('resetBtn').addEventListener('click',function(){if(!confirm('ATENÇÃO: Isto apaga TODOS os dados e repõe os valores originais. Continuar?'))return;SiteData.resetToServer(adminToken,function(ok){SiteData.reset();var d=SiteData.load();SiteData.save(d);loadAll();serverSave();toast(ok?'Dados repostos!':'Erro ao repor no servidor.',!ok);},csrfToken);});
 
 })();
 </script>

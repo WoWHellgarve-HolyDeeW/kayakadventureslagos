@@ -35,13 +35,28 @@ function checkAuth() {
     if (!$token) return false;
 
     if (!file_exists($AUTH_FILE)) {
-        $default = ['user' => 'admin', 'pass_hash' => password_hash('admin123', PASSWORD_DEFAULT), 'token' => bin2hex(random_bytes(32))];
+        $default = [
+            'user' => 'admin',
+            'pass_hash' => password_hash('admin123', PASSWORD_DEFAULT),
+            'token' => bin2hex(random_bytes(32)),
+            'csrf_token' => bin2hex(random_bytes(32)),
+            'must_change' => true
+        ];
         file_put_contents($AUTH_FILE, json_encode($default, JSON_PRETTY_PRINT), LOCK_EX);
         chmod($AUTH_FILE, 0600);
     }
 
     $auth = json_decode(file_get_contents($AUTH_FILE), true);
-    return isset($auth['token']) && hash_equals($auth['token'], $token);
+    if (!isset($auth['token']) || !hash_equals($auth['token'], $token)) return false;
+
+    // CSRF check for state-changing requests
+    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+        $csrf = isset($headers['X-CSRF-Token']) ? $headers['X-CSRF-Token'] : '';
+        if (!$csrf) $csrf = isset($headers['x-csrf-token']) ? $headers['x-csrf-token'] : '';
+        if (!$csrf || !isset($auth['csrf_token']) || !hash_equals($auth['csrf_token'], $csrf)) return false;
+    }
+
+    return true;
 }
 
 $method = $_SERVER['REQUEST_METHOD'];

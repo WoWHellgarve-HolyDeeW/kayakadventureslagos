@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // Set current year in footer
+  document.querySelectorAll('.current-year').forEach(function(el) { el.textContent = new Date().getFullYear(); });
+
   const preloader = document.getElementById('preloader');
   if (preloader) {
     window.addEventListener('load', function() {
@@ -288,6 +291,9 @@ document.addEventListener('DOMContentLoaded', function() {
         el.innerHTML = translations[lang][key];
       }
     });
+    // Toggle bilingual legal content blocks
+    document.querySelectorAll('.lang-pt').forEach(function(el) { el.style.display = lang === 'pt' ? '' : 'none'; });
+    document.querySelectorAll('.lang-en').forEach(function(el) { el.style.display = lang === 'en' ? '' : 'none'; });
   }
   var animElements = document.querySelectorAll('.fade-in, .slide-left, .slide-right');
 
