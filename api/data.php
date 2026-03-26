@@ -1,9 +1,12 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('Referrer-Policy: strict-origin-when-cross-origin');
 
 $DATA_FILE = __DIR__ . '/site-data.json';
 $AUTH_FILE = __DIR__ . '/auth.json';
+$MAX_POST_SIZE = 1048576; // 1MB
 
 function loadData() {
     global $DATA_FILE;
@@ -75,6 +78,13 @@ if ($method === 'POST') {
     }
 
     $input = file_get_contents('php://input');
+
+    if (strlen($input) > $MAX_POST_SIZE) {
+        http_response_code(413);
+        echo json_encode(['error' => 'Request too large. Max 1MB.']);
+        exit;
+    }
+
     $data = json_decode($input, true);
 
     if ($data === null) {

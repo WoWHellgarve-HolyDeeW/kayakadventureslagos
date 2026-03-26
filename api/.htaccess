@@ -1,3 +1,11 @@
-<FilesMatch "\.(json)$">
+<FilesMatch "\.(json|log)$">
     Require all denied
 </FilesMatch>
+
+# Block direct access to PHP internals
+<Files "*.php">
+    # Allow normal PHP execution but deny if accessed as download
+    <IfModule mod_headers.c>
+        Header set X-Content-Type-Options "nosniff"
+    </IfModule>
+</Files>

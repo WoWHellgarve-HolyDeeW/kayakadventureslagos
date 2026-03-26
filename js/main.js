@@ -368,6 +368,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var lang = localStorage.getItem('lang_preference') || 'pt';
     var isPt = (lang === 'pt');
     function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function safeBr(s) { if (!s) return ''; return esc(s).replace(/&lt;br\s*\/?&gt;/gi, '<br>'); }
+    function safeUrl(s) { if (!s) return ''; return /^https?:\/\//i.test(s) ? esc(s) : ''; }
     // Apply logo from settings
     var logoUrl = d.settings.logoUrl || 'images/logo.png';
     document.querySelectorAll('.logo img, .footer-logo img, .preloader-logo, .login-logo img, .sidebar-brand img').forEach(function(img) {
@@ -430,9 +432,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var heroEl = document.getElementById('hero');
     if (heroEl) {
       var heroTitle = heroEl.querySelector('[data-i18n="hero_title"]');
-      if (heroTitle) heroTitle.innerHTML = isPt ? d.homepage.heroTitlePt : d.homepage.heroTitleEn;
+      if (heroTitle) heroTitle.innerHTML = safeBr(isPt ? d.homepage.heroTitlePt : d.homepage.heroTitleEn);
       var heroSub = heroEl.querySelector('[data-i18n="hero_subtitle"]');
-      if (heroSub) heroSub.innerHTML = isPt ? d.homepage.heroSubPt : d.homepage.heroSubEn;
+      if (heroSub) heroSub.innerHTML = safeBr(isPt ? d.homepage.heroSubPt : d.homepage.heroSubEn);
       var slides = heroEl.querySelectorAll('.hero-slide');
       var imgs = d.homepage.heroImages || [];
       if (imgs.length > 0) {
@@ -442,7 +444,7 @@ document.addEventListener('DOMContentLoaded', function() {
         imgs.forEach(function(url, i) {
           var div = document.createElement('div');
           div.className = 'hero-slide' + (i === 0 ? ' active' : '');
-          div.innerHTML = '<img src="' + url + '" alt="Kayak Adventures Lagos" class="hero-slide-bg"><div class="hero-overlay"></div>';
+          div.innerHTML = '<img src="' + esc(url) + '" alt="Kayak Adventures Lagos" class="hero-slide-bg"><div class="hero-overlay"></div>';
           heroEl.insertBefore(div, heroContent);
         });
         if (indicators) {
@@ -473,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (newSlides.length > 1) startSlider();
       }
       var tourPrice = document.querySelector('#tour-preview .tour-price');
-      if (tourPrice) tourPrice.innerHTML = '€' + d.tour.price + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa' : '/ person') + '</small>';
+      if (tourPrice) tourPrice.innerHTML = '€' + esc(String(d.tour.price)) + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa' : '/ person') + '</small>';
       var tourTitle = document.querySelector('#tour-preview [data-i18n="tour_preview_title"]');
       if (tourTitle) tourTitle.textContent = isPt ? d.tour.namePt : d.tour.nameEn;
       var tourDetails = document.querySelectorAll('#tour-preview .tour-detail');
@@ -488,43 +490,87 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       var testSlider = document.querySelector('.testimonials-slider');
       if (testSlider && d.testimonials.length > 0) {
-        testSlider.innerHTML = '';
-        d.testimonials.forEach(function(t, i) {
-          var stars = '';
-          for (var s = 0; s < t.rating; s++) stars += '<i class="fas fa-star"></i>';
-          var initials = t.name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().substring(0, 2);
-          var text = isPt ? t.textPt : t.textEn;
-          var srcIcon = { tripadvisor: 'fab fa-tripadvisor', google: 'fab fa-google', facebook: 'fab fa-facebook-f' };
-          var badge = t.source && t.source !== 'direct' ? '<span style="font-size:.7rem;color:#6b7280;margin-top:4px;display:flex;align-items:center;gap:4px;"><i class="' + (srcIcon[t.source] || 'fas fa-comment') + '"></i> ' + esc(t.source.charAt(0).toUpperCase() + t.source.slice(1)) + '</span>' : '';
-          var card = document.createElement('div');
-          card.className = 'testimonial-card' + (i === 0 ? ' active' : '');
-          card.innerHTML = '<div class="testimonial-stars">' + stars + '</div>' +
-            '<p class="testimonial-text">' + esc(text) + '</p>' +
-            '<div class="testimonial-author">' +
-            '<div class="testimonial-avatar">' + esc(initials) + '</div>' +
-            '<div class="testimonial-author-info"><h4>' + esc(t.name) + '</h4><span>' + esc(t.location) + '</span>' + badge + '</div></div>';
-          testSlider.appendChild(card);
-        });
-        var testNav = document.querySelector('.testimonials-nav');
-        if (testNav) {
-          testNav.innerHTML = '';
-          d.testimonials.forEach(function(t, i) {
-            var btn = document.createElement('button');
-            if (i === 0) btn.classList.add('active');
-            btn.dataset.testimonial = i;
-            testNav.appendChild(btn);
+        function renderTestimonials(allReviews) {
+          // Filter to 4+ stars only
+          var filtered = allReviews.filter(function(t) { return t.rating >= 4; });
+          if (filtered.length === 0) filtered = allReviews;
+          testSlider.innerHTML = '';
+          filtered.forEach(function(t, i) {
+            var stars = '';
+            for (var s = 0; s < t.rating; s++) stars += '<i class="fas fa-star"></i>';
+            var initials = t.name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().substring(0, 2);
+            var text = isPt ? (t.textPt || t.text || '') : (t.textEn || t.text || '');
+            var srcIcon = { tripadvisor: 'fab fa-tripadvisor', google: 'fab fa-google', facebook: 'fab fa-facebook-f' };
+            var srcColor = { tripadvisor: '#00AF87', google: '#4285F4', facebook: '#1877F2' };
+            var srcName = t.source ? t.source.charAt(0).toUpperCase() + t.source.slice(1) : '';
+            var badge = t.source && t.source !== 'direct' ? '<span style="font-size:.7rem;color:' + (srcColor[t.source] || '#6b7280') + ';margin-top:4px;display:flex;align-items:center;gap:4px;"><i class="' + (srcIcon[t.source] || 'fas fa-comment') + '"></i> ' + esc(srcName) + (t.source === 'tripadvisor' ? ' <i class="fas fa-check-circle" style="font-size:.6rem"></i>' : '') + '</span>' : '';
+            var card = document.createElement('div');
+            card.className = 'testimonial-card' + (i === 0 ? ' active' : '');
+            card.innerHTML = '<div class="testimonial-stars">' + stars + '</div>' +
+              '<p class="testimonial-text">' + esc(text) + '</p>' +
+              '<div class="testimonial-author">' +
+              '<div class="testimonial-avatar"' + (t.source === 'tripadvisor' ? ' style="background:#00AF87"' : '') + '>' + esc(initials) + '</div>' +
+              '<div class="testimonial-author-info"><h4>' + esc(t.name) + '</h4><span>' + esc(t.location || '') + '</span>' + badge + '</div></div>';
+            testSlider.appendChild(card);
           });
-        }
-        if (d.tripadvisorWidget.enabled && d.tripadvisorWidget.url) {
-          var taUrl = d.tripadvisorWidget.url;
-          if (/^https?:\/\//i.test(taUrl)) {
-            var taLink = document.createElement('div');
-            taLink.style.cssText = 'text-align:center;margin-top:20px;';
-            taLink.innerHTML = '<a href="' + esc(taUrl) + '" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="border-color:#00AF87;color:#00AF87;"><i class="fab fa-tripadvisor"></i> Ver no TripAdvisor</a>';
-            testSlider.parentNode.insertBefore(taLink, testNav);
+          var testNav = document.querySelector('.testimonials-nav');
+          if (testNav) {
+            testNav.innerHTML = '';
+            filtered.forEach(function(t, i) {
+              var btn = document.createElement('button');
+              if (i === 0) btn.classList.add('active');
+              btn.dataset.testimonial = i;
+              testNav.appendChild(btn);
+            });
           }
+          if (d.tripadvisorWidget.enabled && d.tripadvisorWidget.url) {
+            var taUrl = d.tripadvisorWidget.url;
+            if (/^https?:\/\//i.test(taUrl)) {
+              var existingTaLink = testSlider.parentNode.querySelector('.ta-link-btn');
+              if (existingTaLink) existingTaLink.remove();
+              var taLink = document.createElement('div');
+              taLink.className = 'ta-link-btn';
+              taLink.style.cssText = 'text-align:center;margin-top:20px;';
+              taLink.innerHTML = '<a href="' + esc(taUrl) + '" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="border-color:#00AF87;color:#00AF87;"><i class="fab fa-tripadvisor"></i> Ver no TripAdvisor</a>';
+              testSlider.parentNode.insertBefore(taLink, testNav);
+            }
+          }
+          reinitTestimonials();
         }
-        reinitTestimonials();
+
+        // Try loading TripAdvisor reviews from API, merge with manual testimonials
+        var manualReviews = d.testimonials.slice();
+        try {
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/api/reviews.php?min_stars=4', true);
+          xhr.timeout = 5000;
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+              var taReviews = [];
+              if (xhr.status === 200) {
+                try {
+                  var resp = JSON.parse(xhr.responseText);
+                  if (resp.reviews && resp.reviews.length > 0) {
+                    taReviews = resp.reviews.map(function(r) {
+                      return { name: r.name, rating: r.rating, textPt: r.text, textEn: r.text, text: r.text, source: 'tripadvisor', location: r.location || '' };
+                    });
+                  }
+                } catch(e) {}
+              }
+              // Merge: TA reviews first, then manual (avoid duplicates by name)
+              var names = {};
+              var merged = [];
+              taReviews.forEach(function(r) { if (!names[r.name]) { names[r.name] = true; merged.push(r); } });
+              manualReviews.forEach(function(r) { if (!names[r.name]) { names[r.name] = true; merged.push(r); } });
+              if (merged.length === 0) merged = manualReviews;
+              renderTestimonials(merged);
+            }
+          };
+          xhr.ontimeout = function() { renderTestimonials(manualReviews); };
+          xhr.send();
+        } catch(e) {
+          renderTestimonials(manualReviews);
+        }
       }
     }
     var tourSidebar = document.querySelector('.tour-sidebar');
@@ -534,16 +580,16 @@ document.addEventListener('DOMContentLoaded', function() {
         var icon = det.querySelector('i');
         var span = det.querySelector('span');
         if (!icon || !span) return;
-        if (icon.classList.contains('fa-clock')) span.innerHTML = '<strong>' + (isPt ? 'Duração:' : 'Duration:') + '</strong> ' + (isPt ? d.tour.duration : d.tour.durationEn);
-        if (icon.classList.contains('fa-map-marker-alt')) span.innerHTML = '<strong>' + (isPt ? 'Ponto de encontro:' : 'Meeting point:') + '</strong> ' + (isPt ? d.tour.meetingPt : d.tour.meetingEn);
-        if (icon.classList.contains('fa-users')) span.innerHTML = '<strong>' + (isPt ? 'Grupo:' : 'Group:') + '</strong> ' + (isPt ? 'Máx. ' : 'Max. ') + d.tour.maxGroup + (isPt ? ' pessoas' : ' people');
-        if (icon.classList.contains('fa-signal')) span.innerHTML = '<strong>' + (isPt ? 'Nível:' : 'Level:') + '</strong> ' + (isPt ? d.tour.levelPt : d.tour.levelEn);
-        if (icon.classList.contains('fa-child')) span.innerHTML = '<strong>' + (isPt ? 'Idade mínima:' : 'Min. age:') + '</strong> ' + d.tour.minAge + (isPt ? ' anos' : ' years');
-        if (icon.classList.contains('fa-language')) span.innerHTML = '<strong>' + (isPt ? 'Idiomas:' : 'Languages:') + '</strong> ' + d.tour.languages;
-        if (icon.classList.contains('fa-calendar-alt')) span.innerHTML = '<strong>' + (isPt ? 'Época:' : 'Season:') + '</strong> ' + (isPt ? d.tour.season : (d.tour.seasonEn || d.tour.season));
+        if (icon.classList.contains('fa-clock')) span.innerHTML = '<strong>' + (isPt ? 'Duração:' : 'Duration:') + '</strong> ' + esc(isPt ? d.tour.duration : d.tour.durationEn);
+        if (icon.classList.contains('fa-map-marker-alt')) span.innerHTML = '<strong>' + (isPt ? 'Ponto de encontro:' : 'Meeting point:') + '</strong> ' + esc(isPt ? d.tour.meetingPt : d.tour.meetingEn);
+        if (icon.classList.contains('fa-users')) span.innerHTML = '<strong>' + (isPt ? 'Grupo:' : 'Group:') + '</strong> ' + (isPt ? 'Máx. ' : 'Max. ') + esc(String(d.tour.maxGroup)) + (isPt ? ' pessoas' : ' people');
+        if (icon.classList.contains('fa-signal')) span.innerHTML = '<strong>' + (isPt ? 'Nível:' : 'Level:') + '</strong> ' + esc(isPt ? d.tour.levelPt : d.tour.levelEn);
+        if (icon.classList.contains('fa-child')) span.innerHTML = '<strong>' + (isPt ? 'Idade mínima:' : 'Min. age:') + '</strong> ' + esc(String(d.tour.minAge)) + (isPt ? ' anos' : ' years');
+        if (icon.classList.contains('fa-language')) span.innerHTML = '<strong>' + (isPt ? 'Idiomas:' : 'Languages:') + '</strong> ' + esc(d.tour.languages);
+        if (icon.classList.contains('fa-calendar-alt')) span.innerHTML = '<strong>' + (isPt ? 'Época:' : 'Season:') + '</strong> ' + esc(isPt ? d.tour.season : (d.tour.seasonEn || d.tour.season));
       });
       var sPrice = tourSidebar.querySelector('.tour-price');
-      if (sPrice) sPrice.innerHTML = '€' + d.tour.price + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa' : '/ person') + '</small>';
+      if (sPrice) sPrice.innerHTML = '€' + esc(String(d.tour.price)) + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa' : '/ person') + '</small>';
       var sSchedule = tourSidebar.querySelector('[data-i18n="tour_sidebar_schedule"]');
       if (sSchedule) sSchedule.textContent = (isPt ? 'Horários: ' : 'Schedules: ') + d.tour.schedules;
     }
@@ -668,19 +714,39 @@ document.addEventListener('DOMContentLoaded', function() {
             return {'@type':'Question','name':isPt?f.qPt:f.qEn,'acceptedAnswer':{'@type':'Answer','text':isPt?f.aPt:f.aEn}};
           });
         }
-        if (ld.telephone) ld.telephone = d.contact.phoneRaw || d.contact.phone;
-        if (ld.address) {
-          ld.address.streetAddress = d.contact.address.split(',')[0] || d.contact.address;
+        // Update LocalBusiness / TouristAttraction
+        var isLocalBusiness = (Array.isArray(ld['@type']) && ld['@type'].indexOf('LocalBusiness') > -1) || ld['@type'] === 'TouristAttraction';
+        if (isLocalBusiness) {
+          if (ld.telephone) ld.telephone = d.contact.phoneRaw || d.contact.phone;
+          if (ld.email) ld.email = d.contact.email;
+          if (ld.address) {
+            ld.address.streetAddress = d.contact.address.split(',')[0] || d.contact.address;
+          }
+          // Update sameAs with social links
+          var sameAs = [];
+          if (d.social.facebook) sameAs.push(d.social.facebook);
+          if (d.social.instagram) sameAs.push(d.social.instagram);
+          if (d.social.tripadvisor) sameAs.push(d.social.tripadvisor);
+          if (d.social.youtube) sameAs.push(d.social.youtube);
+          if (d.social.google) sameAs.push(d.social.google);
+          if (sameAs.length > 0) ld.sameAs = sameAs;
         }
+        // Update Product schema
+        if (ld['@type'] === 'Product') {
+          ld.name = (isPt ? d.tour.namePt : d.tour.nameEn) + ' - Lagos';
+          if (ld.offers) ld.offers.price = String(d.tour.price);
+        }
+        // Update all aggregateRatings
         if (ld.aggregateRating) {
           ld.aggregateRating.ratingValue = String(d.about.statRating);
+          ld.aggregateRating.reviewCount = String(d.about.statClients);
         }
         ldScript.textContent = JSON.stringify(ld);
       } catch(e) {}
     });
     var pageHero = document.querySelector('.page-hero');
     if (pageHero && d.homepage.heroImages && d.homepage.heroImages.length > 0) {
-      pageHero.style.backgroundImage = "url('" + d.homepage.heroImages[0] + "')";
+      pageHero.style.backgroundImage = "url('" + d.homepage.heroImages[0].replace(/['\\.\(\)]/g, '') + "')";
     }
     var tourMainImg = document.querySelector('.tour-main-image img');
     if (tourMainImg && d.about.image) {
@@ -692,7 +758,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     var ctaSection = document.querySelector('.cta-section[style*="background-image"]');
     if (ctaSection && d.homepage.heroImages && d.homepage.heroImages.length > 0) {
-      ctaSection.style.backgroundImage = "url('" + d.homepage.heroImages[0] + "')";
+      ctaSection.style.backgroundImage = "url('" + d.homepage.heroImages[0].replace(/['\\.\(\)]/g, '') + "')";
     }
     var faqList = document.getElementById('faqList');
     if (faqList && d.faq && d.faq.length > 0) {
@@ -730,7 +796,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     var mapIframe = document.querySelector('.map-wrapper iframe, .map-section iframe');
-    if (mapIframe && d.contact.mapEmbed) {
+    if (mapIframe && d.contact.mapEmbed && /^https:\/\/www\.google\.com\/maps\/embed/i.test(d.contact.mapEmbed)) {
       mapIframe.src = d.contact.mapEmbed;
     }
     // Hide video section if no video URL is set, or set YouTube thumbnail
@@ -861,7 +927,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var sName = stickyCta.querySelector('.tour-name');
       if (sName) sName.textContent = lang === 'pt' ? sd.tour.namePt : sd.tour.nameEn;
       var sPrice = stickyCta.querySelector('.sticky-cta-price');
-      if (sPrice) sPrice.innerHTML = '€' + sd.tour.price + ' <small>' + (lang === 'pt' ? '/ pessoa' : '/ person') + '</small>';
+      if (sPrice) sPrice.innerHTML = '€' + esc(String(sd.tour.price)) + ' <small>' + (lang === 'pt' ? '/ pessoa' : '/ person') + '</small>';
     }
   }
   var countdownBar = document.getElementById('countdownBar');
@@ -1035,7 +1101,7 @@ document.addEventListener('DOMContentLoaded', function() {
     allImgs.forEach(function(url) {
       var item = document.createElement('div');
       item.className = 'insta-strip-item';
-      item.innerHTML = '<img src="' + url + '" alt="Instagram" loading="lazy"><div class="insta-strip-overlay"><i class="fab fa-instagram"></i></div>';
+      item.innerHTML = '<img src="' + esc(url) + '" alt="Instagram" loading="lazy"><div class="insta-strip-overlay"><i class="fab fa-instagram"></i></div>';
       instaStrip.appendChild(item);
     });
   }

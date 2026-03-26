@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kayakadventureslagos.com/sitemap.xml
+
+# Block admin and API
+Disallow: /admin/
+Disallow: /api/
+Disallow: /old_web/
+
+# Allow CSS/JS/Images for rendering
+Allow: /css/
+Allow: /js/
+Allow: /images/

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="X-Frame-Options" content="DENY">
   <title>Backoffice | Kayak Adventures Lagos</title>
   <link rel="icon" type="image/png" href="../images/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -324,13 +325,16 @@
     </div>
     <div class="card">
       <h3><i class="fab fa-tripadvisor" style="color:#00AF87"></i> Integração TripAdvisor</h3>
-      <div class="info"><i class="fas fa-link"></i><p>Cole o link do perfil TripAdvisor. Este link aparece como botão "Ver no TripAdvisor" na secção de testemunhos. Ex: https://www.tripadvisor.com/Attraction_Review-...</p></div>
+      <div class="info"><i class="fas fa-link"></i><p>Cole o link do perfil TripAdvisor. O sistema tentará buscar automaticamente as reviews com 4-5 estrelas. Se o TripAdvisor bloquear, adicione manualmente acima.</p></div>
       <div class="form-group"><label>URL do Perfil TripAdvisor</label><input type="url" id="ta_url" placeholder="https://www.tripadvisor.com/..."></div>
-      <div class="form-group"><label>Código Widget (HTML opcional)</label><textarea id="ta_widget" placeholder="Cole aqui o código embed do TripAdvisor" style="min-height:70px;font-family:monospace;font-size:.78rem;"></textarea></div>
       <div class="form-group" style="display:flex;align-items:center;gap:10px;">
         <input type="checkbox" id="ta_enabled" style="width:auto;"><label for="ta_enabled" style="margin:0;font-size:.85rem;">Mostrar botão "Ver no TripAdvisor" nos testemunhos</label>
       </div>
-      <button class="btn btn-primary" id="saveTaBtn"><i class="fas fa-save"></i> Guardar TripAdvisor</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+        <button class="btn btn-primary" id="saveTaBtn"><i class="fas fa-save"></i> Guardar TripAdvisor</button>
+        <button class="btn btn-outline btn-sm" id="syncTaBtn" style="border-color:#00AF87;color:#00AF87;"><i class="fab fa-tripadvisor"></i> Sincronizar Reviews</button>
+      </div>
+      <div id="taSyncResult" style="margin-top:12px;font-size:.85rem;display:none;"></div>
     </div>
   </div>
 
@@ -679,7 +683,7 @@
     c.querySelectorAll('[data-td]').forEach(function(b){b.addEventListener('click',function(){delTest(parseInt(this.dataset.td));});});
     // TA
     var ta=d.tripadvisorWidget||{};
-    document.getElementById('ta_url').value=ta.url||'';document.getElementById('ta_widget').value=ta.widgetCode||'';document.getElementById('ta_enabled').checked=!!ta.enabled;
+    document.getElementById('ta_url').value=ta.url||'';document.getElementById('ta_enabled').checked=!!ta.enabled;
   }
   document.getElementById('addTestBtn').addEventListener('click',function(){openTestM();});
   function openTestM(){document.getElementById('tm_name').value='';document.getElementById('tm_loc').value='';document.getElementById('tm_rat').value='5';document.getElementById('tm_src').value='tripadvisor';document.getElementById('tm_srcUrl').value='';document.getElementById('tm_txtPt').value='';document.getElementById('tm_txtEn').value='';document.getElementById('tm_id').value='';document.getElementById('testModalTitle').innerHTML='<i class="fas fa-star"></i> Adicionar Testemunho';document.getElementById('testModal').classList.add('active');}
@@ -698,8 +702,41 @@
     SiteData.save(d);loadTest(d);loadStats(d);closeM('testModal');serverSave();
   });
   document.getElementById('saveTaBtn').addEventListener('click',function(){
-    SiteData.update('tripadvisorWidget',{url:document.getElementById('ta_url').value,widgetCode:document.getElementById('ta_widget').value,enabled:document.getElementById('ta_enabled').checked});
+    SiteData.update('tripadvisorWidget',{url:document.getElementById('ta_url').value,enabled:document.getElementById('ta_enabled').checked});
     serverSave();
+  });
+  document.getElementById('syncTaBtn').addEventListener('click',function(){
+    var btn=this,res=document.getElementById('taSyncResult');
+    var taUrl=document.getElementById('ta_url').value.trim();
+    if(!taUrl){toast('Preencha o URL do TripAdvisor primeiro!',true);return;}
+    // Save URL first
+    SiteData.update('tripadvisorWidget',{url:taUrl,enabled:document.getElementById('ta_enabled').checked});
+    serverSave();
+    btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> A sincronizar...';
+    res.style.display='block';res.innerHTML='<i class="fas fa-spinner fa-spin" style="color:#D4731C"></i> A tentar buscar reviews do TripAdvisor...';
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET','/api/reviews.php?refresh=1&min_stars=4',true);
+    xhr.setRequestHeader('X-Admin-Token',adminToken);
+    xhr.timeout=20000;
+    xhr.onreadystatechange=function(){
+      if(xhr.readyState===4){
+        btn.disabled=false;btn.innerHTML='<i class="fab fa-tripadvisor"></i> Sincronizar Reviews';
+        if(xhr.status===200){
+          try{
+            var r=JSON.parse(xhr.responseText);
+            if(r.reviews&&r.reviews.length>0){
+              res.innerHTML='<i class="fas fa-check-circle" style="color:#10B981"></i> <strong>'+r.count+' reviews</strong> encontradas com 4-5 estrelas! (de '+r.total_fetched+' total). Estas reviews serão mostradas automaticamente no site.';
+            } else {
+              res.innerHTML='<i class="fas fa-info-circle" style="color:#F59E0B"></i> O TripAdvisor bloqueou a busca automática. <strong>Solução:</strong> Copie as melhores reviews do TripAdvisor manualmente usando o botão "Adicionar Testemunho" acima e selecione fonte "TripAdvisor".';
+            }
+          }catch(e){res.innerHTML='<i class="fas fa-times-circle" style="color:#EF4444"></i> Erro ao processar resposta.';}
+        } else {
+          res.innerHTML='<i class="fas fa-info-circle" style="color:#F59E0B"></i> Não foi possível buscar automaticamente. Adicione reviews do TripAdvisor manualmente acima.';
+        }
+      }
+    };
+    xhr.ontimeout=function(){btn.disabled=false;btn.innerHTML='<i class="fab fa-tripadvisor"></i> Sincronizar Reviews';res.innerHTML='<i class="fas fa-clock" style="color:#F59E0B"></i> Timeout. O TripAdvisor demorou a responder. Tente mais tarde ou adicione reviews manualmente.';};
+    xhr.send();
   });
 
   // ========================= SOCIAL =========================
@@ -726,7 +763,7 @@
   });
   document.getElementById('chgPassBtn').addEventListener('click',function(){
     var cur=document.getElementById('x_curPass').value,np=document.getElementById('x_newPass').value,cp=document.getElementById('x_confPass').value;
-    if(!cur){toast('Preencha a password atual!',true);return;}if(np.length<4){toast('Mínimo 4 caracteres!',true);return;}if(np!==cp){toast('Passwords não coincidem!',true);return;}
+    if(!cur){toast('Preencha a password atual!',true);return;}if(np.length<8){toast('Mínimo 8 caracteres!',true);return;}if(np!==cp){toast('Passwords não coincidem!',true);return;}
     var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.setRequestHeader('X-Admin-Token',adminToken);
     xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;sessionStorage.setItem('admin_token',adminToken);document.getElementById('x_curPass').value='';document.getElementById('x_newPass').value='';document.getElementById('x_confPass').value='';toast('Password alterada!');}}catch(e){toast('Erro!',true);}}else{toast('Password atual incorreta!',true);}}};
     xhr.send(JSON.stringify({action:'change_password',current:cur,newPass:np}));
@@ -772,7 +809,7 @@
   document.getElementById('importBtn').addEventListener('click',function(){document.getElementById('importFile').click();});
   document.getElementById('importFile').addEventListener('change',function(e){
     var f=e.target.files[0];if(!f)return;var r=new FileReader();
-    r.onload=function(ev){try{var d=JSON.parse(ev.target.result);SiteData.save(d);loadAll();serverSave();}catch(err){toast('Ficheiro inválido!',true);}};
+    r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(typeof d!=='object'||d===null||Array.isArray(d)){toast('Ficheiro JSON inválido!',true);return;}function sanitizeStrings(obj){if(typeof obj==='string')return obj.replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/on\w+\s*=/gi,'');if(Array.isArray(obj))return obj.map(sanitizeStrings);if(typeof obj==='object'&&obj!==null){var r={};for(var k in obj)if(obj.hasOwnProperty(k))r[k]=sanitizeStrings(obj[k]);return r;}return obj;}d=sanitizeStrings(d);if(!confirm('Importar irá substituir todos os dados. Continuar?'))return;SiteData.save(d);loadAll();serverSave();toast('Dados importados!');}catch(err){toast('Ficheiro inválido!',true);}};
     r.readAsText(f);e.target.value='';
   });
   document.getElementById('resetBtn').addEventListener('click',function(){if(!confirm('ATENÇÃO: Isto apaga TODOS os dados e repõe os valores originais. Continuar?'))return;SiteData.resetToServer(adminToken,function(ok){SiteData.reset();var d=SiteData.load();SiteData.save(d);loadAll();serverSave();toast(ok?'Dados repostos!':'Erro ao repor no servidor.',!ok);});});

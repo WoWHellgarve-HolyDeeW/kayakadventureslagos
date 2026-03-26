@@ -1,8 +1,13 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('Referrer-Policy: strict-origin-when-cross-origin');
 
 $AUTH_FILE = __DIR__ . '/auth.json';
+$RATE_FILE = __DIR__ . '/rate_limits.json';
+$MAX_ATTEMPTS = 5;
+$LOCKOUT_MINUTES = 15;
 
 function getAuth() {
     global $AUTH_FILE;
@@ -15,6 +20,59 @@ function getAuth() {
     return json_decode(file_get_contents($AUTH_FILE), true);
 }
 
+function getClientIp() {
+    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
+    return preg_replace('/[^0-9a-f.:]/i', '', $ip);
+}
+
+function checkRateLimit() {
+    global $RATE_FILE, $MAX_ATTEMPTS, $LOCKOUT_MINUTES;
+    $ip = getClientIp();
+    $data = [];
+    if (file_exists($RATE_FILE)) {
+        $data = json_decode(file_get_contents($RATE_FILE), true) ?: [];
+    }
+    $cutoff = time() - ($LOCKOUT_MINUTES * 60);
+    // Clean old entries
+    foreach ($data as $k => $entry) {
+        if ($entry['last'] < $cutoff) unset($data[$k]);
+    }
+    if (isset($data[$ip]) && $data[$ip]['count'] >= $MAX_ATTEMPTS && $data[$ip]['last'] > $cutoff) {
+        return false;
+    }
+    return true;
+}
+
+function recordFailedAttempt() {
+    global $RATE_FILE, $LOCKOUT_MINUTES;
+    $ip = getClientIp();
+    $data = [];
+    if (file_exists($RATE_FILE)) {
+        $data = json_decode(file_get_contents($RATE_FILE), true) ?: [];
+    }
+    $cutoff = time() - ($LOCKOUT_MINUTES * 60);
+    foreach ($data as $k => $entry) {
+        if ($entry['last'] < $cutoff) unset($data[$k]);
+    }
+    if (!isset($data[$ip])) {
+        $data[$ip] = ['count' => 0, 'last' => time()];
+    }
+    $data[$ip]['count']++;
+    $data[$ip]['last'] = time();
+    file_put_contents($RATE_FILE, json_encode($data), LOCK_EX);
+    @chmod($RATE_FILE, 0600);
+}
+
+function clearRateLimit() {
+    global $RATE_FILE;
+    $ip = getClientIp();
+    if (file_exists($RATE_FILE)) {
+        $data = json_decode(file_get_contents($RATE_FILE), true) ?: [];
+        unset($data[$ip]);
+        file_put_contents($RATE_FILE, json_encode($data), LOCK_EX);
+    }
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method !== 'POST') {
@@ -23,7 +81,14 @@ if ($method !== 'POST') {
     exit;
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+$rawInput = file_get_contents('php://input');
+if (strlen($rawInput) > 10000) {
+    http_response_code(413);
+    echo json_encode(['error' => 'Request too large']);
+    exit;
+}
+
+$input = json_decode($rawInput, true);
 if (!$input) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid request']);
@@ -33,6 +98,12 @@ if (!$input) {
 $action = isset($input['action']) ? $input['action'] : '';
 
 if ($action === 'login') {
+    if (!checkRateLimit()) {
+        http_response_code(429);
+        echo json_encode(['error' => 'Too many attempts. Try again in ' . $LOCKOUT_MINUTES . ' minutes.']);
+        exit;
+    }
+
     $user = isset($input['user']) ? trim($input['user']) : '';
     $pass = isset($input['pass']) ? $input['pass'] : '';
 
@@ -42,11 +113,19 @@ if ($action === 'login') {
         exit;
     }
 
+    if (strlen($user) > 100 || strlen($pass) > 200) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid input']);
+        exit;
+    }
+
     $auth = getAuth();
 
     if ($user === $auth['user'] && password_verify($pass, $auth['pass_hash'])) {
+        clearRateLimit();
         echo json_encode(['success' => true, 'token' => $auth['token']]);
     } else {
+        recordFailedAttempt();
         sleep(1);
         http_response_code(401);
         echo json_encode(['error' => 'Invalid credentials']);
@@ -75,9 +154,9 @@ if ($action === 'change_password') {
         exit;
     }
 
-    if (strlen($newPass) < 4) {
+    if (strlen($newPass) < 8) {
         http_response_code(400);
-        echo json_encode(['error' => 'Password too short']);
+        echo json_encode(['error' => 'Password must be at least 8 characters']);
         exit;
     }
 

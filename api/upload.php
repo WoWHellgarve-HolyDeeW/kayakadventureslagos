@@ -1,6 +1,8 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('Referrer-Policy: strict-origin-when-cross-origin');
 
 $AUTH_FILE = __DIR__ . '/auth.json';
 $UPLOAD_DIR = __DIR__ . '/../images/uploads/';

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://kayakadventureslagos.com/</loc>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://kayakadventureslagos.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kayakadventureslagos.com/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kayakadventureslagos.com/"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://kayakadventureslagos.com/tour.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://kayakadventureslagos.com/tour.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kayakadventureslagos.com/tour.html"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://kayakadventureslagos.com/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://kayakadventureslagos.com/about.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kayakadventureslagos.com/about.html"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kayakadventureslagos.com/gallery.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://kayakadventureslagos.com/gallery.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kayakadventureslagos.com/gallery.html"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kayakadventureslagos.com/faq.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://kayakadventureslagos.com/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kayakadventureslagos.com/faq.html"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kayakadventureslagos.com/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://kayakadventureslagos.com/cookies.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://kayakadventureslagos.com/gdpr.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+</urlset>
