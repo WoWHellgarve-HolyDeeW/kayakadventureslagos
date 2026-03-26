@@ -2,16 +2,16 @@
   --primary: #D4731C;
   --primary-dark: #B8600F;
   --primary-light: #E8892E;
-  --secondary: #1A1A2E;
-  --secondary-dark: #121225;
+  --secondary: #111111;
+  --secondary-dark: #0A0A0A;
   --accent: #D4731C;
-  --dark: #1A1A2E;
-  --dark-light: #2D2D44;
+  --dark: #111111;
+  --dark-light: #222222;
   --text: #2D3436;
   --text-light: #636E72;
   --bg: #FFFFFF;
   --bg-alt: #F8F9FA;
-  --bg-dark: #1A1A2E;
+  --bg-dark: #111111;
   --border: #E9ECEF;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.1);
@@ -2323,7 +2323,7 @@ button {
 .video-section {
   position: relative;
   padding: 100px 0;
-  background: linear-gradient(135deg, #0F2027 0%, #203A43 50%, #1A1A2E 100%);
+  background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #111111 100%);
   overflow: hidden;
 }
 
@@ -2331,7 +2331,7 @@ button {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(212, 115, 28, 0.08) 0%, transparent 60%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(212, 115, 28, 0.06) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -2401,7 +2401,7 @@ button {
 }
 
 .countdown-bar {
-  background: linear-gradient(135deg, var(--bg-dark), #1a1a2e);
+  background: var(--bg-dark);
   padding: 16px 0;
   text-align: center;
 }

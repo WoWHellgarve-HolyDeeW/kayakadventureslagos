@@ -11,13 +11,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    :root{--primary:#D4731C;--primary-dark:#B8600F;--secondary:#1A1A2E;--accent:#D4731C;--dark:#1A1A2E;--text:#2D3436;--text-light:#636E72;--bg:#f0f2f5;--bg-card:#fff;--border:#E9ECEF;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.08);}
+    :root{--primary:#D4731C;--primary-dark:#B8600F;--secondary:#111111;--accent:#D4731C;--dark:#111111;--text:#2D3436;--text-light:#636E72;--bg:#f0f2f5;--bg-card:#fff;--border:#E9ECEF;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.08);}
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
     a{text-decoration:none;color:inherit;}
     button{cursor:pointer;border:none;background:none;font-family:inherit;}
     /* Login */
-    .admin-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0F172A,#1a1a3e);padding:24px;}
+    .admin-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0A0A0A,#1A1A1A);padding:24px;}
     .login-card{background:#fff;padding:48px 40px;border-radius:20px;box-shadow:0 25px 50px rgba(0,0,0,.25);width:100%;max-width:420px;text-align:center;}
     .login-logo{text-align:center;margin-bottom:8px;}
     .login-logo img{height:100px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.15));}
@@ -32,7 +32,7 @@
     /* Buttons */
     .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;font-weight:600;font-size:.88rem;cursor:pointer;border:none;transition:all .2s;}
     .btn-primary{background:var(--primary);color:#fff;}.btn-primary:hover{background:var(--primary-dark);}
-    .btn-secondary{background:var(--secondary);color:#fff;}.btn-secondary:hover{background:#2d2d4a;}
+    .btn-secondary{background:var(--secondary);color:#fff;}.btn-secondary:hover{background:#222;}
     .btn-danger{background:#EF4444;color:#fff;}.btn-danger:hover{background:#DC2626;}
     .btn-outline{background:transparent;border:2px solid var(--border);color:var(--text-light);}.btn-outline:hover{border-color:var(--primary);color:var(--primary);}
     .btn-sm{padding:8px 14px;font-size:.8rem;border-radius:8px;}
@@ -41,7 +41,7 @@
     #adminDashboard{display:none;}
     /* Layout */
     .admin-wrap{display:flex;min-height:100vh;}
-    .sidebar{width:256px;background:#0F172A;color:#fff;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;transition:transform .3s;}
+    .sidebar{width:256px;background:#111;color:#fff;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;transition:transform .3s;}
     .sidebar-brand{padding:24px 20px 20px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.1rem;color:var(--accent);}
     .sidebar-brand span{display:block;font-family:'Inter',sans-serif;font-size:.65rem;font-weight:400;color:rgba(255,255,255,.4);letter-spacing:1px;margin-top:3px;}
     .sidebar-nav a{display:flex;align-items:center;gap:11px;padding:11px 20px;font-size:.85rem;color:rgba(255,255,255,.55);transition:all .15s;}
@@ -574,9 +574,9 @@
 
   function showForceChange(){
     loginDiv.style.display='none';dashDiv.style.display='none';
-    var overlay=document.createElement('div');overlay.id='forceChangeOverlay';overlay.style.cssText='position:fixed;inset:0;background:linear-gradient(135deg,#0F172A,#1a1a3e);display:flex;align-items:center;justify-content:center;z-index:99999;padding:24px;';
+    var overlay=document.createElement('div');overlay.id='forceChangeOverlay';overlay.style.cssText='position:fixed;inset:0;background:linear-gradient(135deg,#0A0A0A,#1A1A1A);display:flex;align-items:center;justify-content:center;z-index:99999;padding:24px;';
     overlay.innerHTML='<div style="background:#fff;padding:48px 40px;border-radius:20px;box-shadow:0 25px 50px rgba(0,0,0,.25);width:100%;max-width:420px;text-align:center;">'
-      +'<h2 style="font-family:Montserrat,sans-serif;font-size:1.2rem;margin-bottom:8px;color:#1A1A2E;">⚠️ Alterar Password Obrigatório</h2>'
+      +'<h2 style="font-family:Montserrat,sans-serif;font-size:1.2rem;margin-bottom:8px;color:#111;">⚠️ Alterar Password Obrigatório</h2>'
       +'<p style="color:#666;font-size:.9rem;margin-bottom:24px;">A password padrão deve ser alterada por segurança.</p>'
       +'<div style="text-align:left;margin-bottom:12px;"><label style="font-weight:600;font-size:.85rem;">Nova Password (mínimo 8 caracteres)</label><input type="password" id="fcNewPass" style="width:100%;padding:12px;border:2px solid #e2e8f0;border-radius:10px;margin-top:4px;" placeholder="Nova password"></div>'
       +'<div style="text-align:left;margin-bottom:20px;"><label style="font-weight:600;font-size:.85rem;">Confirmar Password</label><input type="password" id="fcConfirmPass" style="width:100%;padding:12px;border:2px solid #e2e8f0;border-radius:10px;margin-top:4px;" placeholder="Repetir password"></div>'
