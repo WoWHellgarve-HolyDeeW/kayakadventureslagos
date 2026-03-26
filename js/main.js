@@ -763,6 +763,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.head.appendChild(fpScript);
     }
     var fhShortname = (d.tour.fareharbor || d.settings.fareharbor || '').replace(/[^a-zA-Z0-9_-]/g, '');
+    var bookingUrl = d.tour.bookingUrl || '';
     if (fhShortname && !document.getElementById('fh-lightframe')) {
       var fhScript = document.createElement('script');
       fhScript.id = 'fh-lightframe';
@@ -779,6 +780,31 @@ document.addEventListener('DOMContentLoaded', function() {
         fhDiv.innerHTML = '<a href="' + fhBookUrl + '" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center;" data-i18n="tour_book_now">' +
           '<i class="fas fa-calendar-check"></i> ' + (isPt ? 'Reservar Agora' : 'Book Now') + '</a>';
       }
+    } else if (bookingUrl && /^https?:\/\//i.test(bookingUrl)) {
+      // External booking URL (GetYourGuide, Viator, Bookeo, etc.)
+      document.querySelectorAll('a[href*="#booking"]').forEach(function(a) {
+        a.href = bookingUrl;
+        a.target = '_blank';
+        a.rel = 'noopener';
+      });
+      var fhDiv = document.getElementById('fareharbor-booking');
+      if (fhDiv) {
+        fhDiv.innerHTML = '<a href="' + esc(bookingUrl) + '" target="_blank" rel="noopener" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center;" data-i18n="tour_book_now">' +
+          '<i class="fas fa-calendar-check"></i> ' + (isPt ? 'Reservar Agora' : 'Book Now') + '</a>';
+      }
+    } else if (d.contact.whatsapp) {
+      // Fallback: WhatsApp booking
+      var waBookUrl = 'https://wa.me/' + d.contact.whatsapp + '?text=' + encodeURIComponent(isPt ? 'Olá! Gostaria de reservar o tour de kayak.' : 'Hello! I would like to book the kayak tour.');
+      var fhDiv = document.getElementById('fareharbor-booking');
+      if (fhDiv) {
+        fhDiv.innerHTML = '<a href="' + waBookUrl + '" target="_blank" rel="noopener" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center;">' +
+          '<i class="fab fa-whatsapp"></i> ' + (isPt ? 'Reservar via WhatsApp' : 'Book via WhatsApp') + '</a>';
+      }
+    }
+    // Show/hide countdown bar based on settings
+    var countdownBar = document.getElementById('countdownBar');
+    if (countdownBar && d.settings.showCountdown === false) {
+      countdownBar.style.display = 'none';
     }
   }
   function reinitTestimonials() {
@@ -835,42 +861,52 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   var countdownBar = document.getElementById('countdownBar');
   if (countdownBar) {
-    function updateCountdown() {
-      var now = new Date();
-      var schedules = ['10:00', '13:00', '15:30', '18:00'];
-      if (typeof SiteData !== 'undefined') {
-        var sd = SiteData.load();
-        if (sd.tour.schedules) {
-          schedules = sd.tour.schedules.split(/\s*\|\s*/).filter(function(s) { return s.trim(); });
-        }
-      }
-      var nextTour = null;
-      for (var i = 0; i < schedules.length; i++) {
-        var parts = schedules[i].trim().split(':');
-        var t = new Date(now);
-        t.setHours(parseInt(parts[0]), parseInt(parts[1]) || 0, 0, 0);
-        if (t > now) { nextTour = t; break; }
-      }
-      if (!nextTour) {
-        var parts = schedules[0].trim().split(':');
-        nextTour = new Date(now);
-        nextTour.setDate(nextTour.getDate() + 1);
-        nextTour.setHours(parseInt(parts[0]), parseInt(parts[1]) || 0, 0, 0);
-      }
-      var diff = nextTour - now;
-      var h = Math.floor(diff / 3600000);
-      var m = Math.floor((diff % 3600000) / 60000);
-      var s = Math.floor((diff % 60000) / 1000);
-      document.getElementById('cdHours').textContent = h < 10 ? '0' + h : h;
-      document.getElementById('cdMins').textContent = m < 10 ? '0' + m : m;
-      document.getElementById('cdSecs').textContent = s < 10 ? '0' + s : s;
+    // Check showCountdown setting
+    var showCd = true;
+    if (typeof SiteData !== 'undefined') {
+      var cdData = SiteData.load();
+      if (cdData.settings && cdData.settings.showCountdown === false) showCd = false;
     }
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-    var spots = Math.floor(Math.random() * 6) + 3;
-    var spotsEl = document.getElementById('spotsLeft');
-    var lang = localStorage.getItem('lang_preference') || 'pt';
-    if (spotsEl) spotsEl.textContent = lang === 'pt' ? ('Últimos ' + spots + ' lugares!') : ('Last ' + spots + ' spots!');
+    if (!showCd) {
+      countdownBar.style.display = 'none';
+    } else {
+      function updateCountdown() {
+        var now = new Date();
+        var schedules = ['10:00', '13:00', '15:30', '18:00'];
+        if (typeof SiteData !== 'undefined') {
+          var sd = SiteData.load();
+          if (sd.tour.schedules) {
+            schedules = sd.tour.schedules.split(/\s*\|\s*/).filter(function(s) { return s.trim(); });
+          }
+        }
+        var nextTour = null;
+        for (var i = 0; i < schedules.length; i++) {
+          var parts = schedules[i].trim().split(':');
+          var t = new Date(now);
+          t.setHours(parseInt(parts[0]), parseInt(parts[1]) || 0, 0, 0);
+          if (t > now) { nextTour = t; break; }
+        }
+        if (!nextTour) {
+          var parts = schedules[0].trim().split(':');
+          nextTour = new Date(now);
+          nextTour.setDate(nextTour.getDate() + 1);
+          nextTour.setHours(parseInt(parts[0]), parseInt(parts[1]) || 0, 0, 0);
+        }
+        var diff = nextTour - now;
+        var h = Math.floor(diff / 3600000);
+        var m = Math.floor((diff % 3600000) / 60000);
+        var s = Math.floor((diff % 60000) / 1000);
+        document.getElementById('cdHours').textContent = h < 10 ? '0' + h : h;
+        document.getElementById('cdMins').textContent = m < 10 ? '0' + m : m;
+        document.getElementById('cdSecs').textContent = s < 10 ? '0' + s : s;
+      }
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+      var spots = Math.floor(Math.random() * 6) + 3;
+      var spotsEl = document.getElementById('spotsLeft');
+      var lang = localStorage.getItem('lang_preference') || 'pt';
+      if (spotsEl) spotsEl.textContent = lang === 'pt' ? ('Últimos ' + spots + ' lugares!') : ('Last ' + spots + ' spots!');
+    }
   }
   var proofNotif = document.getElementById('proofNotification');
   if (proofNotif) {

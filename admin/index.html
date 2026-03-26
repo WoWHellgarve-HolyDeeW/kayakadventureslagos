@@ -267,9 +267,10 @@
       <div class="form-group"><label>Descrição (EN)</label><textarea id="t_descEn" style="min-height:110px;"></textarea></div>
     </div>
     <div class="card">
-      <h3><i class="fas fa-ticket-alt"></i> FareHarbor</h3>
-      <div class="info"><i class="fas fa-plug"></i><p>Se usas FareHarbor, cola o shortname. O widget de reserva aparecerá automaticamente na página do tour.</p></div>
-      <div class="form-group"><label>FareHarbor Shortname</label><input type="text" id="t_fh" placeholder="kayakadventureslagos"></div>
+      <h3><i class="fas fa-calendar-check"></i> Reservas</h3>
+      <div class="info"><i class="fas fa-lightbulb"></i><p>Configure como os clientes fazem reservas. <strong>Opção 1:</strong> Use FareHarbor (shortname). <strong>Opção 2:</strong> Use um URL externo de reserva (ex: link direto do GetYourGuide, Viator, Bookeo, etc.). Se ambos estiverem vazios, o botão "Reservar" redireciona para WhatsApp para reserva manual.</p></div>
+      <div class="form-group"><label>FareHarbor Shortname (Opção 1)</label><input type="text" id="t_fh" placeholder="kayakadventureslagos"></div>
+      <div class="form-group"><label>URL de Reserva Externo (Opção 2)</label><input type="url" id="t_bookUrl" placeholder="https://www.getyourguide.com/... ou https://fareharbor.com/embeds/book/..."></div>
     </div>
     <button class="btn btn-primary" id="saveTourBtn"><i class="fas fa-save"></i> Guardar Tour</button>
   </div>
@@ -408,6 +409,9 @@
       </div>
       <div class="form-group" style="display:flex;align-items:center;gap:10px;margin-top:14px;">
         <input type="checkbox" id="x_sp" style="width:auto;" checked><label for="x_sp" style="margin:0;font-size:.85rem;">Mostrar notificações de reservas (simuladas) no site</label>
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="x_cd" style="width:auto;" checked><label for="x_cd" style="margin:0;font-size:.85rem;">Mostrar barra de countdown "Próximo tour começa em..." na homepage</label>
       </div>
       <div style="margin-top:22px;"><button class="btn btn-primary" id="saveSettingsBtn"><i class="fas fa-save"></i> Guardar</button></div>
     </div>
@@ -594,9 +598,9 @@
   });
 
   // ========================= TOUR =========================
-  function loadTour(d){var t=d.tour;document.getElementById('t_namePt').value=t.namePt||'';document.getElementById('t_nameEn').value=t.nameEn||'';document.getElementById('t_price').value=t.price||0;document.getElementById('t_dur').value=t.duration||'';document.getElementById('t_durEn').value=t.durationEn||'';document.getElementById('t_max').value=t.maxGroup||12;document.getElementById('t_age').value=t.minAge||6;document.getElementById('t_langs').value=t.languages||'';document.getElementById('t_lvlPt').value=t.levelPt||'';document.getElementById('t_lvlEn').value=t.levelEn||'';document.getElementById('t_meetPt').value=t.meetingPt||'';document.getElementById('t_meetEn').value=t.meetingEn||'';document.getElementById('t_sched').value=t.schedules||'';document.getElementById('t_season').value=t.season||'';document.getElementById('t_seasonEn').value=t.seasonEn||'';document.getElementById('t_descPt').value=t.descPt||'';document.getElementById('t_descEn').value=t.descEn||'';document.getElementById('t_fh').value=t.fareharbor||'';}
+  function loadTour(d){var t=d.tour;document.getElementById('t_namePt').value=t.namePt||'';document.getElementById('t_nameEn').value=t.nameEn||'';document.getElementById('t_price').value=t.price||0;document.getElementById('t_dur').value=t.duration||'';document.getElementById('t_durEn').value=t.durationEn||'';document.getElementById('t_max').value=t.maxGroup||12;document.getElementById('t_age').value=t.minAge||6;document.getElementById('t_langs').value=t.languages||'';document.getElementById('t_lvlPt').value=t.levelPt||'';document.getElementById('t_lvlEn').value=t.levelEn||'';document.getElementById('t_meetPt').value=t.meetingPt||'';document.getElementById('t_meetEn').value=t.meetingEn||'';document.getElementById('t_sched').value=t.schedules||'';document.getElementById('t_season').value=t.season||'';document.getElementById('t_seasonEn').value=t.seasonEn||'';document.getElementById('t_descPt').value=t.descPt||'';document.getElementById('t_descEn').value=t.descEn||'';document.getElementById('t_fh').value=t.fareharbor||'';document.getElementById('t_bookUrl').value=t.bookingUrl||'';}
   document.getElementById('saveTourBtn').addEventListener('click',function(){
-    SiteData.update('tour',{namePt:document.getElementById('t_namePt').value,nameEn:document.getElementById('t_nameEn').value,price:parseInt(document.getElementById('t_price').value)||0,duration:document.getElementById('t_dur').value,durationEn:document.getElementById('t_durEn').value,maxGroup:parseInt(document.getElementById('t_max').value)||12,minAge:parseInt(document.getElementById('t_age').value)||6,languages:document.getElementById('t_langs').value,levelPt:document.getElementById('t_lvlPt').value,levelEn:document.getElementById('t_lvlEn').value,meetingPt:document.getElementById('t_meetPt').value,meetingEn:document.getElementById('t_meetEn').value,schedules:document.getElementById('t_sched').value,season:document.getElementById('t_season').value,seasonEn:document.getElementById('t_seasonEn').value,descPt:document.getElementById('t_descPt').value,descEn:document.getElementById('t_descEn').value,fareharbor:document.getElementById('t_fh').value});
+    SiteData.update('tour',{namePt:document.getElementById('t_namePt').value,nameEn:document.getElementById('t_nameEn').value,price:parseInt(document.getElementById('t_price').value)||0,duration:document.getElementById('t_dur').value,durationEn:document.getElementById('t_durEn').value,maxGroup:parseInt(document.getElementById('t_max').value)||12,minAge:parseInt(document.getElementById('t_age').value)||6,languages:document.getElementById('t_langs').value,levelPt:document.getElementById('t_lvlPt').value,levelEn:document.getElementById('t_lvlEn').value,meetingPt:document.getElementById('t_meetPt').value,meetingEn:document.getElementById('t_meetEn').value,schedules:document.getElementById('t_sched').value,season:document.getElementById('t_season').value,seasonEn:document.getElementById('t_seasonEn').value,descPt:document.getElementById('t_descPt').value,descEn:document.getElementById('t_descEn').value,fareharbor:document.getElementById('t_fh').value,bookingUrl:document.getElementById('t_bookUrl').value.trim()});
     serverSave();loadStats(SiteData.load());
   });
 
@@ -713,11 +717,11 @@
   });
 
   // ========================= SETTINGS =========================
-  function loadSett(d){var s=d.settings;document.getElementById('x_logo').value=s.logoUrl||'images/logo.png';var lp=document.getElementById('logoPreview');var logoSrc=s.logoUrl||'images/logo.png';lp.innerHTML='<img src="../'+esc(logoSrc)+'" style="height:80px;width:auto;background:#f0f2f5;padding:12px;border-radius:12px;border:2px solid var(--border);" onerror="this.style.display=\'none\'">';document.getElementById('x_name').value=s.companyName||'';document.getElementById('x_ga').value=s.googleAnalytics||'';document.getElementById('x_fp').value=s.facebookPixel||'';document.getElementById('x_sp').checked=s.socialProof!==false;}
+  function loadSett(d){var s=d.settings;document.getElementById('x_logo').value=s.logoUrl||'images/logo.png';var lp=document.getElementById('logoPreview');var logoSrc=s.logoUrl||'images/logo.png';lp.innerHTML='<img src="../'+esc(logoSrc)+'" style="height:80px;width:auto;background:#f0f2f5;padding:12px;border-radius:12px;border:2px solid var(--border);" onerror="this.style.display=\'none\'">';document.getElementById('x_name').value=s.companyName||'';document.getElementById('x_ga').value=s.googleAnalytics||'';document.getElementById('x_fp').value=s.facebookPixel||'';document.getElementById('x_sp').checked=s.socialProof!==false;document.getElementById('x_cd').checked=s.showCountdown!==false;}
   document.getElementById('x_logo_file').addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){document.getElementById('x_logo').value=u;var lp=document.getElementById('logoPreview');lp.innerHTML='<img src="../'+esc(u)+'" style="height:80px;width:auto;background:#f0f2f5;padding:12px;border-radius:12px;border:2px solid var(--border);">';toast('Logo enviado!');}});});
   document.getElementById('saveLogoBtn').addEventListener('click',function(){var url=document.getElementById('x_logo').value.trim();if(!url){toast('Preencha o URL do logo!',true);return;}SiteData.update('settings',{logoUrl:url});serverSave();var sb=document.querySelector('.sidebar-brand img');if(sb)sb.src='../'+url;var ll=document.querySelector('.login-logo img');if(ll)ll.src='../'+url;});
   document.getElementById('saveSettingsBtn').addEventListener('click',function(){
-    SiteData.update('settings',{companyName:document.getElementById('x_name').value,googleAnalytics:document.getElementById('x_ga').value,facebookPixel:document.getElementById('x_fp').value,socialProof:document.getElementById('x_sp').checked});
+    SiteData.update('settings',{companyName:document.getElementById('x_name').value,googleAnalytics:document.getElementById('x_ga').value,facebookPixel:document.getElementById('x_fp').value,socialProof:document.getElementById('x_sp').checked,showCountdown:document.getElementById('x_cd').checked});
     serverSave();
   });
   document.getElementById('chgPassBtn').addEventListener('click',function(){

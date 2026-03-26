@@ -42,7 +42,8 @@ var SiteData = (function() {
       languages: 'PT, EN, ES, IT',
       descPt: 'Embarque numa aventura inesquecível de kayak pela costa mais espetacular do Algarve. O nosso tour de 2 horas e meia leva-o através das impressionantes formações rochosas da Ponta da Piedade, um dos locais mais emblemáticos de Portugal.',
       descEn: 'Embark on an unforgettable kayak adventure along the most spectacular coast in the Algarve. Our 2.5-hour tour takes you through the impressive rock formations of Ponta da Piedade, one of Portugal\'s most iconic locations.',
-      fareharbor: ''
+      fareharbor: '',
+      bookingUrl: ''
     },
     homepage: {
       heroTitlePt: 'Explore as Grutas<br>de Lagos de Kayak',
@@ -141,7 +142,8 @@ var SiteData = (function() {
       googleAnalytics: '',
       facebookPixel: '',
       fareharbor: '',
-      socialProof: true
+      socialProof: true,
+      showCountdown: true
     }
   };
 
