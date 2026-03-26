@@ -568,6 +568,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var aboutStory1 = document.querySelector('[data-i18n="about_story1"]');
     if (aboutStory1 && d.about.storyPt) {
       aboutStory1.textContent = isPt ? d.about.storyPt : (d.about.storyEn || d.about.storyPt);
+      // Hide paragraphs 2 & 3 when admin provides a complete story
+      var s2 = document.querySelector('[data-i18n="about_story2"]');
+      var s3 = document.querySelector('[data-i18n="about_story3"]');
+      if (s2) s2.style.display = 'none';
+      if (s3) s3.style.display = 'none';
     }
     var aboutStats = document.querySelector('.about-stats');
     if (aboutStats) {
