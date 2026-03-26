@@ -950,7 +950,6 @@ button {
   position: relative;
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
 }
 
 .page-hero::before {
@@ -1709,7 +1708,6 @@ button {
 }
 
 @media (max-width: 1024px) {
-  .page-hero,
   .parallax-cta {
     background-attachment: scroll;
   }
