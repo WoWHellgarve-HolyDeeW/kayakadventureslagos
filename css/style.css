@@ -1756,6 +1756,26 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .tour-hero-section {
+    gap: 30px;
+  }
+
+  .tour-main-image img {
+    height: 300px;
+  }
+
+  .tour-sidebar {
+    padding: 28px;
+  }
+
+  .tour-content-section {
+    margin-top: 30px !important;
+  }
+
+  .tour-content-section h2 {
+    font-size: 1.5rem;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 30px;
@@ -1785,6 +1805,36 @@ button {
 
   .hero-scroll {
     display: none;
+  }
+
+  .section-header {
+    margin-bottom: 40px;
+  }
+
+  .testimonial-card {
+    padding: 30px 20px;
+  }
+
+  .testimonial-text {
+    font-size: 1rem;
+  }
+
+  .testimonial-text::before {
+    font-size: 3rem;
+    top: -15px;
+    left: -5px;
+  }
+
+  .faq-question {
+    padding: 20px;
+  }
+
+  .faq-answer-content {
+    padding: 0 20px 20px;
+  }
+
+  .about-image img {
+    height: 300px;
   }
 
   .admin-layout {
@@ -1841,6 +1891,91 @@ button {
   .page-hero {
     height: 40vh;
     min-height: 280px;
+  }
+
+  .tour-hero-section {
+    gap: 20px;
+  }
+
+  .tour-main-image img {
+    height: 220px;
+  }
+
+  .tour-sidebar {
+    padding: 20px;
+  }
+
+  .tour-sidebar h3 {
+    font-size: 1.15rem;
+    margin-bottom: 14px;
+  }
+
+  .tour-sidebar-detail {
+    padding: 10px 0;
+    font-size: 0.88rem;
+  }
+
+  .tour-content-section {
+    margin-top: 24px !important;
+  }
+
+  .tour-content-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .tour-content-section p {
+    font-size: 0.9rem;
+  }
+
+  .feature-card {
+    padding: 28px 20px;
+  }
+
+  .feature-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
+  }
+
+  .map-wrapper {
+    height: 260px;
+  }
+
+  .cta-section {
+    padding: 50px 0;
+  }
+
+  .cta-section p {
+    font-size: 1rem;
+  }
+
+  .section-header {
+    margin-bottom: 30px;
+  }
+
+  .testimonial-card {
+    padding: 24px 16px;
+  }
+
+  .testimonial-text {
+    font-size: 0.95rem;
+  }
+
+  .faq-question {
+    padding: 16px;
+    font-size: 0.95rem;
+  }
+
+  .faq-answer-content {
+    padding: 0 16px 16px;
+  }
+
+  .about-image img {
+    height: 250px;
+  }
+
+  .team-card-img {
+    height: 220px;
   }
 }
 
