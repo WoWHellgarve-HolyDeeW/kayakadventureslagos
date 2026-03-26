@@ -135,11 +135,13 @@ var SiteData = (function() {
     ],
     settings: {
       companyName: 'Kayak Adventures Lagos',
+      logoUrl: 'images/logo.png',
       currency: 'EUR',
       timezone: 'Europe/Lisbon',
       googleAnalytics: '',
       facebookPixel: '',
-      fareharbor: ''
+      fareharbor: '',
+      socialProof: true
     }
   };
 

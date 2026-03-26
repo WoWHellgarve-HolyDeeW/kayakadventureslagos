@@ -388,6 +388,18 @@
 
   <div class="sec" id="s-settings">
     <div class="card">
+      <h3><i class="fas fa-image"></i> Logo da Empresa</h3>
+      <div class="info"><i class="fas fa-lightbulb"></i><p>Faça upload do logo da empresa. Aparece no header, footer e preloader de todas as páginas. Formatos: PNG, JPG, WebP. Recomendado: fundo transparente (PNG).</p></div>
+      <div class="form-group"><label>Logo Atual</label>
+        <div id="logoPreview" style="margin-bottom:12px;"></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" id="x_logo" placeholder="images/logo.png" style="flex:1;">
+          <label class="btn btn-primary btn-sm" style="cursor:pointer;white-space:nowrap;"><i class="fas fa-upload"></i> Upload Logo<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" id="x_logo_file" style="display:none;"></label>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="saveLogoBtn"><i class="fas fa-save"></i> Guardar Logo</button>
+    </div>
+    <div class="card">
       <h3><i class="fas fa-cog"></i> Configurações</h3>
       <div class="form-group"><label>Nome da Empresa</label><input type="text" id="x_name"></div>
       <div class="form-row">
@@ -701,7 +713,9 @@
   });
 
   // ========================= SETTINGS =========================
-  function loadSett(d){var s=d.settings;document.getElementById('x_name').value=s.companyName||'';document.getElementById('x_ga').value=s.googleAnalytics||'';document.getElementById('x_fp').value=s.facebookPixel||'';document.getElementById('x_sp').checked=s.socialProof!==false;}
+  function loadSett(d){var s=d.settings;document.getElementById('x_logo').value=s.logoUrl||'images/logo.png';var lp=document.getElementById('logoPreview');var logoSrc=s.logoUrl||'images/logo.png';lp.innerHTML='<img src="../'+esc(logoSrc)+'" style="height:80px;width:auto;background:#f0f2f5;padding:12px;border-radius:12px;border:2px solid var(--border);" onerror="this.style.display=\'none\'">';document.getElementById('x_name').value=s.companyName||'';document.getElementById('x_ga').value=s.googleAnalytics||'';document.getElementById('x_fp').value=s.facebookPixel||'';document.getElementById('x_sp').checked=s.socialProof!==false;}
+  document.getElementById('x_logo_file').addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){document.getElementById('x_logo').value=u;var lp=document.getElementById('logoPreview');lp.innerHTML='<img src="../'+esc(u)+'" style="height:80px;width:auto;background:#f0f2f5;padding:12px;border-radius:12px;border:2px solid var(--border);">';toast('Logo enviado!');}});});
+  document.getElementById('saveLogoBtn').addEventListener('click',function(){var url=document.getElementById('x_logo').value.trim();if(!url){toast('Preencha o URL do logo!',true);return;}SiteData.update('settings',{logoUrl:url});serverSave();var sb=document.querySelector('.sidebar-brand img');if(sb)sb.src='../'+url;var ll=document.querySelector('.login-logo img');if(ll)ll.src='../'+url;});
   document.getElementById('saveSettingsBtn').addEventListener('click',function(){
     SiteData.update('settings',{companyName:document.getElementById('x_name').value,googleAnalytics:document.getElementById('x_ga').value,facebookPixel:document.getElementById('x_fp').value,socialProof:document.getElementById('x_sp').checked});
     serverSave();

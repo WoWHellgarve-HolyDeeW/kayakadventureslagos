@@ -368,6 +368,13 @@ document.addEventListener('DOMContentLoaded', function() {
     var lang = localStorage.getItem('lang_preference') || 'pt';
     var isPt = (lang === 'pt');
     function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    // Apply logo from settings
+    var logoUrl = d.settings.logoUrl || 'images/logo.png';
+    document.querySelectorAll('.logo img, .footer-logo img, .preloader-logo, .login-logo img, .sidebar-brand img').forEach(function(img) {
+      if (img.src.indexOf('logo') > -1 || img.classList.contains('preloader-logo')) {
+        img.src = logoUrl;
+      }
+    });
     var footerSocials = document.querySelectorAll('.footer-social');
     footerSocials.forEach(function(container) {
       var socMap = {
@@ -407,11 +414,11 @@ document.addEventListener('DOMContentLoaded', function() {
       var icon = item.querySelector('i');
       if (!icon) return;
       if (icon.classList.contains('fa-map-marker-alt')) {
-        item.querySelector('span').innerHTML = d.contact.address.replace(',', ',<br>');
+        item.querySelector('span').innerHTML = esc(d.contact.address).replace(',', ',<br>');
       } else if (icon.classList.contains('fa-phone')) {
-        item.querySelector('span').innerHTML = '<a href="tel:+' + d.contact.phoneRaw + '">' + d.contact.phone + '</a>';
+        item.querySelector('span').innerHTML = '<a href="tel:+' + esc(d.contact.phoneRaw) + '">' + esc(d.contact.phone) + '</a>';
       } else if (icon.classList.contains('fa-envelope')) {
-        item.querySelector('span').innerHTML = '<a href="mailto:' + d.contact.email + '">' + d.contact.email + '</a>';
+        item.querySelector('span').innerHTML = '<a href="mailto:' + esc(d.contact.email) + '">' + esc(d.contact.email) + '</a>';
       } else if (icon.classList.contains('fa-clock')) {
         item.querySelector('span').textContent = isPt ? d.contact.hours : d.contact.hoursEn;
       }
@@ -556,6 +563,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var aboutImg = document.querySelector('.about-image img');
     if (aboutImg && d.about.image) {
       aboutImg.src = d.about.image;
+    }
+    // Apply about story text from admin
+    var aboutStory1 = document.querySelector('[data-i18n="about_story1"]');
+    if (aboutStory1 && d.about.storyPt) {
+      aboutStory1.textContent = isPt ? d.about.storyPt : (d.about.storyEn || d.about.storyPt);
     }
     var aboutStats = document.querySelector('.about-stats');
     if (aboutStats) {
@@ -770,6 +782,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   function reinitTestimonials() {
+    clearInterval(testimonialInterval);
     var cards = document.querySelectorAll('.testimonial-card');
     var navBtns = document.querySelectorAll('.testimonials-nav button');
     var idx = 0;
@@ -824,7 +837,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (countdownBar) {
     function updateCountdown() {
       var now = new Date();
-      var schedules = ['09:00', '11:00', '14:00', '16:30'];
+      var schedules = ['10:00', '13:00', '15:30', '18:00'];
       if (typeof SiteData !== 'undefined') {
         var sd = SiteData.load();
         if (sd.tour.schedules) {
