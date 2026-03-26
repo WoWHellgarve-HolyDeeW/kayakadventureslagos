@@ -808,6 +808,7 @@ button {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
+  pointer-events: none;
 }
 
 .cta-section h2 {
@@ -815,6 +816,8 @@ button {
   font-size: clamp(2rem, 4vw, 2.8rem);
   color: #fff;
   margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .cta-section p {
@@ -824,6 +827,13 @@ button {
   max-width: 550px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.cta-section .btn {
+  position: relative;
+  z-index: 1;
 }
 
 .footer {
@@ -955,6 +965,7 @@ button {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+  pointer-events: none;
 }
 
 .page-hero-content {

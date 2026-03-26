@@ -514,7 +514,7 @@
 
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Guardado!</span></div>
 
-<script src="../js/site-data.js"></script>
+<script src="../js/site-data.js?v=202603260400"></script>
 <script>
 (function(){
   var adminToken = sessionStorage.getItem('admin_token') || '';
@@ -564,7 +564,7 @@
   var loginForm=document.getElementById('loginForm'),loginErr=document.getElementById('loginError');
   var loginDiv=document.getElementById('adminLogin'),dashDiv=document.getElementById('adminDashboard');
   if(adminToken && csrfToken)showDash();
-  loginForm.addEventListener('submit',function(e){e.preventDefault();var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;loginErr.style.display='none';var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;csrfToken=r.csrf_token||'';sessionStorage.setItem('admin_token',adminToken);sessionStorage.setItem('csrf_token',csrfToken);loginErr.style.display='none';if(r.must_change){showForceChange();}else{showDash();}}}catch(ex){loginErr.textContent='Erro inesperado. Tente novamente.';loginErr.style.display='block';}}else{try{var er=JSON.parse(xhr.responseText);loginErr.textContent=er.error||'Credenciais inválidas.';}catch(ex2){loginErr.textContent='Erro de ligação ao servidor ('+xhr.status+')';}loginErr.style.display='block';}}};xhr.send(JSON.stringify({action:'login',user:u,pass:p}));
+  loginForm.addEventListener('submit',function(e){e.preventDefault();var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;loginErr.style.display='none';var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;csrfToken=r.csrf_token||'';sessionStorage.setItem('admin_token',adminToken);sessionStorage.setItem('csrf_token',csrfToken);loginErr.style.display='none';if(r.must_change){showForceChange();}else{showDash();}}}catch(ex){loginErr.textContent='Erro inesperado. Tente novamente.';loginErr.style.display='block';}}else{try{var er=JSON.parse(xhr.responseText);loginErr.textContent=er.error||'Credenciais inválidas.';}catch(ex2){loginErr.textContent='Erro de ligação ao servidor ('+xhr.status+')';}loginErr.style.display='block';}}};xhr.send(JSON.stringify({action:'login',user:u,pass:p}));});
   document.getElementById('logoutBtn').addEventListener('click',function(e){e.preventDefault();adminToken='';csrfToken='';sessionStorage.removeItem('admin_token');sessionStorage.removeItem('csrf_token');dashDiv.style.display='none';loginDiv.style.display='flex';});
 
   function showForceChange(){
