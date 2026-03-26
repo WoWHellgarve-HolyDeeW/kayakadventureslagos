@@ -972,16 +972,19 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     if (typeof SiteData !== 'undefined') {
-      var sd = SiteData.load();
-      var lang = localStorage.getItem('lang_preference') || 'pt';
-      var sName = stickyCta.querySelector('.tour-name');
-      if (sName) sName.textContent = lang === 'pt' ? sd.tour.namePt : sd.tour.nameEn;
-      var sPrice = stickyCta.querySelector('.sticky-cta-price');
-      if (sPrice) sPrice.innerHTML = '€' + esc(String(sd.tour.price)) + ' <small>' + (lang === 'pt' ? '/ pessoa' : '/ person') + '</small>';
+      try {
+        var sd = SiteData.load();
+        var lang = localStorage.getItem('lang_preference') || 'pt';
+        var sName = stickyCta.querySelector('.tour-name');
+        if (sName && sd.tour) sName.textContent = lang === 'pt' ? sd.tour.namePt : sd.tour.nameEn;
+        var sPrice = stickyCta.querySelector('.sticky-cta-price');
+        if (sPrice && sd.tour) sPrice.innerHTML = '€' + esc(String(sd.tour.price)) + ' <small>' + (lang === 'pt' ? '/ pessoa' : '/ person') + '</small>';
+      } catch(e) {}
     }
   }
   var countdownBar = document.getElementById('countdownBar');
   if (countdownBar) {
+    try {
     // Check showCountdown setting
     var showCd = true;
     if (typeof SiteData !== 'undefined') {
@@ -1032,6 +1035,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var lang = localStorage.getItem('lang_preference') || 'pt';
       if (spotsEl) spotsEl.textContent = lang === 'pt' ? 'Reserve o seu lugar!' : 'Book your spot!';
     }
+    } catch(e) { console.warn('Countdown error:', e); }
   }
   var proofNotif = document.getElementById('proofNotification');
   if (proofNotif) {

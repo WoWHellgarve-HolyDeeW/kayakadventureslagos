@@ -2425,15 +2425,6 @@ button {
 }
 
 @media (max-width: 768px) {
-  .trust-grid {
-    gap: 20px;
-  }
-
-  .trust-item {
-    flex: 1 1 45%;
-    min-width: 150px;
-  }
-
   .sticky-cta-left .tour-name,
   .sticky-cta-left .tour-meta {
     display: none;
@@ -2470,12 +2461,13 @@ button {
 
 @media (max-width: 480px) {
   .trust-grid {
-    flex-direction: column;
-    gap: 12px;
+    gap: 10px 12px;
   }
 
   .trust-item {
-    justify-content: center;
+    flex: 0 0 calc(50% - 6px);
+    min-width: 0;
+    justify-content: flex-start;
   }
 
   .countdown-timer {
