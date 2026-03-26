@@ -780,7 +780,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     var pageHero = document.querySelector('.page-hero');
     if (pageHero && d.homepage.heroImages && d.homepage.heroImages.length > 0) {
-      pageHero.style.backgroundImage = "url('" + d.homepage.heroImages[0].replace(/['"()\\]/g, '') + "')";
+      var randHero = d.homepage.heroImages[Math.floor(Math.random() * d.homepage.heroImages.length)];
+      pageHero.style.backgroundImage = "url('" + randHero.replace(/['"()\\]/g, '') + "')";
     }
     var tourMainImg = document.querySelector('.tour-main-image img');
     if (tourMainImg && d.about.image) {
@@ -790,10 +791,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (tourPreviewImg && d.about.image) {
       tourPreviewImg.src = d.about.image;
     }
-    var ctaSection = document.querySelector('.cta-section[style*="background-image"]');
-    if (ctaSection && d.homepage.heroImages && d.homepage.heroImages.length > 0) {
-      ctaSection.style.backgroundImage = "url('" + d.homepage.heroImages[0].replace(/['\\.\(\)]/g, '') + "')";
-    }
+    var ctaSections = document.querySelectorAll('.cta-section');
+    ctaSections.forEach(function(cta) {
+      if (d.homepage.heroImages && d.homepage.heroImages.length > 0) {
+        var randCta = d.homepage.heroImages[Math.floor(Math.random() * d.homepage.heroImages.length)];
+        cta.style.backgroundImage = "url('" + randCta.replace(/['"()\\]/g, '') + "')";
+      }
+    });
     var faqList = document.getElementById('faqList');
     if (faqList && d.faq && d.faq.length > 0) {
       faqList.innerHTML = '';
@@ -808,8 +812,16 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
           var item = this.parentElement;
           var wasActive = item.classList.contains('active');
-          faqList.querySelectorAll('.faq-item').forEach(function(fi) { fi.classList.remove('active'); });
-          if (!wasActive) item.classList.add('active');
+          faqList.querySelectorAll('.faq-item').forEach(function(fi) {
+            fi.classList.remove('active');
+            var ans = fi.querySelector('.faq-answer');
+            if (ans) ans.style.maxHeight = null;
+          });
+          if (!wasActive) {
+            item.classList.add('active');
+            var ans = item.querySelector('.faq-answer');
+            if (ans) ans.style.maxHeight = ans.scrollHeight + 'px';
+          }
         });
       });
     }
