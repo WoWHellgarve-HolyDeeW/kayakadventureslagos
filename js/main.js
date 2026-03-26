@@ -696,20 +696,38 @@ document.addEventListener('DOMContentLoaded', function() {
       var taRating = d.about.ratingTripadvisor || d.about.statRating || '5.0';
       var gRating = d.about.ratingGoogle || d.about.statRating || '4.9';
       var gCount = d.about.googleReviewCount || d.about.statClients || 500;
-      if (trustItems[0]) {
-        var taInfo = trustItems[0].querySelector('.trust-item-info strong');
-        if (taInfo) taInfo.textContent = taRating + ' TripAdvisor';
-        var taStars = trustItems[0].querySelector('.trust-stars');
-        if (taStars) taStars.textContent = ratingToStars(parseFloat(taRating));
+      function updateTrustBar(ta, gr, gc) {
+        if (trustItems[0]) {
+          var taInfo = trustItems[0].querySelector('.trust-item-info strong');
+          if (taInfo) taInfo.textContent = ta + ' TripAdvisor';
+          var taStars = trustItems[0].querySelector('.trust-stars');
+          if (taStars) taStars.textContent = ratingToStars(parseFloat(ta));
+        }
+        if (trustItems[1]) {
+          var gInfo = trustItems[1].querySelector('.trust-item-info strong');
+          if (gInfo) gInfo.textContent = gr + ' Google';
+          var gStars = trustItems[1].querySelector('.trust-stars');
+          if (gStars) gStars.textContent = ratingToStars(parseFloat(gr));
+          var gSub = trustItems[1].querySelector('.trust-item-info span:last-child');
+          if (gSub) gSub.textContent = (isPt ? 'Baseado em ' : 'Based on ') + gc + '+ reviews';
+        }
       }
-      if (trustItems[1]) {
-        var gInfo = trustItems[1].querySelector('.trust-item-info strong');
-        if (gInfo) gInfo.textContent = gRating + ' Google';
-        var gStars = trustItems[1].querySelector('.trust-stars');
-        if (gStars) gStars.textContent = ratingToStars(parseFloat(gRating));
-        var gSub = trustItems[1].querySelector('.trust-item-info span:last-child');
-        if (gSub) gSub.textContent = (isPt ? 'Baseado em ' : 'Based on ') + gCount + '+ reviews';
-      }
+      updateTrustBar(taRating, gRating, gCount);
+      // Try live ratings (cached 24h server-side)
+      var rxhr = new XMLHttpRequest();
+      rxhr.open('GET', '/api/ratings.php', true);
+      rxhr.timeout = 5000;
+      rxhr.onreadystatechange = function() {
+        if (rxhr.readyState === 4 && rxhr.status === 200) {
+          try {
+            var r = JSON.parse(rxhr.responseText);
+            if (r.google && r.google.rating) { gRating = r.google.rating; gCount = r.google.reviewCount || gCount; }
+            if (r.tripadvisor && r.tripadvisor.rating) { taRating = r.tripadvisor.rating; }
+            updateTrustBar(taRating, gRating, gCount);
+          } catch(e) {}
+        }
+      };
+      rxhr.send();
     }
     var stickyMeta = document.querySelector('.sticky-cta-left .tour-meta');
     if (stickyMeta) {
@@ -762,7 +780,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     var pageHero = document.querySelector('.page-hero');
     if (pageHero && d.homepage.heroImages && d.homepage.heroImages.length > 0) {
-      pageHero.style.backgroundImage = "url('" + d.homepage.heroImages[0].replace(/['\\.\(\)]/g, '') + "')";
+      pageHero.style.backgroundImage = "url('" + d.homepage.heroImages[0].replace(/['"()\\]/g, '') + "')";
     }
     var tourMainImg = document.querySelector('.tour-main-image img');
     if (tourMainImg && d.about.image) {
@@ -966,22 +984,26 @@ document.addEventListener('DOMContentLoaded', function() {
         var schedules = ['10:00', '13:00', '15:30', '18:00'];
         if (typeof SiteData !== 'undefined') {
           var sd = SiteData.load();
-          if (sd.tour.schedules) {
-            schedules = sd.tour.schedules.split(/\s*\|\s*/).filter(function(s) { return s.trim(); });
+          if (sd.tour && sd.tour.schedules && sd.tour.schedules.indexOf(':') !== -1) {
+            var parsed = sd.tour.schedules.split(/\s*\|\s*/).filter(function(s) { return /^\d{1,2}:\d{2}$/.test(s.trim()); });
+            if (parsed.length > 0) schedules = parsed;
           }
         }
         var nextTour = null;
         for (var i = 0; i < schedules.length; i++) {
           var parts = schedules[i].trim().split(':');
+          var h = parseInt(parts[0], 10); var mn = parseInt(parts[1], 10);
+          if (isNaN(h) || isNaN(mn)) continue;
           var t = new Date(now);
-          t.setHours(parseInt(parts[0]), parseInt(parts[1]) || 0, 0, 0);
+          t.setHours(h, mn, 0, 0);
           if (t > now) { nextTour = t; break; }
         }
         if (!nextTour) {
           var parts = schedules[0].trim().split(':');
+          var h0 = parseInt(parts[0], 10) || 10; var mn0 = parseInt(parts[1], 10) || 0;
           nextTour = new Date(now);
           nextTour.setDate(nextTour.getDate() + 1);
-          nextTour.setHours(parseInt(parts[0]), parseInt(parts[1]) || 0, 0, 0);
+          nextTour.setHours(h0, mn0, 0, 0);
         }
         var diff = nextTour - now;
         var h = Math.floor(diff / 3600000);

@@ -146,7 +146,9 @@ var SiteData = (function() {
       facebookPixel: '',
       fareharbor: '',
       socialProof: true,
-      showCountdown: true
+      showCountdown: true,
+      googlePlaceId: '',
+      googleApiKey: ''
     }
   };
 
