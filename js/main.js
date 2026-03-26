@@ -902,10 +902,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       updateCountdown();
       setInterval(updateCountdown, 1000);
-      var spots = Math.floor(Math.random() * 6) + 3;
+      // Honest CTA instead of fake spots count
       var spotsEl = document.getElementById('spotsLeft');
       var lang = localStorage.getItem('lang_preference') || 'pt';
-      if (spotsEl) spotsEl.textContent = lang === 'pt' ? ('Últimos ' + spots + ' lugares!') : ('Last ' + spots + ' spots!');
+      if (spotsEl) spotsEl.textContent = lang === 'pt' ? 'Reserve o seu lugar!' : 'Book your spot!';
     }
   }
   var proofNotif = document.getElementById('proofNotification');
@@ -924,10 +924,29 @@ document.addEventListener('DOMContentLoaded', function() {
       { name: 'Laura B.', city: 'Barcelona', avatar: 'LB' },
       { name: 'Pedro G.', city: 'Faro', avatar: 'PG' },
       { name: 'Emma W.', city: 'Amsterdam', avatar: 'EW' },
-      { name: 'Miguel R.', city: 'Braga', avatar: 'MR' }
+      { name: 'Miguel R.', city: 'Braga', avatar: 'MR' },
+      { name: 'Charlotte H.', city: 'Dublin', avatar: 'CH' },
+      { name: 'João P.', city: 'Coimbra', avatar: 'JP' },
+      { name: 'Liam O.', city: 'Manchester', avatar: 'LO' },
+      { name: 'Inês T.', city: 'Setúbal', avatar: 'IT' },
+      { name: 'Marco V.', city: 'Roma', avatar: 'MV' },
+      { name: 'Sarah L.', city: 'Edinburgh', avatar: 'SL' },
+      { name: 'Diogo A.', city: 'Viseu', avatar: 'DA' },
+      { name: 'Nina F.', city: 'Stockholm', avatar: 'NF' },
+      { name: 'Rita C.', city: 'Aveiro', avatar: 'RC' },
+      { name: 'James B.', city: 'New York', avatar: 'JB' },
+      { name: 'Amélie D.', city: 'Lyon', avatar: 'AD' },
+      { name: 'Hans M.', city: 'München', avatar: 'HM' },
+      { name: 'Catarina L.', city: 'Leiria', avatar: 'CL' },
+      { name: 'Oliver P.', city: 'Sydney', avatar: 'OP' }
     ];
-    var proofTimes = ['há 2 minutos', 'há 5 minutos', 'há 12 minutos', 'há 18 minutos', 'há 25 minutos'];
-    var proofTimesEn = ['2 minutes ago', '5 minutes ago', '12 minutes ago', '18 minutes ago', '25 minutes ago'];
+    // Shuffle names so order differs each page load
+    for (var si = proofNames.length - 1; si > 0; si--) {
+      var sj = Math.floor(Math.random() * (si + 1));
+      var tmp = proofNames[si]; proofNames[si] = proofNames[sj]; proofNames[sj] = tmp;
+    }
+    var proofTimes = ['há 2 minutos', 'há 5 minutos', 'há 12 minutos', 'há 18 minutos', 'há 25 minutos', 'há 34 minutos', 'há 47 minutos', 'há 1 hora'];
+    var proofTimesEn = ['2 minutes ago', '5 minutes ago', '12 minutes ago', '18 minutes ago', '25 minutes ago', '34 minutes ago', '47 minutes ago', '1 hour ago'];
     var proofIdx = 0;
     var proofDismissed = false;
 
@@ -948,14 +967,14 @@ document.addEventListener('DOMContentLoaded', function() {
       proofIdx++;
       setTimeout(function() {
         proofNotif.classList.remove('show');
-      }, 5000);
+      }, 6000);
     }
     setTimeout(function() {
       showProofNotif();
       setInterval(function() {
         showProofNotif();
-      }, 25000 + Math.random() * 15000);
-    }, 8000);
+      }, 45000 + Math.random() * 30000);
+    }, 15000);
     }
   }
   var videoPlaceholder = document.getElementById('videoPlaceholder');
