@@ -1679,8 +1679,22 @@ button {
 
   .nav.mobile-active a {
     font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 14px 36px;
+    border-radius: 12px;
+    transition: var(--transition);
+  }
+
+  .nav.mobile-active a:hover {
     color: #fff;
-    padding: 12px 30px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .nav.mobile-active a.active {
+    color: var(--primary);
+    background: rgba(212, 115, 28, 0.12);
+    border: 1px solid rgba(212, 115, 28, 0.25);
+    font-weight: 600;
   }
 
   .tour-preview,
@@ -2309,8 +2323,16 @@ button {
 .video-section {
   position: relative;
   padding: 100px 0;
-  background: var(--bg-dark);
+  background: linear-gradient(135deg, #0F2027 0%, #203A43 50%, #1A1A2E 100%);
   overflow: hidden;
+}
+
+.video-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212, 115, 28, 0.08) 0%, transparent 60%);
+  pointer-events: none;
 }
 
 .video-wrapper {
