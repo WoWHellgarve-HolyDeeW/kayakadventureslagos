@@ -545,6 +545,7 @@
   }
 
   function uploadImage(file, callback) {
+    if (file.size > 10 * 1024 * 1024) { toast('Ficheiro muito grande! Máximo 10MB.', true); callback(null); return; }
     var fd = new FormData();
     fd.append('image', file);
     var xhr = new XMLHttpRequest();
@@ -554,8 +555,12 @@
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
-          try { var r = JSON.parse(xhr.responseText); callback(r.url || null); } catch(e) { callback(null); }
-        } else { toast('Erro ao enviar imagem!', true); callback(null); }
+          try { var r = JSON.parse(xhr.responseText); callback(r.url || null); } catch(e) { toast('Resposta inválida do servidor.', true); callback(null); }
+        } else {
+          var msg = 'Erro ao enviar imagem!';
+          try { var r = JSON.parse(xhr.responseText); if (r.error) msg = r.error; } catch(e) {}
+          toast(msg, true); callback(null);
+        }
       }
     };
     xhr.send(fd);

@@ -39,17 +39,36 @@ if (!checkAuth()) {
     exit;
 }
 
-if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+if (!isset($_FILES['image'])) {
     http_response_code(400);
-    echo json_encode(['error' => 'No image uploaded or upload error']);
+    $phpMax = ini_get('upload_max_filesize');
+    $postMax = ini_get('post_max_size');
+    echo json_encode(['error' => "No image received. PHP limits: upload_max={$phpMax}, post_max={$postMax}. File may exceed server limit."]);
+    exit;
+}
+
+if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+    $errors = [
+        UPLOAD_ERR_INI_SIZE   => 'File exceeds server upload limit (' . ini_get('upload_max_filesize') . '). Contact hosting or increase upload_max_filesize.',
+        UPLOAD_ERR_FORM_SIZE  => 'File exceeds form limit.',
+        UPLOAD_ERR_PARTIAL    => 'File was only partially uploaded. Try again.',
+        UPLOAD_ERR_NO_FILE    => 'No file was selected.',
+        UPLOAD_ERR_NO_TMP_DIR => 'Server temp folder missing. Contact hosting.',
+        UPLOAD_ERR_CANT_WRITE => 'Failed to write to disk. Check server permissions.',
+        UPLOAD_ERR_EXTENSION  => 'Upload blocked by server extension.',
+    ];
+    $code = $_FILES['image']['error'];
+    $msg = isset($errors[$code]) ? $errors[$code] : "Upload error (code: {$code})";
+    http_response_code(400);
+    echo json_encode(['error' => $msg]);
     exit;
 }
 
 $file = $_FILES['image'];
-$maxSize = 5 * 1024 * 1024;
+$maxSize = 10 * 1024 * 1024;
 if ($file['size'] > $maxSize) {
     http_response_code(400);
-    echo json_encode(['error' => 'File too large. Max 5MB.']);
+    echo json_encode(['error' => 'File too large. Max 10MB.']);
     exit;
 }
 
