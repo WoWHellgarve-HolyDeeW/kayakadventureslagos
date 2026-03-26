@@ -716,10 +716,21 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mapIframe && d.contact.mapEmbed) {
       mapIframe.src = d.contact.mapEmbed;
     }
-    // Hide video section if no video URL is set
+    // Hide video section if no video URL is set, or set YouTube thumbnail
     var videoSec = document.getElementById('videoSection');
     if (videoSec) {
-      videoSec.style.display = d.homepage.videoUrl ? '' : 'none';
+      var vUrl = d.homepage.videoUrl || '';
+      videoSec.style.display = vUrl ? '' : 'none';
+      if (vUrl) {
+        var vMatch = vUrl.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
+        var vId = vMatch ? vMatch[1] : (/^[\w-]{11}$/.test(vUrl) ? vUrl : '');
+        if (vId) {
+          var vPlaceholder = document.getElementById('videoPlaceholder');
+          if (vPlaceholder) {
+            vPlaceholder.style.backgroundImage = 'url(https://img.youtube.com/vi/' + vId + '/maxresdefault.jpg)';
+          }
+        }
+      }
     }
     if (d.settings.googleAnalytics && !document.getElementById('ga-script')) {
       var gaId = d.settings.googleAnalytics;
