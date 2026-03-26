@@ -1701,6 +1701,16 @@ button {
     font-weight: 600;
   }
 
+  .header.menu-open ~ .back-to-top,
+  .header.menu-open ~ .whatsapp-float,
+  .header.menu-open ~ .sticky-cta,
+  body.menu-open .back-to-top,
+  body.menu-open .whatsapp-float,
+  body.menu-open .sticky-cta {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
   .tour-preview,
   .about-content {
     grid-template-columns: 1fr;
@@ -2327,25 +2337,21 @@ button {
 .video-section {
   position: relative;
   padding: 100px 0;
-  background: #111;
+  background: #FFF5ED;
   overflow: hidden;
 }
 
 .video-section::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: none;
-  pointer-events: none;
+  content: none;
 }
 
 .video-wrapper {
-  max-width: 100%;
+  max-width: 900px;
   margin: 0 auto;
   position: relative;
-  border-radius: 0;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: none;
+  box-shadow: 0 30px 60px rgba(0,0,0,.15);
   aspect-ratio: 16/9;
 }
 

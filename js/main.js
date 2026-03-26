@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
       mainNav.classList.toggle('mobile-active');
       var isOpen = mainNav.classList.contains('mobile-active');
       document.body.style.overflow = isOpen ? 'hidden' : '';
+      document.body.classList.toggle('menu-open', isOpen);
       header.classList.toggle('menu-open', isOpen);
     });
     mainNav.querySelectorAll('a').forEach(function(link) {
@@ -39,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileToggle.classList.remove('active');
         mainNav.classList.remove('mobile-active');
         document.body.style.overflow = '';
+        document.body.classList.remove('menu-open');
         header.classList.remove('menu-open');
       });
     });
