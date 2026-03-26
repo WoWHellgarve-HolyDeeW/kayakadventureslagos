@@ -378,6 +378,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function safeBr(s) { if (!s) return ''; return esc(s).replace(/&lt;br\s*\/?&gt;/gi, '<br>'); }
     function safeUrl(s) { if (!s) return ''; return /^https?:\/\//i.test(s) ? esc(s) : ''; }
+    function ratingToStars(n) { var full = Math.floor(n); var half = (n - full) >= 0.3; var s = ''; for (var i = 0; i < full; i++) s += '★'; if (half) s += '★'; return s || '★★★★★'; }
     // Apply logo from settings
     var logoUrl = d.settings.logoUrl || 'images/logo.png';
     document.querySelectorAll('.logo img, .footer-logo img, .preloader-logo, .login-logo img, .sidebar-brand img').forEach(function(img) {
@@ -692,15 +693,22 @@ document.addEventListener('DOMContentLoaded', function() {
     var trustBar = document.getElementById('trustBar');
     if (trustBar) {
       var trustItems = trustBar.querySelectorAll('.trust-item');
+      var taRating = d.about.ratingTripadvisor || d.about.statRating || '5.0';
+      var gRating = d.about.ratingGoogle || d.about.statRating || '4.9';
+      var gCount = d.about.googleReviewCount || d.about.statClients || 500;
       if (trustItems[0]) {
         var taInfo = trustItems[0].querySelector('.trust-item-info strong');
-        if (taInfo) taInfo.textContent = d.about.statRating + ' TripAdvisor';
+        if (taInfo) taInfo.textContent = taRating + ' TripAdvisor';
+        var taStars = trustItems[0].querySelector('.trust-stars');
+        if (taStars) taStars.textContent = ratingToStars(parseFloat(taRating));
       }
       if (trustItems[1]) {
         var gInfo = trustItems[1].querySelector('.trust-item-info strong');
-        if (gInfo) gInfo.textContent = d.about.statRating + ' Google';
+        if (gInfo) gInfo.textContent = gRating + ' Google';
+        var gStars = trustItems[1].querySelector('.trust-stars');
+        if (gStars) gStars.textContent = ratingToStars(parseFloat(gRating));
         var gSub = trustItems[1].querySelector('.trust-item-info span:last-child');
-        if (gSub) gSub.textContent = (isPt ? 'Baseado em ' : 'Based on ') + d.about.statClients + '+ reviews';
+        if (gSub) gSub.textContent = (isPt ? 'Baseado em ' : 'Based on ') + gCount + '+ reviews';
       }
     }
     var stickyMeta = document.querySelector('.sticky-cta-left .tour-meta');

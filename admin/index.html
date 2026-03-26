@@ -296,7 +296,15 @@
       </div>
       <div class="form-row">
         <div class="form-group"><label>Tours Realizados</label><input type="number" id="a_tours"></div>
-        <div class="form-group"><label>Avaliação Média</label><input type="text" id="a_rating" placeholder="4.9"></div>
+        <div class="form-group"><label>Avaliação Média (geral)</label><input type="text" id="a_rating" placeholder="4.9"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>⭐ Rating TripAdvisor</label><input type="text" id="a_ratingTA" placeholder="5.0"></div>
+        <div class="form-group"><label>⭐ Rating Google</label><input type="text" id="a_ratingGoogle" placeholder="4.9"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Nº Reviews Google</label><input type="number" id="a_googleReviews" placeholder="500"></div>
+        <div class="form-group"></div>
       </div>
     </div>
     <div class="card">
@@ -552,7 +560,7 @@
   var loginForm=document.getElementById('loginForm'),loginErr=document.getElementById('loginError');
   var loginDiv=document.getElementById('adminLogin'),dashDiv=document.getElementById('adminDashboard');
   if(adminToken && csrfToken)showDash();
-  loginForm.addEventListener('submit',function(e){e.preventDefault();var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;csrfToken=r.csrf_token||'';sessionStorage.setItem('admin_token',adminToken);sessionStorage.setItem('csrf_token',csrfToken);loginErr.style.display='none';if(r.must_change){showForceChange();}else{showDash();}}}catch(ex){loginErr.style.display='block';}}else{loginErr.style.display='block';}}};xhr.send(JSON.stringify({action:'login',user:u,pass:p}));});
+  loginForm.addEventListener('submit',function(e){e.preventDefault();var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;loginErr.style.display='none';var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;csrfToken=r.csrf_token||'';sessionStorage.setItem('admin_token',adminToken);sessionStorage.setItem('csrf_token',csrfToken);loginErr.style.display='none';if(r.must_change){showForceChange();}else{showDash();}}}catch(ex){loginErr.textContent='Erro inesperado. Tente novamente.';loginErr.style.display='block';}}else{try{var er=JSON.parse(xhr.responseText);loginErr.textContent=er.error||'Credenciais inválidas.';}catch(ex2){loginErr.textContent='Erro de ligação ao servidor ('+xhr.status+')';}loginErr.style.display='block';}}};xhr.send(JSON.stringify({action:'login',user:u,pass:p}));
   document.getElementById('logoutBtn').addEventListener('click',function(e){e.preventDefault();adminToken='';csrfToken='';sessionStorage.removeItem('admin_token');sessionStorage.removeItem('csrf_token');dashDiv.style.display='none';loginDiv.style.display='flex';});
 
   function showForceChange(){
@@ -647,7 +655,7 @@
   });
 
   // ========================= ABOUT =========================
-  function loadAbout(d){var a=d.about;document.getElementById('a_img').value=a.image||'';var pv=document.getElementById('a_imgPreview');pv.innerHTML=a.image?'<img src="'+esc(a.image)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;" onerror="this.style.display=\'none\'">':'';document.getElementById('a_storyPt').value=a.storyPt||'';document.getElementById('a_storyEn').value=a.storyEn||'';document.getElementById('a_clients').value=a.statClients||0;document.getElementById('a_years').value=a.statYears||0;document.getElementById('a_tours').value=a.statTours||0;document.getElementById('a_rating').value=a.statRating||'';renderTeam(a.team||[]);}
+  function loadAbout(d){var a=d.about;document.getElementById('a_img').value=a.image||'';var pv=document.getElementById('a_imgPreview');pv.innerHTML=a.image?'<img src="'+esc(a.image)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;" onerror="this.style.display=\'none\'">':'';document.getElementById('a_storyPt').value=a.storyPt||'';document.getElementById('a_storyEn').value=a.storyEn||'';document.getElementById('a_clients').value=a.statClients||0;document.getElementById('a_years').value=a.statYears||0;document.getElementById('a_tours').value=a.statTours||0;document.getElementById('a_rating').value=a.statRating||'';document.getElementById('a_ratingTA').value=a.ratingTripadvisor||a.statRating||'';document.getElementById('a_ratingGoogle').value=a.ratingGoogle||a.statRating||'';document.getElementById('a_googleReviews').value=a.googleReviewCount||a.statClients||0;renderTeam(a.team||[]);}
   function renderTeam(team){
     var c=document.getElementById('teamList');c.innerHTML='';
     team.forEach(function(m,i){
@@ -663,7 +671,7 @@
   document.getElementById('saveAboutBtn').addEventListener('click',function(){
     var ns=document.querySelectorAll('.tm-n'),is=document.querySelectorAll('.tm-img'),rp=document.querySelectorAll('.tm-rp'),re=document.querySelectorAll('.tm-re'),team=[];
     ns.forEach(function(n,i){team.push({name:n.value,image:is[i].value,rolePt:rp[i].value,roleEn:re[i].value});});
-    SiteData.update('about',{image:document.getElementById('a_img').value.trim(),storyPt:document.getElementById('a_storyPt').value,storyEn:document.getElementById('a_storyEn').value,statClients:parseInt(document.getElementById('a_clients').value)||0,statYears:parseInt(document.getElementById('a_years').value)||0,statTours:parseInt(document.getElementById('a_tours').value)||0,statRating:document.getElementById('a_rating').value,team:team});
+    SiteData.update('about',{image:document.getElementById('a_img').value.trim(),storyPt:document.getElementById('a_storyPt').value,storyEn:document.getElementById('a_storyEn').value,statClients:parseInt(document.getElementById('a_clients').value)||0,statYears:parseInt(document.getElementById('a_years').value)||0,statTours:parseInt(document.getElementById('a_tours').value)||0,statRating:document.getElementById('a_rating').value,ratingTripadvisor:document.getElementById('a_ratingTA').value,ratingGoogle:document.getElementById('a_ratingGoogle').value,googleReviewCount:parseInt(document.getElementById('a_googleReviews').value)||0,team:team});
     serverSave();
   });
 

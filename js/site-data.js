@@ -65,6 +65,9 @@ var SiteData = (function() {
       statYears: 7,
       statTours: 2000,
       statRating: '4.9',
+      ratingTripadvisor: '5.0',
+      ratingGoogle: '4.9',
+      googleReviewCount: 500,
       team: [
         { name: 'Sónia Moisão', rolePt: 'Socia/Gerente', roleEn: 'Partner/Manager', image: 'images/gallery/about-us-1.jpg' },
         { name: 'Jorge Costa', rolePt: 'Guia & Instrutor', roleEn: 'Guide & Instructor', image: 'images/gallery/about-us-2.jpg' },
