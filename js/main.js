@@ -1044,21 +1044,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!spEnabled) { proofNotif.style.display = 'none'; }
     else {
     proofNotif.style.display = '';
-    // Use real testimonial data for social proof notifications
-    var proofReviews = (sd.testimonials || []).filter(function(t) { return t.stars >= 4; });
-    if (proofReviews.length === 0) {
-      proofReviews = [
-        { name: 'Cliente', text: '⭐⭐⭐⭐⭐', stars: 5 }
-      ];
-    }
-    // Shuffle
-    for (var si = proofReviews.length - 1; si > 0; si--) {
-      var sj = Math.floor(Math.random() * (si + 1));
-      var tmp = proofReviews[si]; proofReviews[si] = proofReviews[sj]; proofReviews[sj] = tmp;
-    }
-    var proofTimes = ['há 2 dias', 'há 5 dias', 'há 1 semana', 'há 2 semanas', 'há 3 semanas', 'há 1 mês'];
-    var proofTimesEn = ['2 days ago', '5 days ago', '1 week ago', '2 weeks ago', '3 weeks ago', '1 month ago'];
-    var proofIdx = 0;
+    // Booking simulation notifications with random delays
+    var bookingNamesPt = [
+      'Maria de Lisboa', 'João do Porto', 'Ana de Faro', 'Pedro de Braga',
+      'Sofia de Coimbra', 'Miguel de Setúbal', 'Inês de Aveiro', 'Tiago de Viseu',
+      'Emma from London', 'James from Dublin', 'Sophie from Paris', 'Hans from Berlin',
+      'Marco from Rome', 'Lars from Amsterdam', 'Sarah from New York', 'Carlos de Madrid'
+    ];
+    var bookingTimePt = ['há 2 minutos', 'há 5 minutos', 'há 8 minutos', 'há 12 minutos', 'há 15 minutos', 'há 20 minutos', 'há 25 minutos', 'há 30 minutos'];
+    var bookingTimeEn = ['2 minutes ago', '5 minutes ago', '8 minutes ago', '12 minutes ago', '15 minutes ago', '20 minutes ago', '25 minutes ago', '30 minutes ago'];
     var proofDismissed = false;
 
     document.getElementById('proofClose').addEventListener('click', function() {
@@ -1068,27 +1062,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showProofNotif() {
       if (proofDismissed) return;
-      var review = proofReviews[proofIdx % proofReviews.length];
       var lang = localStorage.getItem('lang_preference') || 'pt';
-      var time = lang === 'pt' ? proofTimes[proofIdx % proofTimes.length] : proofTimesEn[proofIdx % proofTimesEn.length];
-      var initials = (review.name || 'KA').split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();
+      var name = bookingNamesPt[Math.floor(Math.random() * bookingNamesPt.length)];
+      var time = lang === 'pt' ? bookingTimePt[Math.floor(Math.random() * bookingTimePt.length)] : bookingTimeEn[Math.floor(Math.random() * bookingTimeEn.length)];
+      var initials = name.split(' ').filter(function(w){ return w.length > 2; }).map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();
       document.getElementById('proofAvatar').textContent = initials;
-      var stars = '';
-      for (var s=0; s<(review.stars||5); s++) stars += '★';
-      document.getElementById('proofText').textContent = (review.name || 'Cliente') + ' ' + stars;
-      document.getElementById('proofTime').textContent = (lang === 'pt' ? 'avaliou ' : 'reviewed ') + time;
+      document.getElementById('proofText').textContent = name + ' ' + (lang === 'pt' ? 'reservou um tour' : 'booked a tour');
+      document.getElementById('proofTime').textContent = ' ' + time;
       proofNotif.classList.add('show');
-      proofIdx++;
       setTimeout(function() {
         proofNotif.classList.remove('show');
-      }, 6000);
+      }, 5000);
     }
+    // First show after random 20-40s, then random 40-90s intervals
     setTimeout(function() {
       showProofNotif();
-      setInterval(function() {
-        showProofNotif();
-      }, 45000 + Math.random() * 30000);
-    }, 15000);
+      function scheduleNext() {
+        var delay = 40000 + Math.floor(Math.random() * 50000);
+        setTimeout(function() {
+          showProofNotif();
+          scheduleNext();
+        }, delay);
+      }
+      scheduleNext();
+    }, 20000 + Math.floor(Math.random() * 20000));
     }
   }
   var videoPlaceholder = document.getElementById('videoPlaceholder');

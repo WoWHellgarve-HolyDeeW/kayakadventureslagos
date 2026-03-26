@@ -1954,6 +1954,11 @@ button {
   flex-shrink: 0;
 }
 
+.trust-item-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
 .trust-item-icon.tripadvisor { background: rgba(0,175,135,.1); color: #00AF87; }
 .trust-item-icon.google { background: rgba(66,133,244,.1); color: #4285F4; }
 .trust-item-icon.safety { background: rgba(16,185,129,.1); color: #10B981; }
