@@ -245,6 +245,8 @@ document.addEventListener('DOMContentLoaded', function() {
     cookieAccept.addEventListener('click', function() {
       localStorage.setItem('cookie_consent', 'accepted');
       cookieBanner.classList.remove('active');
+      // Load tracking scripts now that consent was given
+      if (typeof applySiteData === 'function') applySiteData();
     });
   }
 
@@ -815,23 +817,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     }
-    if (d.settings.googleAnalytics && !document.getElementById('ga-script')) {
-      var gaId = d.settings.googleAnalytics;
-      var gaScript = document.createElement('script');
-      gaScript.id = 'ga-script';
-      gaScript.async = true;
-      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(gaId);
-      document.head.appendChild(gaScript);
-      var gaInit = document.createElement('script');
-      gaInit.textContent = 'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","' + gaId.replace(/[^a-zA-Z0-9-]/g, '') + '");';
-      document.head.appendChild(gaInit);
-    }
-    if (d.settings.facebookPixel && !document.getElementById('fb-pixel')) {
-      var fpId = d.settings.facebookPixel.replace(/[^0-9]/g, '');
-      var fpScript = document.createElement('script');
-      fpScript.id = 'fb-pixel';
-      fpScript.textContent = "!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','" + fpId + "');fbq('track','PageView');";
-      document.head.appendChild(fpScript);
+    // Only load tracking scripts if user accepted cookies (GDPR compliance)
+    var cookieConsent = localStorage.getItem('cookie_consent');
+    if (cookieConsent === 'accepted') {
+      if (d.settings.googleAnalytics && !document.getElementById('ga-script')) {
+        var gaId = d.settings.googleAnalytics;
+        var gaScript = document.createElement('script');
+        gaScript.id = 'ga-script';
+        gaScript.async = true;
+        gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(gaId);
+        document.head.appendChild(gaScript);
+        var gaInit = document.createElement('script');
+        gaInit.textContent = 'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","' + gaId.replace(/[^a-zA-Z0-9-]/g, '') + '");';
+        document.head.appendChild(gaInit);
+      }
+      if (d.settings.facebookPixel && !document.getElementById('fb-pixel')) {
+        var fpId = d.settings.facebookPixel.replace(/[^0-9]/g, '');
+        var fpScript = document.createElement('script');
+        fpScript.id = 'fb-pixel';
+        fpScript.textContent = "!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','" + fpId + "');fbq('track','PageView');";
+        document.head.appendChild(fpScript);
+      }
     }
     var fhShortname = (d.tour.fareharbor || d.settings.fareharbor || '').replace(/[^a-zA-Z0-9_-]/g, '');
     var bookingUrl = d.tour.bookingUrl || '';
@@ -985,39 +991,21 @@ document.addEventListener('DOMContentLoaded', function() {
     var spEnabled = sd.settings && sd.settings.socialProof !== false;
     if (!spEnabled) { proofNotif.style.display = 'none'; }
     else {
-    var proofNames = [
-      { name: 'Maria S.', city: 'Lisboa', avatar: 'MS' },
-      { name: 'John D.', city: 'London', avatar: 'JD' },
-      { name: 'Carlos F.', city: 'Madrid', avatar: 'CF' },
-      { name: 'Sophie R.', city: 'Paris', avatar: 'SR' },
-      { name: 'Ana M.', city: 'Porto', avatar: 'AM' },
-      { name: 'Thomas K.', city: 'Berlin', avatar: 'TK' },
-      { name: 'Laura B.', city: 'Barcelona', avatar: 'LB' },
-      { name: 'Pedro G.', city: 'Faro', avatar: 'PG' },
-      { name: 'Emma W.', city: 'Amsterdam', avatar: 'EW' },
-      { name: 'Miguel R.', city: 'Braga', avatar: 'MR' },
-      { name: 'Charlotte H.', city: 'Dublin', avatar: 'CH' },
-      { name: 'João P.', city: 'Coimbra', avatar: 'JP' },
-      { name: 'Liam O.', city: 'Manchester', avatar: 'LO' },
-      { name: 'Inês T.', city: 'Setúbal', avatar: 'IT' },
-      { name: 'Marco V.', city: 'Roma', avatar: 'MV' },
-      { name: 'Sarah L.', city: 'Edinburgh', avatar: 'SL' },
-      { name: 'Diogo A.', city: 'Viseu', avatar: 'DA' },
-      { name: 'Nina F.', city: 'Stockholm', avatar: 'NF' },
-      { name: 'Rita C.', city: 'Aveiro', avatar: 'RC' },
-      { name: 'James B.', city: 'New York', avatar: 'JB' },
-      { name: 'Amélie D.', city: 'Lyon', avatar: 'AD' },
-      { name: 'Hans M.', city: 'München', avatar: 'HM' },
-      { name: 'Catarina L.', city: 'Leiria', avatar: 'CL' },
-      { name: 'Oliver P.', city: 'Sydney', avatar: 'OP' }
-    ];
-    // Shuffle names so order differs each page load
-    for (var si = proofNames.length - 1; si > 0; si--) {
-      var sj = Math.floor(Math.random() * (si + 1));
-      var tmp = proofNames[si]; proofNames[si] = proofNames[sj]; proofNames[sj] = tmp;
+    proofNotif.style.display = '';
+    // Use real testimonial data for social proof notifications
+    var proofReviews = (sd.testimonials || []).filter(function(t) { return t.stars >= 4; });
+    if (proofReviews.length === 0) {
+      proofReviews = [
+        { name: 'Cliente', text: '⭐⭐⭐⭐⭐', stars: 5 }
+      ];
     }
-    var proofTimes = ['há 2 minutos', 'há 5 minutos', 'há 12 minutos', 'há 18 minutos', 'há 25 minutos', 'há 34 minutos', 'há 47 minutos', 'há 1 hora'];
-    var proofTimesEn = ['2 minutes ago', '5 minutes ago', '12 minutes ago', '18 minutes ago', '25 minutes ago', '34 minutes ago', '47 minutes ago', '1 hour ago'];
+    // Shuffle
+    for (var si = proofReviews.length - 1; si > 0; si--) {
+      var sj = Math.floor(Math.random() * (si + 1));
+      var tmp = proofReviews[si]; proofReviews[si] = proofReviews[sj]; proofReviews[sj] = tmp;
+    }
+    var proofTimes = ['há 2 dias', 'há 5 dias', 'há 1 semana', 'há 2 semanas', 'há 3 semanas', 'há 1 mês'];
+    var proofTimesEn = ['2 days ago', '5 days ago', '1 week ago', '2 weeks ago', '3 weeks ago', '1 month ago'];
     var proofIdx = 0;
     var proofDismissed = false;
 
@@ -1028,12 +1016,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showProofNotif() {
       if (proofDismissed) return;
-      var person = proofNames[proofIdx % proofNames.length];
+      var review = proofReviews[proofIdx % proofReviews.length];
       var lang = localStorage.getItem('lang_preference') || 'pt';
       var time = lang === 'pt' ? proofTimes[proofIdx % proofTimes.length] : proofTimesEn[proofIdx % proofTimesEn.length];
-      document.getElementById('proofAvatar').textContent = person.avatar;
-      document.getElementById('proofText').textContent = person.name + ' ' + (lang === 'pt' ? 'de ' : 'from ') + person.city + ' ' + (lang === 'pt' ? 'reservou um tour' : 'booked a tour');
-      document.getElementById('proofTime').textContent = time;
+      var initials = (review.name || 'KA').split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();
+      document.getElementById('proofAvatar').textContent = initials;
+      var stars = '';
+      for (var s=0; s<(review.stars||5); s++) stars += '★';
+      document.getElementById('proofText').textContent = (review.name || 'Cliente') + ' ' + stars;
+      document.getElementById('proofTime').textContent = (lang === 'pt' ? 'avaliou ' : 'reviewed ') + time;
       proofNotif.classList.add('show');
       proofIdx++;
       setTimeout(function() {

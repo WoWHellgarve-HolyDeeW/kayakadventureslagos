@@ -1,3 +1,6 @@
+# Custom 404 page
+ErrorDocument 404 /404.html
+
 # Security Headers
 <IfModule mod_headers.c>
     # Prevent MIME sniffing

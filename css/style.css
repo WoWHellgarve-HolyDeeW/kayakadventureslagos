@@ -1708,6 +1708,13 @@ button {
   }
 }
 
+@media (max-width: 1024px) {
+  .page-hero,
+  .parallax-cta {
+    background-attachment: scroll;
+  }
+}
+
 @media (max-width: 768px) {
   .logo img {
     height: 70px;
