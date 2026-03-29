@@ -118,7 +118,7 @@ var SiteData = (function() {
       { id: 4, url: 'images/gallery/20190924134811.jpg', category: 'caves', captionPt: 'Interior das Grutas', captionEn: 'Inside the Caves' },
       { id: 5, url: 'images/gallery/20190301123541.jpg', category: 'adventure', captionPt: 'Aventura no Mar', captionEn: 'Sea Adventure' },
       { id: 6, url: 'images/gallery/20200622104606.jpg', category: 'adventure', captionPt: 'Kayak em Grupo', captionEn: 'Group Kayaking' },
-      { id: 7, url: 'images/gallery/secluded.jpg', category: 'beaches', captionPt: 'Praia Secreta', captionEn: 'Secret Beach' },
+      { id: 7, url: 'images/gallery/secluded.jpg', category: 'beaches', captionPt: 'Praia', captionEn: 'Beach' },
       { id: 8, url: 'images/gallery/20190924135001.jpg', category: 'caves', captionPt: 'Formações Rochosas', captionEn: 'Rock Formations' },
       { id: 9, url: 'images/gallery/20190301124356.jpg', category: 'adventure', captionPt: 'Tour de Kayak', captionEn: 'Kayak Tour' },
       { id: 10, url: 'images/gallery/20200622104802.jpg', category: 'adventure', captionPt: 'Explorando a Costa', captionEn: 'Exploring the Coast' },
