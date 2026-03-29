@@ -90,7 +90,7 @@ const translations = {
     tour_sidebar_age: "<strong>Idade mínima:</strong> 4 anos",
     tour_sidebar_lang: "<strong>Idiomas:</strong> PT, EN, ES, IT",
     tour_sidebar_season: "<strong>Época:</strong> Abril - Outubro",
-    tour_sidebar_schedule: "Horários: 10:00 | 13:00 | 15:30 | 18:00 (Sunset Tour)",
+    tour_sidebar_schedule: "Horários: 10:00 | 13:00 | 15:30 | 18:00 – Sunset Tour",
     tour_book_now: '<i class="fas fa-calendar-check"></i> Reservar Agora',
     tour_sidebar_cancel: "Cancelamento gratuito até 24h antes",
     tour_schedule_title: "Itinerário do Tour",
