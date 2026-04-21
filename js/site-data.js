@@ -178,9 +178,15 @@ var SiteData = (function() {
   var _serverData = null;
   var _serverLoaded = false;
 
-  function loadFromServer(callback) {
+  function loadFromServer(callback, authOptions) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/api/data.php', true);
+    if (authOptions && authOptions.token) {
+      xhr.setRequestHeader('X-Admin-Token', authOptions.token);
+    }
+    if (authOptions && authOptions.csrfToken) {
+      xhr.setRequestHeader('X-CSRF-Token', authOptions.csrfToken);
+    }
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {

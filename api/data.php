@@ -35,19 +35,11 @@ function checkAuth() {
     if (!$token) return false;
 
     if (!file_exists($AUTH_FILE)) {
-        $default = [
-            'user' => 'admin',
-            'pass_hash' => password_hash('admin123', PASSWORD_DEFAULT),
-            'token' => bin2hex(random_bytes(32)),
-            'csrf_token' => bin2hex(random_bytes(32)),
-            'must_change' => true
-        ];
-        file_put_contents($AUTH_FILE, json_encode($default, JSON_PRETTY_PRINT), LOCK_EX);
-        chmod($AUTH_FILE, 0600);
+        return false;
     }
 
     $auth = json_decode(file_get_contents($AUTH_FILE), true);
-    if (!isset($auth['token']) || !hash_equals($auth['token'], $token)) return false;
+    if (!is_array($auth) || !isset($auth['token']) || !hash_equals($auth['token'], $token)) return false;
 
     // CSRF check for state-changing requests
     if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -67,6 +59,9 @@ if ($method === 'GET') {
         http_response_code(404);
         echo json_encode(['error' => 'No data file found. Save from admin to create it.']);
     } else {
+        if (!checkAuth() && isset($data['settings']) && is_array($data['settings'])) {
+            unset($data['settings']['googleApiKey']);
+        }
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
     }
     exit;

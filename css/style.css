@@ -619,6 +619,49 @@ button {
   margin-bottom: 30px;
 }
 
+.tour-preview-panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.tour-preview-panel {
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  background: #fff;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  box-shadow: var(--shadow);
+}
+
+.tour-preview-panel-label {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.tour-preview-panel-text {
+  margin: 0;
+  color: var(--dark);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.tour-preview-note {
+  margin-bottom: 24px;
+  padding: 12px 14px;
+  border-left: 3px solid rgba(212, 115, 28, 0.45);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: rgba(212, 115, 28, 0.08);
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
 .tour-detail {
   display: flex;
   align-items: center;
@@ -1918,6 +1961,10 @@ button {
 
   .tour-details,
   .tour-includes {
+    grid-template-columns: 1fr;
+  }
+
+  .tour-preview-panels {
     grid-template-columns: 1fr;
   }
 

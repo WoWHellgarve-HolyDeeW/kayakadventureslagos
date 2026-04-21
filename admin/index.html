@@ -538,7 +538,7 @@
 
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Guardado!</span></div>
 
-<script src="../js/site-data.js?v=202604211705"></script>
+<script src="../js/site-data.js?v=20260421061617"></script>
 <script>
 (function(){
   var adminToken = sessionStorage.getItem('admin_token') || '';
@@ -618,10 +618,10 @@
   var loginForm=document.getElementById('loginForm'),loginErr=document.getElementById('loginError');
   var loginDiv=document.getElementById('adminLogin'),dashDiv=document.getElementById('adminDashboard');
   if(adminToken && csrfToken)showDash();
-  loginForm.addEventListener('submit',function(e){e.preventDefault();var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;loginErr.style.display='none';var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;csrfToken=r.csrf_token||'';sessionStorage.setItem('admin_token',adminToken);sessionStorage.setItem('csrf_token',csrfToken);loginErr.style.display='none';if(r.must_change){showForceChange();}else{showDash();}}}catch(ex){loginErr.textContent='Erro inesperado. Tente novamente.';loginErr.style.display='block';}}else{try{var er=JSON.parse(xhr.responseText);loginErr.textContent=er.error||'Credenciais inválidas.';}catch(ex2){loginErr.textContent='Erro de ligação ao servidor ('+xhr.status+')';}loginErr.style.display='block';}}};xhr.send(JSON.stringify({action:'login',user:u,pass:p}));});
+  loginForm.addEventListener('submit',function(e){e.preventDefault();var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;loginErr.style.display='none';var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;csrfToken=r.csrf_token||'';sessionStorage.setItem('admin_token',adminToken);sessionStorage.setItem('csrf_token',csrfToken);loginErr.style.display='none';if(r.must_change){showForceChange(p);}else{showDash();}}}catch(ex){loginErr.textContent='Erro inesperado. Tente novamente.';loginErr.style.display='block';}}else{try{var er=JSON.parse(xhr.responseText);loginErr.textContent=er.error||'Credenciais inválidas.';}catch(ex2){loginErr.textContent='Erro de ligação ao servidor ('+xhr.status+')';}loginErr.style.display='block';}}};xhr.send(JSON.stringify({action:'login',user:u,pass:p}));});
   document.getElementById('logoutBtn').addEventListener('click',function(e){e.preventDefault();adminToken='';csrfToken='';sessionStorage.removeItem('admin_token');sessionStorage.removeItem('csrf_token');dashDiv.style.display='none';loginDiv.style.display='flex';});
 
-  function showForceChange(){
+  function showForceChange(currentPassword){
     loginDiv.style.display='none';dashDiv.style.display='none';
     var overlay=document.createElement('div');overlay.id='forceChangeOverlay';overlay.style.cssText='position:fixed;inset:0;background:linear-gradient(135deg,#0A0A0A,#111);display:flex;align-items:center;justify-content:center;z-index:99999;padding:24px;';
     overlay.innerHTML='<div style="background:#fff;padding:48px 40px;border-radius:20px;box-shadow:0 25px 50px rgba(0,0,0,.25);width:100%;max-width:420px;text-align:center;">'
@@ -637,14 +637,14 @@
       var np=document.getElementById('fcNewPass').value,cp=document.getElementById('fcConfirmPass').value,err=document.getElementById('fcError');
       if(np.length<8){err.textContent='Mínimo 8 caracteres!';err.style.display='block';return;}
       if(np!==cp){err.textContent='As passwords não coincidem!';err.style.display='block';return;}
-      if(np==='admin123'){err.textContent='Escolha uma password diferente da padrão!';err.style.display='block';return;}
+      if(np===currentPassword){err.textContent='Escolha uma password diferente da atual!';err.style.display='block';return;}
       var xhr=new XMLHttpRequest();xhr.open('POST','/api/auth.php',true);xhr.setRequestHeader('Content-Type','application/json');xhr.setRequestHeader('X-Admin-Token',adminToken);
       xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status===200){try{var r=JSON.parse(xhr.responseText);if(r.token){adminToken=r.token;csrfToken=r.csrf_token||'';sessionStorage.setItem('admin_token',adminToken);sessionStorage.setItem('csrf_token',csrfToken);overlay.remove();showDash();toast('Password alterada com sucesso!');}}catch(ex){err.textContent='Erro inesperado';err.style.display='block';}}else{err.textContent='Erro ao alterar password';err.style.display='block';}}};
-      xhr.send(JSON.stringify({action:'change_password',current:'admin123',newPass:np}));
+      xhr.send(JSON.stringify({action:'change_password',current:currentPassword,newPass:np}));
     });
   }
 
-  function showDash(){loginDiv.style.display='none';dashDiv.style.display='block';var fco=document.getElementById('forceChangeOverlay');if(fco)fco.remove();SiteData.loadFromServer(function(){loadAll();});}
+  function showDash(){loginDiv.style.display='none';dashDiv.style.display='block';var fco=document.getElementById('forceChangeOverlay');if(fco)fco.remove();SiteData.loadFromServer(function(){loadAll();},{token:adminToken,csrfToken:csrfToken});}
 
   var secTitles={dashboard:'Dashboard',homepage:'Homepage',tour:'Detalhes do Tour',about:'Sobre Nós',gallery:'Galeria',testimonials:'Testemunhos',social:'Redes Sociais',contact:'Contactos',settings:'Configurações',faq:'Perguntas Frequentes'};
   function goTo(name){document.querySelectorAll('.sidebar-nav a').forEach(function(a){a.classList.remove('active');});var nl=document.querySelector('.sidebar-nav a[data-sec="'+name+'"]');if(nl)nl.classList.add('active');document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active');});var el=document.getElementById('s-'+name);if(el)el.classList.add('active');document.getElementById('pageTitle').textContent=secTitles[name]||name;document.getElementById('sidebar').classList.remove('open');}

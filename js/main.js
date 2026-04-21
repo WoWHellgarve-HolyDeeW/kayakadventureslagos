@@ -555,26 +555,99 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
+  function getDefaultScheduleSlots() {
+    return [
+      { time: '10:00', raw: '10:00' },
+      { time: '13:00', raw: '13:00' },
+      { time: '15:30', raw: '15:30' },
+      { time: '18:00', raw: '18:00' }
+    ];
+  }
+
+  function formatScheduleTime(time, isPt) {
+    var value = String(time || '').trim();
+    var match = value.match(/^(\d{1,2}):(\d{2})$/);
+    if (!match) return value;
+    if (isPt) return value;
+
+    var hours = parseInt(match[1], 10);
+    var minutes = match[2];
+    var suffix = hours >= 12 ? 'PM' : 'AM';
+    var hour12 = hours % 12;
+    if (hour12 === 0) hour12 = 12;
+
+    return minutes === '00' ? (hour12 + ' ' + suffix) : (hour12 + ':' + minutes + ' ' + suffix);
+  }
+
+  function isSunsetScheduleSlot(slot, index, slots) {
+    return /sunset|p[oô]r do sol/i.test(slot.raw) || (slot.time === '18:00' && index === slots.length - 1);
+  }
+
+  function buildTourScheduleSummaryText(scheduleText, isPt) {
+    var sunsetLabel = isPt ? 'Pôr do Sol' : 'Sunset Tour';
+    var slots = extractScheduleSlots(scheduleText);
+
+    if (slots.length === 0) {
+      slots = getDefaultScheduleSlots();
+    }
+
+    return slots.map(function(slot, index) {
+      var timeLabel = formatScheduleTime(slot.time, isPt);
+      if (isSunsetScheduleSlot(slot, index, slots)) {
+        return timeLabel + ' - ' + sunsetLabel;
+      }
+      return timeLabel;
+    }).join(' | ');
+  }
+
+  function buildTourBeachStopNotice(scheduleText, isPt) {
+    var slots = extractScheduleSlots(scheduleText);
+
+    if (slots.length === 0) {
+      slots = getDefaultScheduleSlots();
+    }
+
+    var sunsetSlot = null;
+    slots.forEach(function(slot, index) {
+      if (!sunsetSlot && isSunsetScheduleSlot(slot, index, slots)) {
+        sunsetSlot = slot;
+      }
+    });
+
+    if (!sunsetSlot) {
+      sunsetSlot = slots[slots.length - 1];
+    }
+
+    var timeLabel = formatScheduleTime(sunsetSlot.time, isPt);
+    return isPt
+      ? 'O tour das ' + timeLabel + ' é o Pôr do Sol e não inclui paragem na praia.'
+      : 'The ' + timeLabel + ' departure is the Sunset Tour and does not include a beach stop.';
+  }
+
+  function buildTourSnorkelText(scheduleText, isPt) {
+    var base = isPt
+      ? 'Nos tours com paragem na praia, temos máscaras de snorkel para quem quiser aproveitar a paragem e entrar um pouco na água. É um extra simples e curto, sempre dependente do estado do mar.'
+      : 'On tours with a beach stop, we have snorkel masks available for anyone who wants to make the most of the stop and get in the water. It is a short, simple extra and always depends on sea conditions.';
+
+    return base + ' ' + buildTourBeachStopNotice(scheduleText, isPt);
+  }
+
   function buildTourScheduleHtml(scheduleText, isPt) {
     var label = isPt ? 'Horários' : 'Times';
     var sunsetLabel = isPt ? 'Pôr do Sol' : 'Sunset Tour';
     var slots = extractScheduleSlots(scheduleText);
 
     if (slots.length === 0) {
-      slots = [
-        { time: '10:00', raw: '10:00' },
-        { time: '13:00', raw: '13:00' },
-        { time: '15:30', raw: '15:30' },
-        { time: '18:00', raw: '18:00' }
-      ];
+      slots = getDefaultScheduleSlots();
     }
 
     var rendered = slots.map(function(slot, index) {
-      var isSunset = /sunset|p[oô]r do sol/i.test(slot.raw) || (slot.time === '18:00' && index === slots.length - 1);
+      var timeLabel = formatScheduleTime(slot.time, isPt);
+      var isSunset = isSunsetScheduleSlot(slot, index, slots);
       if (isSunset) {
-        return '<span class="tour-schedule-sunset">' + esc(slot.time) + ' &ndash; ' + esc(sunsetLabel) + '</span>';
+        return '<span class="tour-schedule-sunset">' + esc(timeLabel) + ' &ndash; ' + esc(sunsetLabel) + '</span>';
       }
-      return esc(slot.time);
+      return esc(timeLabel);
     }).join(' <span class="tour-schedule-separator">|</span> ');
 
     return '<span class="tour-schedule-label">' + label + '</span><span class="tour-schedule-times">' + rendered + '</span>';
@@ -711,6 +784,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (icon.classList.contains('fa-signal')) span.textContent = isPt ? d.tour.levelPt : d.tour.levelEn;
         if (icon.classList.contains('fa-language')) span.textContent = d.tour.languages;
       });
+      var previewSchedule = document.getElementById('tourPreviewSchedule');
+      if (previewSchedule) previewSchedule.textContent = buildTourScheduleSummaryText(d.tour.schedules, isPt);
+      var previewNote = document.getElementById('tourPreviewNote');
+      if (previewNote) previewNote.textContent = buildTourBeachStopNotice(d.tour.schedules, isPt);
       var testSlider = document.querySelector('.testimonials-slider');
       if (testSlider && d.testimonials.length > 0) {
         function renderTestimonials(allReviews) {
@@ -825,6 +902,15 @@ document.addEventListener('DOMContentLoaded', function() {
       if (desc2) desc2.style.display = 'none';
       var desc3 = document.querySelector('[data-i18n="tour_desc3"]');
       if (desc3) desc3.style.display = 'none';
+    }
+    var snorkelText = document.querySelector('[data-i18n="tour_snorkel_text"]');
+    if (snorkelText) snorkelText.textContent = buildTourSnorkelText(d.tour.schedules, isPt);
+    var step4Text = document.querySelector('[data-i18n="tour_step4_text"]');
+    if (step4Text) {
+      var step4Base = isPt
+        ? 'Paramos numa praia para um mergulho e snorkelling leve, com máscaras de snorkel incluídas nos tours com paragem na praia, antes de regressar ao ponto de partida. Nas águas claras de Lagos, junto às rochas douradas da Ponta da Piedade, este é um dos momentos favoritos dos nossos clientes.'
+        : 'We stop at a beach for a quick swim and light snorkelling. Snorkel masks are included on tours with a beach stop before we return to the starting point. In Lagos\' clear waters, framed by the golden rock formations of Ponta da Piedade, this is one of our guests\' favourite moments.';
+      step4Text.textContent = step4Base + ' ' + (isPt ? 'Nota: ' : 'Note: ') + buildTourBeachStopNotice(d.tour.schedules, isPt);
     }
     // Apply tour name to tour page title
     var tourPageTitle = document.querySelector('[data-i18n="tour_page_title"]');

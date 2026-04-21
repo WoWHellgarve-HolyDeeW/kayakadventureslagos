@@ -1,2 +1,7 @@
 old_web/
 *.zip
+api/auth.json
+api/site-data.json
+api/rate_limits.json
+api/ratings_cache.json
+api/reviews_cache.json

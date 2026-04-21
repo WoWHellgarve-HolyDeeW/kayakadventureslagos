@@ -12,25 +12,32 @@ $LOCKOUT_MINUTES = 15;
 function getAuth() {
     global $AUTH_FILE;
     if (!file_exists($AUTH_FILE)) {
-        $default = [
-            'user' => 'admin',
-            'pass_hash' => password_hash('admin123', PASSWORD_DEFAULT),
-            'token' => bin2hex(random_bytes(32)),
-            'csrf_token' => bin2hex(random_bytes(32)),
-            'must_change' => true
-        ];
-        file_put_contents($AUTH_FILE, json_encode($default, JSON_PRETTY_PRINT), LOCK_EX);
-        chmod($AUTH_FILE, 0600);
-        return $default;
+        return null;
     }
+
     $auth = json_decode(file_get_contents($AUTH_FILE), true);
+    if (!is_array($auth) || empty($auth['user']) || empty($auth['pass_hash'])) {
+        return null;
+    }
+
+    $needsWrite = false;
+    if (empty($auth['token'])) {
+        $auth['token'] = bin2hex(random_bytes(32));
+        $needsWrite = true;
+    }
     if (!isset($auth['csrf_token'])) {
         $auth['csrf_token'] = bin2hex(random_bytes(32));
-        file_put_contents($AUTH_FILE, json_encode($auth, JSON_PRETTY_PRINT), LOCK_EX);
+        $needsWrite = true;
     }
     if (!isset($auth['must_change'])) {
         $auth['must_change'] = false;
+        $needsWrite = true;
     }
+    if ($needsWrite) {
+        file_put_contents($AUTH_FILE, json_encode($auth, JSON_PRETTY_PRINT), LOCK_EX);
+        @chmod($AUTH_FILE, 0600);
+    }
+
     return $auth;
 }
 
@@ -134,6 +141,11 @@ if ($action === 'login') {
     }
 
     $auth = getAuth();
+    if (!$auth) {
+        http_response_code(503);
+        echo json_encode(['error' => 'Admin access is not initialized.']);
+        exit;
+    }
 
     if ($user === $auth['user'] && password_verify($pass, $auth['pass_hash'])) {
         clearRateLimit();
@@ -157,6 +169,11 @@ if ($action === 'change_password') {
     if (!$token) $token = isset($headers['x-admin-token']) ? $headers['x-admin-token'] : '';
 
     $auth = getAuth();
+    if (!$auth) {
+        http_response_code(503);
+        echo json_encode(['error' => 'Admin access is not initialized.']);
+        exit;
+    }
     if (!$token || !hash_equals($auth['token'], $token)) {
         http_response_code(401);
         echo json_encode(['error' => 'Unauthorized']);
