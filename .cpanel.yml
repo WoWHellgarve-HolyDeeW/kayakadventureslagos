@@ -1,0 +1,14 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/kayakadventures/public_html
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/mkdir -p $DEPLOYPATH/admin $DEPLOYPATH/api $DEPLOYPATH/css $DEPLOYPATH/js $DEPLOYPATH/images $DEPLOYPATH/videos
+    - /bin/cp .htaccess $DEPLOYPATH/.htaccess
+    - /bin/cp 404.html about.html cookies.html faq.html gallery.html gdpr.html index.html privacy.html robots.txt sitemap.xml tour.html $DEPLOYPATH/
+    - /bin/cp -R admin/* $DEPLOYPATH/admin/
+    - /bin/cp -R api/* $DEPLOYPATH/api/
+    - /bin/cp -R css/* $DEPLOYPATH/css/
+    - /bin/cp -R js/* $DEPLOYPATH/js/
+    - /bin/cp -R images/* $DEPLOYPATH/images/
+    - /bin/cp -R videos/* $DEPLOYPATH/videos/
