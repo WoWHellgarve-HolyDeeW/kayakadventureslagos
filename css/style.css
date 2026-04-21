@@ -1213,6 +1213,36 @@ button {
   border-top: 1px solid rgba(17, 17, 17, 0.06);
 }
 
+.home-gallery-videos {
+  margin-top: 32px;
+}
+
+.home-gallery-videos-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.home-gallery-videos-header h3 {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  color: var(--dark);
+}
+
+.home-gallery-videos-header p {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 0.98rem;
+}
+
+.home-gallery-video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
 .gallery-video-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1240,6 +1270,10 @@ button {
   object-fit: cover;
 }
 
+.home-gallery-video-card video {
+  aspect-ratio: 16 / 9;
+}
+
 .gallery-video-body {
   padding: 18px 20px 20px;
 }
@@ -1264,6 +1298,77 @@ button {
   font-size: 1.1rem;
   color: var(--dark);
   line-height: 1.35;
+}
+
+.gallery-video-action {
+  margin-top: 16px;
+}
+
+.video-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10010;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(6px);
+}
+
+.video-lightbox.active {
+  display: flex;
+}
+
+.video-lightbox-dialog {
+  position: relative;
+  width: min(92vw, 980px);
+  padding: 18px;
+  border-radius: 24px;
+  background: #0f1114;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+}
+
+.video-lightbox-title {
+  margin: 0 56px 14px 4px;
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+.video-lightbox-player-wrap {
+  overflow: hidden;
+  border-radius: 18px;
+  background: #000;
+}
+
+.video-lightbox-player {
+  width: 100%;
+  max-height: min(72vh, 560px);
+  display: block;
+  background: #000;
+  object-fit: contain;
+}
+
+.video-lightbox-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1.1rem;
+  transition: var(--transition);
+}
+
+.video-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .lightbox {
@@ -1966,6 +2071,35 @@ button {
 
   .tour-preview-panels {
     grid-template-columns: 1fr;
+  }
+
+  .home-gallery-videos-header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .home-gallery-video-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .video-lightbox {
+    padding: 16px;
+  }
+
+  .video-lightbox-dialog {
+    width: 100%;
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .video-lightbox-title {
+    margin-right: 48px;
+    font-size: 1rem;
+  }
+
+  .video-lightbox-player {
+    max-height: min(58vh, 420px);
   }
 
   .tour-hero-section {

@@ -148,6 +148,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const filterBtns = document.querySelectorAll('.gallery-filter-btn');
   var lightboxImages = [];
   var lightboxIndex = 0;
+  var videoLightbox = null;
+  var videoLightboxPlayer = null;
+  var videoLightboxTitle = null;
 
   function normalizeMediaUrl(url, mediaType) {
     if (!url) return '';
@@ -168,6 +171,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (/^video\//i.test(value)) return value.replace(/^video\//i, 'videos/');
 
     return (mediaType === 'video' ? 'videos/gallery/' : 'images/gallery/') + value;
+  }
+
+  function looksLikeVideoUrl(url) {
+    var normalized = normalizeMediaUrl(url, 'video');
+    if (!normalized) return false;
+    if (/^(data|blob):/i.test(normalized)) return true;
+    return /\.(mp4|webm|ogg|ogv|mov)(?:$|[?#])/i.test(normalized);
   }
 
   function buildMediaCandidates(url, mediaType) {
@@ -279,6 +289,68 @@ document.addEventListener('DOMContentLoaded', function() {
     handleError();
   }
 
+  function configureInlineVideoPlayer(videoEl) {
+    if (!videoEl) return;
+    videoEl.setAttribute('controls', 'controls');
+    videoEl.setAttribute('playsinline', 'playsinline');
+    videoEl.setAttribute('preload', 'metadata');
+    videoEl.setAttribute('controlsList', 'nodownload noplaybackrate nofullscreen');
+    videoEl.setAttribute('disablepictureinpicture', 'disablepictureinpicture');
+    videoEl.disablePictureInPicture = true;
+  }
+
+  function ensureVideoLightbox() {
+    if (videoLightbox) return;
+
+    videoLightbox = document.createElement('div');
+    videoLightbox.className = 'video-lightbox';
+    videoLightbox.innerHTML = '<div class="video-lightbox-dialog"><button type="button" class="video-lightbox-close" aria-label="Close video player"><i class="fas fa-times"></i></button><h3 class="video-lightbox-title"></h3><div class="video-lightbox-player-wrap"><video class="video-lightbox-player" controls playsinline preload="metadata" controlsList="nodownload noplaybackrate nofullscreen" disablepictureinpicture></video></div></div>';
+    document.body.appendChild(videoLightbox);
+
+    videoLightboxPlayer = videoLightbox.querySelector('.video-lightbox-player');
+    videoLightboxTitle = videoLightbox.querySelector('.video-lightbox-title');
+    videoLightbox.querySelector('.video-lightbox-close').addEventListener('click', closeVideoLightbox);
+    videoLightbox.addEventListener('click', function(event) {
+      if (event.target === videoLightbox) closeVideoLightbox();
+    });
+  }
+
+  function openVideoLightbox(videoData, isPt) {
+    if (!videoData || !videoData.url || !looksLikeVideoUrl(videoData.url)) return;
+
+    ensureVideoLightbox();
+    if (!videoLightbox || !videoLightboxPlayer) return;
+
+    var title = isPt ? (videoData.titlePt || videoData.titleEn) : (videoData.titleEn || videoData.titlePt);
+    if (videoLightboxTitle) {
+      videoLightboxTitle.textContent = title || (isPt ? 'Vídeo do tour' : 'Tour video');
+    }
+
+    var poster = normalizeMediaUrl(videoData.poster, 'image');
+    if (poster) videoLightboxPlayer.setAttribute('poster', poster);
+    else videoLightboxPlayer.removeAttribute('poster');
+
+    videoLightboxPlayer.pause();
+    videoLightboxPlayer.removeAttribute('src');
+    videoLightboxPlayer.load();
+
+    applyVideoSourceCandidates(videoLightboxPlayer, videoData.url, function() {
+      videoLightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }, function() {
+      closeVideoLightbox();
+    });
+  }
+
+  function closeVideoLightbox() {
+    if (!videoLightbox || !videoLightboxPlayer) return;
+    videoLightboxPlayer.pause();
+    videoLightboxPlayer.removeAttribute('src');
+    videoLightboxPlayer.load();
+    videoLightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
   function bindGalleryFilters(galleryRoot) {
     if (!galleryRoot || filterBtns.length === 0) return;
 
@@ -375,6 +447,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   document.addEventListener('keydown', function(e) {
+    if (videoLightbox && videoLightbox.classList.contains('active')) {
+      if (e.key === 'Escape') closeVideoLightbox();
+      return;
+    }
     if (lightbox && lightbox.classList.contains('active')) {
       if (e.key === 'Escape') closeLightbox();
       if (e.key === 'ArrowLeft' && lightboxPrev) lightboxPrev.click();
@@ -626,8 +702,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function buildTourSnorkelText(scheduleText, isPt) {
     var base = isPt
-      ? 'Nos tours com paragem na praia, temos máscaras de snorkel para quem quiser aproveitar a paragem e entrar um pouco na água. É um extra simples e curto, sempre dependente do estado do mar.'
-      : 'On tours with a beach stop, we have snorkel masks available for anyone who wants to make the most of the stop and get in the water. It is a short, simple extra and always depends on sea conditions.';
+      ? 'Nos tours com paragem na praia, temos máscaras de snorkel para quem quiser aproveitar a paragem e entrar um pouco na água.'
+      : 'On tours with a beach stop, we have snorkel masks available for anyone who wants to make the most of the stop and get in the water.';
 
     return base + ' ' + buildTourBeachStopNotice(scheduleText, isPt);
   }
@@ -972,17 +1048,26 @@ document.addEventListener('DOMContentLoaded', function() {
       galleryVideosSection.hidden = true;
 
       (Array.isArray(d.galleryVideos) ? d.galleryVideos : []).forEach(function(video) {
-        if (!video || !video.url) return;
+        if (!video || !video.url || !looksLikeVideoUrl(video.url)) return;
 
         var title = isPt ? (video.titlePt || video.titleEn) : (video.titleEn || video.titlePt);
         var poster = normalizeMediaUrl(video.poster, 'image');
         var card = document.createElement('article');
         card.className = 'gallery-video-card fade-in visible';
-        card.innerHTML = '<video controls playsinline preload="metadata"' + (poster ? ' poster="' + esc(poster) + '"' : '') + '></video>' +
-          '<div class="gallery-video-body"><span class="gallery-video-tag"><i class="fas fa-play"></i> ' + esc(isPt ? 'Vídeo' : 'Video') + '</span><h3>' + esc(title || (isPt ? 'Momento do tour' : 'Tour moment')) + '</h3></div>';
+        card.innerHTML = '<video' + (poster ? ' poster="' + esc(poster) + '"' : '') + '></video>' +
+          '<div class="gallery-video-body"><span class="gallery-video-tag"><i class="fas fa-play"></i> ' + esc(isPt ? 'Vídeo' : 'Video') + '</span><h3>' + esc(title || (isPt ? 'Momento do tour' : 'Tour moment')) + '</h3><button type="button" class="btn btn-outline btn-sm gallery-video-action" data-open-video>' + (isPt ? '<i class="fas fa-expand"></i> Abrir player' : '<i class="fas fa-expand"></i> Open player') + '</button></div>';
         galleryVideoGrid.appendChild(card);
 
-        applyVideoSourceCandidates(card.querySelector('video'), video.url, function() {
+        var inlineVideo = card.querySelector('video');
+        configureInlineVideoPlayer(inlineVideo);
+        var openBtn = card.querySelector('[data-open-video]');
+        if (openBtn) {
+          openBtn.addEventListener('click', function() {
+            openVideoLightbox(video, isPt);
+          });
+        }
+
+        applyVideoSourceCandidates(inlineVideo, video.url, function() {
           card.classList.add('is-ready');
           galleryVideosSection.hidden = false;
         }, function() {
@@ -1006,6 +1091,40 @@ document.addEventListener('DOMContentLoaded', function() {
         homeGal.appendChild(gDiv);
         applyImageSourceCandidates(gDiv.querySelector('img'), gImg.url);
       }
+    }
+    var homeVideoWrap = document.getElementById('homeGalleryVideos');
+    var homeVideoGrid = document.getElementById('homeGalleryVideoGrid');
+    if (homeVideoWrap && homeVideoGrid) {
+      homeVideoGrid.innerHTML = '';
+      homeVideoWrap.hidden = true;
+
+      (Array.isArray(d.galleryVideos) ? d.galleryVideos : []).filter(function(video) {
+        return !!(video && video.url && looksLikeVideoUrl(video.url));
+      }).slice(0, 2).forEach(function(video) {
+        var title = isPt ? (video.titlePt || video.titleEn) : (video.titleEn || video.titlePt);
+        var poster = normalizeMediaUrl(video.poster, 'image');
+        var card = document.createElement('article');
+        card.className = 'gallery-video-card home-gallery-video-card fade-in visible';
+        card.innerHTML = '<video' + (poster ? ' poster="' + esc(poster) + '"' : '') + '></video>' +
+          '<div class="gallery-video-body"><span class="gallery-video-tag"><i class="fas fa-play"></i> ' + esc(isPt ? 'Vídeo' : 'Video') + '</span><h3>' + esc(title || (isPt ? 'Momento do tour' : 'Tour moment')) + '</h3><button type="button" class="btn btn-outline btn-sm gallery-video-action" data-open-video>' + (isPt ? '<i class="fas fa-expand"></i> Abrir player' : '<i class="fas fa-expand"></i> Open player') + '</button></div>';
+        homeVideoGrid.appendChild(card);
+
+        var inlineVideo = card.querySelector('video');
+        configureInlineVideoPlayer(inlineVideo);
+        var openBtn = card.querySelector('[data-open-video]');
+        if (openBtn) {
+          openBtn.addEventListener('click', function() {
+            openVideoLightbox(video, isPt);
+          });
+        }
+
+        applyVideoSourceCandidates(inlineVideo, video.url, function() {
+          card.classList.add('is-ready');
+          homeVideoWrap.hidden = false;
+        }, function() {
+          card.remove();
+        });
+      });
     }
     var trustBar = document.getElementById('trustBar');
     if (trustBar) {

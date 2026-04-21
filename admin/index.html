@@ -93,6 +93,7 @@
     .gal-item{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;}
     .gal-item img,.gal-item video{width:100%;height:100%;object-fit:cover;transition:transform .3s;display:block;background:#111;}
     .gal-item:hover img,.gal-item:hover video{transform:scale(1.05);}
+    .gal-video-item::before{content:'\f04b';font-family:'Font Awesome 6 Free';font-weight:900;position:absolute;top:10px;left:10px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.58);color:#fff;font-size:.82rem;z-index:2;pointer-events:none;box-shadow:0 6px 16px rgba(0,0,0,.2);}
     .gal-ov{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;opacity:0;transition:opacity .2s;}
     .gal-item:hover .gal-ov{opacity:1;}
     .gal-ov span{color:#fff;font-size:.75rem;font-weight:600;text-align:center;padding:0 8px;}
@@ -538,7 +539,7 @@
 
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Guardado!</span></div>
 
-<script src="../js/site-data.js?v=20260421061617"></script>
+<script src="../js/site-data.js?v=20260421081002"></script>
 <script>
 (function(){
   var adminToken = sessionStorage.getItem('admin_token') || '';
@@ -548,6 +549,7 @@
 
   function toast(msg,err){var t=document.getElementById('toast'),m=document.getElementById('toastMsg');m.textContent=msg||'Guardado!';t.className=err?'toast show err':'toast show';setTimeout(function(){t.classList.remove('show');},3000);}
   function normalizePublicMediaPath(url,mediaType){if(!url)return'';var value=String(url).trim().replace(/\\/g,'/');if(!value)return'';if(/^(https?:)?\/\//i.test(value)||/^(data|blob):/i.test(value))return value;value=value.replace(/^\.\//,'');while(value.indexOf('../')===0)value=value.substring(3);value=value.replace(/^admin\//i,'');if(value.charAt(0)==='/')value=value.substring(1);if(/^(images|videos)\//i.test(value))return value;if(/^uploads\//i.test(value))return 'images/'+value;if(/^gallery\//i.test(value))return 'images/'+value;return (mediaType==='video'?'videos/gallery/':'images/gallery/')+value;}
+  function looksLikeVideoUrl(url){var normalized=normalizePublicMediaPath(url,'video');if(!normalized)return false;if(/^(data|blob):/i.test(normalized))return true;return /\.(mp4|webm|ogg|ogv|mov)(?:$|[?#])/i.test(normalized);}
   function toPreviewPath(url,mediaType){var normalized=normalizePublicMediaPath(url,mediaType);if(!normalized)return'';if(/^(https?:)?\/\//i.test(normalized)||/^(data|blob):/i.test(normalized))return normalized;return '/'+normalized.replace(/^\/+/, '');}
   function buildVideoPreviewHtml(videoUrl,posterUrl){var previewVideo=toPreviewPath(videoUrl,'video');if(!previewVideo)return'';var previewPoster=toPreviewPath(posterUrl,'image');return '<video src="'+esc(previewVideo)+'"'+(previewPoster?' poster="'+esc(previewPoster)+'"':'')+' controls playsinline preload="metadata" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-top:8px;background:#111;"></video>';}
 
@@ -775,10 +777,11 @@
   function loadGalVideos(d){
     var grid=document.getElementById('galVideoGrid');grid.innerHTML='';
     (d.galleryVideos||[]).forEach(function(video){
+      if(!video||!video.url||!looksLikeVideoUrl(video.url))return;
       var previewVideo=toPreviewPath(video.url,'video');
       var posterPath=toPreviewPath(video.poster,'image');
       var title=video.titlePt||video.titleEn||'Vídeo';
-      var div=document.createElement('div');div.className='gal-item';
+      var div=document.createElement('div');div.className='gal-item gal-video-item';
       div.innerHTML='<video src="'+esc(previewVideo)+'"'+(posterPath?' poster="'+esc(posterPath)+'"':'')+' muted playsinline preload="metadata"></video>'+
         '<div class="gal-ov"><span>Vídeo</span><span>'+esc(title)+'</span><div class="actions"><button class="btn-edit" data-gve="'+video.id+'"><i class="fas fa-edit"></i></button><button class="btn-del" data-gvd="'+video.id+'"><i class="fas fa-trash"></i></button></div></div>';
       grid.appendChild(div);
@@ -801,7 +804,7 @@
   }
   function delGalVideo(id){if(!confirm('Remover este vídeo?'))return;var d=SiteData.load();d.galleryVideos=(d.galleryVideos||[]).filter(function(v){return v.id!==id;});SiteData.save(d);loadGalVideos(d);serverSave();}
   document.getElementById('galVideoModalSave').addEventListener('click',function(){
-    var url=normalizePublicMediaPath(document.getElementById('gvm_url').value.trim(),'video');if(!url){toast('Preencha o URL do vídeo!',true);return;}
+    var url=normalizePublicMediaPath(document.getElementById('gvm_url').value.trim(),'video');if(!url){toast('Preencha o URL do vídeo!',true);return;}if(!looksLikeVideoUrl(url)){toast('Use um ficheiro de vídeo válido (MP4, WebM, OGG ou MOV).',true);return;}
     var poster=normalizePublicMediaPath(document.getElementById('gvm_poster').value.trim(),'image');
     var d=SiteData.load(),eid=document.getElementById('gvm_id').value;d.galleryVideos=d.galleryVideos||[];
     var obj={url:url,poster:poster,titlePt:document.getElementById('gvm_titlePt').value.trim(),titleEn:document.getElementById('gvm_titleEn').value.trim()};
@@ -809,7 +812,7 @@
     else{var mx=d.galleryVideos.reduce(function(m,v){return v.id>m?v.id:m;},0);obj.id=mx+1;d.galleryVideos.push(obj);}
     SiteData.save(d);loadGalVideos(d);closeM('galVideoModal');serverSave();
   });
-  function refreshGalVideoPreview(){var url=normalizePublicMediaPath(document.getElementById('gvm_url').value.trim(),'video');var poster=normalizePublicMediaPath(document.getElementById('gvm_poster').value.trim(),'image');document.getElementById('gvm_preview').innerHTML=url?buildVideoPreviewHtml(url,poster):'';}
+  function refreshGalVideoPreview(){var url=normalizePublicMediaPath(document.getElementById('gvm_url').value.trim(),'video');var poster=normalizePublicMediaPath(document.getElementById('gvm_poster').value.trim(),'image');document.getElementById('gvm_preview').innerHTML=!url?'':(looksLikeVideoUrl(url)?buildVideoPreviewHtml(url,poster):'<p style="color:#EF4444;font-size:.82rem;margin-top:8px;">Use um ficheiro de vídeo válido (MP4, WebM, OGG ou MOV).</p>');}
   document.getElementById('gvm_url').addEventListener('input',refreshGalVideoPreview);
   document.getElementById('gvm_poster').addEventListener('input',refreshGalVideoPreview);
 
