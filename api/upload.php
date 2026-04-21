@@ -5,7 +5,8 @@ header('X-Frame-Options: DENY');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 
 $AUTH_FILE = __DIR__ . '/auth.json';
-$UPLOAD_DIR = __DIR__ . '/../images/uploads/';
+$IMAGE_UPLOAD_DIR = __DIR__ . '/../images/uploads/';
+$VIDEO_UPLOAD_DIR = __DIR__ . '/../videos/gallery/';
 
 function checkAuth() {
     global $AUTH_FILE;
@@ -39,15 +40,27 @@ if (!checkAuth()) {
     exit;
 }
 
-if (!isset($_FILES['image'])) {
+if (!isset($_FILES['image']) && !isset($_FILES['video'])) {
     http_response_code(400);
     $phpMax = ini_get('upload_max_filesize');
     $postMax = ini_get('post_max_size');
-    echo json_encode(['error' => "No image received. PHP limits: upload_max={$phpMax}, post_max={$postMax}. File may exceed server limit."]);
+    echo json_encode(['error' => "No file received. PHP limits: upload_max={$phpMax}, post_max={$postMax}. File may exceed server limit."]);
     exit;
 }
 
-if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+$isVideo = isset($_FILES['video']);
+$fileKey = $isVideo ? 'video' : 'image';
+$uploadDir = $isVideo ? $VIDEO_UPLOAD_DIR : $IMAGE_UPLOAD_DIR;
+$urlPrefix = $isVideo ? 'videos/gallery/' : 'images/uploads/';
+$maxSize = $isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+$allowedMimes = $isVideo
+    ? ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime']
+    : ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+$extensions = $isVideo
+    ? ['video/mp4' => 'mp4', 'video/webm' => 'webm', 'video/ogg' => 'ogv', 'video/quicktime' => 'mov']
+    : ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
+
+if ($_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
     $errors = [
         UPLOAD_ERR_INI_SIZE   => 'File exceeds server upload limit (' . ini_get('upload_max_filesize') . '). Contact hosting or increase upload_max_filesize.',
         UPLOAD_ERR_FORM_SIZE  => 'File exceeds form limit.',
@@ -57,39 +70,36 @@ if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
         UPLOAD_ERR_CANT_WRITE => 'Failed to write to disk. Check server permissions.',
         UPLOAD_ERR_EXTENSION  => 'Upload blocked by server extension.',
     ];
-    $code = $_FILES['image']['error'];
+    $code = $_FILES[$fileKey]['error'];
     $msg = isset($errors[$code]) ? $errors[$code] : "Upload error (code: {$code})";
     http_response_code(400);
     echo json_encode(['error' => $msg]);
     exit;
 }
 
-$file = $_FILES['image'];
-$maxSize = 10 * 1024 * 1024;
+$file = $_FILES[$fileKey];
 if ($file['size'] > $maxSize) {
     http_response_code(400);
-    echo json_encode(['error' => 'File too large. Max 10MB.']);
+    echo json_encode(['error' => $isVideo ? 'File too large. Max 50MB.' : 'File too large. Max 10MB.']);
     exit;
 }
 
 $finfo = new finfo(FILEINFO_MIME_TYPE);
 $mime = $finfo->file($file['tmp_name']);
-$allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 if (!in_array($mime, $allowedMimes)) {
     http_response_code(400);
-    echo json_encode(['error' => 'Invalid file type. Allowed: JPG, PNG, WebP, GIF.']);
+    echo json_encode(['error' => $isVideo ? 'Invalid file type. Allowed: MP4, WebM, OGG, MOV.' : 'Invalid file type. Allowed: JPG, PNG, WebP, GIF.']);
     exit;
 }
 
-$extensions = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
 $ext = $extensions[$mime];
 
-if (!is_dir($UPLOAD_DIR)) {
-    mkdir($UPLOAD_DIR, 0755, true);
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
 }
 
 $filename = time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-$destination = $UPLOAD_DIR . $filename;
+$destination = $uploadDir . $filename;
 
 if (!move_uploaded_file($file['tmp_name'], $destination)) {
     http_response_code(500);
@@ -97,5 +107,5 @@ if (!move_uploaded_file($file['tmp_name'], $destination)) {
     exit;
 }
 
-$url = 'images/uploads/' . $filename;
+$url = $urlPrefix . $filename;
 echo json_encode(['success' => true, 'url' => $url]);

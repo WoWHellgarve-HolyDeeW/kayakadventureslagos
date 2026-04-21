@@ -79,7 +79,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=202603260550">
+  <link rel="stylesheet" href="css/style.css?v=202604211705">
 </head>
 <body>
 
@@ -142,6 +142,16 @@
             <p data-i18n="tour_desc3">Quer seja um kayakista experiente ou um iniciante completo, este tour é para si. Fornecemos todo o equipamento necessário e um briefing completo de segurança antes de partirmos.</p>
           </div>
 
+          <div class="tour-highlight-card fade-in">
+            <div class="tour-highlight-icon">
+              <i class="fas fa-fish"></i>
+            </div>
+            <div>
+              <h3 data-i18n="tour_snorkel_title">Snorkelling</h3>
+              <p data-i18n="tour_snorkel_text">Nos tours com paragem na praia, temos máscaras de snorkel para quem quiser aproveitar a paragem e entrar um pouco na água. É um extra simples e curto, sempre dependente do estado do mar.</p>
+            </div>
+          </div>
+
           <div class="tour-content-section fade-in" style="margin-top: 50px;">
             <h2 data-i18n="tour_includes_title">O Que Está Incluído</h2>
             <div class="tour-includes">
@@ -160,6 +170,10 @@
               <div class="tour-include-item">
                 <i class="fas fa-check-circle"></i>
                 <span data-i18n="tour_inc4">Saco estanque</span>
+              </div>
+              <div class="tour-include-item">
+                <i class="fas fa-check-circle"></i>
+                <span data-i18n="tour_inc9">Máscaras de snorkel nos tours com paragem na praia</span>
               </div>
               <div class="tour-include-item">
                 <i class="fas fa-check-circle"></i>
@@ -214,13 +228,19 @@
             <i class="fas fa-calendar-alt"></i>
             <span data-i18n="tour_sidebar_season"><strong>Época:</strong> Abril - Outubro</span>
           </div>
+          <div class="tour-sidebar-detail">
+            <i class="fas fa-fish"></i>
+            <span data-i18n="tour_sidebar_snorkel"><strong>Snorkelling:</strong> Máscaras incluídas nos tours com paragem na praia</span>
+          </div>
 
           <div class="tour-price" style="margin-top:24px;">
             €35 <small data-i18n="tour_price_per">/ pessoa</small>
           </div>
 
           <div style="text-align: center;">
-            <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 16px;" data-i18n="tour_sidebar_schedule">Horários: 10:00 | 13:00 | 15:30 | 18:00 – Sunset Tour</p>
+            <div class="tour-schedule-highlight" style="margin-bottom: 16px;">
+              <p class="tour-schedule-highlight-text" data-i18n="tour_sidebar_schedule">Horários: 10:00 | 13:00 | 15:30 | 18:00 – Pôr do Sol</p>
+            </div>
 
             <div id="fareharbor-booking">
               <a href="tour.html#booking" class="btn btn-secondary btn-lg" style="width: 100%; justify-content: center;" data-i18n="tour_book_now">
@@ -273,7 +293,7 @@
             <i class="fas fa-umbrella-beach"></i>
           </div>
           <h3 data-i18n="tour_step4_title">Praia & Regresso</h3>
-          <p data-i18n="tour_step4_text">Paramos numa praia para um mergulho rápido (oferecemos máscaras de snorkel) antes de regressar ao ponto de partida. Nota: O Sunset Tour (18:00) não inclui paragem na praia.</p>
+          <p data-i18n="tour_step4_text">Paramos numa praia para um mergulho e snorkelling leve, com máscaras de snorkel incluídas nos tours com paragem na praia, antes de regressar ao ponto de partida. Nas águas claras de Lagos, junto às rochas douradas da Ponta da Piedade, este é um dos momentos favoritos dos nossos clientes. Nota: O tour das 18:00 é o Pôr do Sol e não inclui paragem na praia.</p>
         </div>
       </div>
     </div>
@@ -340,6 +360,7 @@
             <a href="privacy.html" data-i18n="footer_privacy">Política de Privacidade</a>
             <a href="cookies.html" data-i18n="footer_cookies">Política de Cookies</a>
             <a href="gdpr.html" data-i18n="footer_gdpr">Política GDPR</a>
+            <a href="https://www.livroreclamacoes.pt/" target="_blank" rel="noopener" data-i18n="footer_complaints">Livro de Reclamações</a>
           </div>
         </div>
         <div>
@@ -356,6 +377,7 @@
           <a href="privacy.html" data-i18n="footer_privacy">Política de Privacidade</a>
           <a href="cookies.html" data-i18n="footer_cookies">Cookies</a>
           <a href="gdpr.html" data-i18n="footer_gdpr">GDPR</a>
+          <a href="https://www.livroreclamacoes.pt/" target="_blank" rel="noopener" data-i18n="footer_complaints">Livro de Reclamações</a>
         </div>
         <p style="font-size:.75rem;color:rgba(255,255,255,.35);margin-top:10px;">Desenvolvido por <strong>Hellgarve Studios</strong></p>
       </div>
@@ -375,8 +397,8 @@
   <a href="https://wa.me/351912345678?text=Olá! Gostaria de saber mais sobre os tours de kayak." class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
   <button class="back-to-top" id="backToTop" aria-label="Voltar ao topo"><i class="fas fa-chevron-up"></i></button>
 
-  <script src="js/site-data.js?v=202603260550"></script>
-  <script src="js/translations.js?v=202603260550"></script>
-  <script src="js/main.js?v=202603260550"></script>
+  <script src="js/site-data.js?v=202604211705"></script>
+  <script src="js/translations.js?v=202604211705"></script>
+  <script src="js/main.js?v=202604211705"></script>
 </body>
 </html>

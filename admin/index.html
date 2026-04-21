@@ -91,8 +91,8 @@
     /* Gallery grid */
     .gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-top:14px;}
     .gal-item{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;}
-    .gal-item img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
-    .gal-item:hover img{transform:scale(1.05);}
+    .gal-item img,.gal-item video{width:100%;height:100%;object-fit:cover;transition:transform .3s;display:block;background:#111;}
+    .gal-item:hover img,.gal-item:hover video{transform:scale(1.05);}
     .gal-ov{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;opacity:0;transition:opacity .2s;}
     .gal-item:hover .gal-ov{opacity:1;}
     .gal-ov span{color:#fff;font-size:.75rem;font-weight:600;text-align:center;padding:0 8px;}
@@ -198,7 +198,7 @@
       <div class="quick-grid">
         <a href="#" class="qlink" data-go="homepage"><i class="fas fa-home" style="color:var(--primary)"></i><div><strong>Homepage</strong><small>Título, subtítulo, imagens hero</small></div></a>
         <a href="#" class="qlink" data-go="tour"><i class="fas fa-route" style="color:var(--secondary)"></i><div><strong>Tour</strong><small>Preço, duração, horários, FareHarbor</small></div></a>
-        <a href="#" class="qlink" data-go="gallery"><i class="fas fa-images" style="color:var(--accent)"></i><div><strong>Galeria</strong><small>Adicionar / remover fotos</small></div></a>
+        <a href="#" class="qlink" data-go="gallery"><i class="fas fa-images" style="color:var(--accent)"></i><div><strong>Galeria</strong><small>Adicionar / remover fotos e vídeos</small></div></a>
         <a href="#" class="qlink" data-go="testimonials"><i class="fas fa-star" style="color:#FBBF24"></i><div><strong>Testemunhos</strong><small>Reviews reais, TripAdvisor</small></div></a>
         <a href="#" class="qlink" data-go="social"><i class="fas fa-share-alt" style="color:#10B981"></i><div><strong>Redes Sociais</strong><small>Facebook, Instagram, TripAdvisor</small></div></a>
         <a href="#" class="qlink" data-go="contact"><i class="fas fa-address-book" style="color:#8B5CF6"></i><div><strong>Contactos</strong><small>Telefone, email, WhatsApp</small></div></a>
@@ -317,9 +317,15 @@
   <div class="sec" id="s-gallery">
     <div class="card">
       <h3><i class="fas fa-images"></i> Gestão da Galeria</h3>
-      <div class="info"><i class="fas fa-image"></i><p>Adicione URLs de imagens. Para imagens locais use: images/foto.jpg. Para externas use o URL completo.</p></div>
+      <div class="info"><i class="fas fa-image"></i><p>Adicione URLs de imagens. Para imagens locais use: images/foto.jpg ou uploads/foto.jpg. Os 3 vídeos da galeria podem ser colocados em videos/gallery/video-1.mp4, video-2.mp4 e video-3.mp4.</p></div>
       <button class="btn btn-primary btn-sm" id="addGalBtn"><i class="fas fa-plus"></i> Adicionar Imagem</button>
       <div class="gal-grid" id="galGrid"></div>
+    </div>
+    <div class="card">
+      <h3><i class="fas fa-video"></i> Vídeos da Galeria</h3>
+      <div class="info"><i class="fas fa-film"></i><p>Faça upload dos vídeos pequenos diretamente aqui. O formato recomendado é MP4; também aceitamos WebM, OGG e MOV. O poster é opcional, mas ajuda a deixar a grelha mais bonita antes de carregar no play.</p></div>
+      <button class="btn btn-primary btn-sm" id="addGalVideoBtn"><i class="fas fa-plus"></i> Adicionar Vídeo</button>
+      <div class="gal-grid" id="galVideoGrid"></div>
     </div>
   </div>
 
@@ -475,6 +481,24 @@
   </div>
 </div>
 
+<div class="modal-bg" id="galVideoModal">
+  <div class="modal">
+    <h3 id="galVideoModalTitle"><i class="fas fa-video"></i> Adicionar Vídeo</h3>
+    <div class="form-group"><label>URL do Vídeo</label><div style="display:flex;gap:8px;align-items:center;"><input type="url" id="gvm_url" placeholder="https://... ou videos/gallery/video.mp4" style="flex:1;"><label class="btn btn-outline btn-sm" style="cursor:pointer;white-space:nowrap;"><i class="fas fa-upload"></i> Upload<input type="file" accept="video/mp4,video/webm,video/ogg,video/quicktime" id="gvm_url_file" style="display:none;"></label></div></div>
+    <div class="form-group"><label>Poster (opcional)</label><div style="display:flex;gap:8px;align-items:center;"><input type="url" id="gvm_poster" placeholder="images/gallery/foto.jpg" style="flex:1;"><label class="btn btn-outline btn-sm" style="cursor:pointer;white-space:nowrap;"><i class="fas fa-image"></i> Upload<input type="file" accept="image/*" id="gvm_poster_file" style="display:none;"></label></div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Título (PT)</label><input type="text" id="gvm_titlePt" placeholder="Ex: Dentro das grutas"></div>
+      <div class="form-group"><label>Título (EN)</label><input type="text" id="gvm_titleEn" placeholder="Ex: Inside the caves"></div>
+    </div>
+    <div id="gvm_preview"></div>
+    <input type="hidden" id="gvm_id">
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="galVideoModalCancel">Cancelar</button>
+      <button class="btn btn-primary" id="galVideoModalSave"><i class="fas fa-save"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="testModal">
   <div class="modal">
     <h3 id="testModalTitle"><i class="fas fa-star"></i> Adicionar Testemunho</h3>
@@ -514,7 +538,7 @@
 
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Guardado!</span></div>
 
-<script src="../js/site-data.js?v=202603260400"></script>
+<script src="../js/site-data.js?v=202604211705"></script>
 <script>
 (function(){
   var adminToken = sessionStorage.getItem('admin_token') || '';
@@ -523,6 +547,9 @@
   function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
 
   function toast(msg,err){var t=document.getElementById('toast'),m=document.getElementById('toastMsg');m.textContent=msg||'Guardado!';t.className=err?'toast show err':'toast show';setTimeout(function(){t.classList.remove('show');},3000);}
+  function normalizePublicMediaPath(url,mediaType){if(!url)return'';var value=String(url).trim().replace(/\\/g,'/');if(!value)return'';if(/^(https?:)?\/\//i.test(value)||/^(data|blob):/i.test(value))return value;value=value.replace(/^\.\//,'');while(value.indexOf('../')===0)value=value.substring(3);value=value.replace(/^admin\//i,'');if(value.charAt(0)==='/')value=value.substring(1);if(/^(images|videos)\//i.test(value))return value;if(/^uploads\//i.test(value))return 'images/'+value;if(/^gallery\//i.test(value))return 'images/'+value;return (mediaType==='video'?'videos/gallery/':'images/gallery/')+value;}
+  function toPreviewPath(url,mediaType){var normalized=normalizePublicMediaPath(url,mediaType);if(!normalized)return'';if(/^(https?:)?\/\//i.test(normalized)||/^(data|blob):/i.test(normalized))return normalized;return '/'+normalized.replace(/^\/+/, '');}
+  function buildVideoPreviewHtml(videoUrl,posterUrl){var previewVideo=toPreviewPath(videoUrl,'video');if(!previewVideo)return'';var previewPoster=toPreviewPath(posterUrl,'image');return '<video src="'+esc(previewVideo)+'"'+(previewPoster?' poster="'+esc(previewPoster)+'"':'')+' controls playsinline preload="metadata" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-top:8px;background:#111;"></video>';}
 
   function serverSave(callback) {
     var d = SiteData.load();
@@ -559,6 +586,28 @@
         } else {
           var msg = 'Erro ao enviar imagem!';
           try { var r = JSON.parse(xhr.responseText); if (r.error) msg = r.error; } catch(e) {}
+          toast(msg, true); callback(null);
+        }
+      }
+    };
+    xhr.send(fd);
+  }
+
+  function uploadVideo(file, callback) {
+    if (file.size > 50 * 1024 * 1024) { toast('Vídeo muito grande! Máximo 50MB.', true); callback(null); return; }
+    var fd = new FormData();
+    fd.append('video', file);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/upload.php', true);
+    xhr.setRequestHeader('X-Admin-Token', adminToken);
+    xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          try { var r = JSON.parse(xhr.responseText); callback(r.url || null); } catch(e) { toast('Resposta inválida do servidor.', true); callback(null); }
+        } else {
+          var msg = 'Erro ao enviar vídeo!';
+          try { var vr = JSON.parse(xhr.responseText); if (vr.error) msg = vr.error; } catch(e) {}
           toast(msg, true); callback(null);
         }
       }
@@ -607,11 +656,12 @@
   function closeM(id){document.getElementById(id).classList.remove('active');}
   document.querySelectorAll('.modal-bg').forEach(function(bg){bg.addEventListener('click',function(e){if(e.target===bg)bg.classList.remove('active');});});
   document.getElementById('galModalCancel').addEventListener('click',function(){closeM('galModal');});
+  document.getElementById('galVideoModalCancel').addEventListener('click',function(){closeM('galVideoModal');});
   document.getElementById('testModalCancel').addEventListener('click',function(){closeM('testModal');});
   document.getElementById('faqModalCancel').addEventListener('click',function(){closeM('faqModal');});
 
   // ============================= LOAD ALL =============================
-  function loadAll(){var d=SiteData.load();loadStats(d);loadHP(d);loadTour(d);loadAbout(d);loadGal(d);loadTest(d);loadSoc(d);loadCont(d);loadSett(d);loadFaq(d);}
+  function loadAll(){var d=SiteData.load();loadStats(d);loadHP(d);loadTour(d);loadAbout(d);loadGal(d);loadGalVideos(d);loadTest(d);loadSoc(d);loadCont(d);loadSett(d);loadFaq(d);}
 
   function loadStats(d){
     document.getElementById('dGallery').textContent=d.gallery.length;
@@ -664,7 +714,7 @@
   });
 
   // ========================= ABOUT =========================
-  function loadAbout(d){var a=d.about;document.getElementById('a_img').value=a.image||'';var pv=document.getElementById('a_imgPreview');pv.innerHTML=a.image?'<img src="'+esc(a.image)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;" onerror="this.style.display=\'none\'">':'';document.getElementById('a_storyPt').value=a.storyPt||'';document.getElementById('a_storyEn').value=a.storyEn||'';document.getElementById('a_clients').value=a.statClients||0;document.getElementById('a_years').value=a.statYears||0;document.getElementById('a_tours').value=a.statTours||0;document.getElementById('a_rating').value=a.statRating||'';document.getElementById('a_ratingTA').value=a.ratingTripadvisor||a.statRating||'';document.getElementById('a_ratingGoogle').value=a.ratingGoogle||a.statRating||'';document.getElementById('a_googleReviews').value=a.googleReviewCount||a.statClients||0;renderTeam(a.team||[]);}
+  function loadAbout(d){var a=d.about;document.getElementById('a_img').value=normalizePublicMediaPath(a.image,'image')||'';var pv=document.getElementById('a_imgPreview');var preview=toPreviewPath(a.image,'image');pv.innerHTML=preview?'<img src="'+esc(preview)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;" onerror="this.style.display=\'none\'">':'';document.getElementById('a_storyPt').value=a.storyPt||'';document.getElementById('a_storyEn').value=a.storyEn||'';document.getElementById('a_clients').value=a.statClients||0;document.getElementById('a_years').value=a.statYears||0;document.getElementById('a_tours').value=a.statTours||0;document.getElementById('a_rating').value=a.statRating||'';document.getElementById('a_ratingTA').value=a.ratingTripadvisor||a.statRating||'';document.getElementById('a_ratingGoogle').value=a.ratingGoogle||a.statRating||'';document.getElementById('a_googleReviews').value=a.googleReviewCount||a.statClients||0;renderTeam(a.team||[]);}
   function renderTeam(team){
     var c=document.getElementById('teamList');c.innerHTML='';
     team.forEach(function(m,i){
@@ -680,7 +730,7 @@
   document.getElementById('saveAboutBtn').addEventListener('click',function(){
     var ns=document.querySelectorAll('.tm-n'),is=document.querySelectorAll('.tm-img'),rp=document.querySelectorAll('.tm-rp'),re=document.querySelectorAll('.tm-re'),team=[];
     ns.forEach(function(n,i){team.push({name:n.value,image:is[i].value,rolePt:rp[i].value,roleEn:re[i].value});});
-    SiteData.update('about',{image:document.getElementById('a_img').value.trim(),storyPt:document.getElementById('a_storyPt').value,storyEn:document.getElementById('a_storyEn').value,statClients:parseInt(document.getElementById('a_clients').value)||0,statYears:parseInt(document.getElementById('a_years').value)||0,statTours:parseInt(document.getElementById('a_tours').value)||0,statRating:document.getElementById('a_rating').value,ratingTripadvisor:document.getElementById('a_ratingTA').value,ratingGoogle:document.getElementById('a_ratingGoogle').value,googleReviewCount:parseInt(document.getElementById('a_googleReviews').value)||0,team:team});
+    SiteData.update('about',{image:normalizePublicMediaPath(document.getElementById('a_img').value.trim(),'image'),storyPt:document.getElementById('a_storyPt').value,storyEn:document.getElementById('a_storyEn').value,statClients:parseInt(document.getElementById('a_clients').value)||0,statYears:parseInt(document.getElementById('a_years').value)||0,statTours:parseInt(document.getElementById('a_tours').value)||0,statRating:document.getElementById('a_rating').value,ratingTripadvisor:document.getElementById('a_ratingTA').value,ratingGoogle:document.getElementById('a_ratingGoogle').value,googleReviewCount:parseInt(document.getElementById('a_googleReviews').value)||0,team:team});
     serverSave();
   });
 
@@ -689,8 +739,9 @@
   function loadGal(d){
     var g=document.getElementById('galGrid');g.innerHTML='';
     d.gallery.forEach(function(img){
+      var previewUrl=toPreviewPath(img.url,'image');
       var div=document.createElement('div');div.className='gal-item';
-      div.innerHTML='<img src="'+esc(img.url)+'" alt="'+esc(img.captionPt)+'" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22><rect fill=%22%23eee%22 width=%22200%22 height=%22150%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2213%22>Sem Imagem</text></svg>\'">'+
+      div.innerHTML='<img src="'+esc(previewUrl)+'" alt="'+esc(img.captionPt)+'" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22><rect fill=%22%23eee%22 width=%22200%22 height=%22150%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2213%22>Sem Imagem</text></svg>\'">'+
         '<div class="gal-ov"><span>'+(catNames[img.category]||img.category)+'</span><span>'+esc(img.captionPt)+'</span><div class="actions"><button class="btn-edit" data-ge="'+img.id+'"><i class="fas fa-edit"></i></button><button class="btn-del" data-gd="'+img.id+'"><i class="fas fa-trash"></i></button></div></div>';
       g.appendChild(div);
     });
@@ -705,21 +756,62 @@
   }
   function editGal(id){
     var d=SiteData.load(),item=d.gallery.find(function(g){return g.id===id;});if(!item)return;
-    document.getElementById('gm_url').value=item.url;document.getElementById('gm_cat').value=item.category;document.getElementById('gm_capPt').value=item.captionPt;document.getElementById('gm_capEn').value=item.captionEn;document.getElementById('gm_id').value=id;
-    document.getElementById('gm_preview').innerHTML='<img src="'+esc(item.url)+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:8px;">';
+    document.getElementById('gm_url').value=normalizePublicMediaPath(item.url,'image');document.getElementById('gm_cat').value=item.category;document.getElementById('gm_capPt').value=item.captionPt;document.getElementById('gm_capEn').value=item.captionEn;document.getElementById('gm_id').value=id;
+    document.getElementById('gm_preview').innerHTML='<img src="'+esc(toPreviewPath(item.url,'image'))+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:8px;">';
     document.getElementById('galModalTitle').innerHTML='<i class="fas fa-edit"></i> Editar Imagem';
     document.getElementById('galModal').classList.add('active');
   }
   function delGal(id){if(!confirm('Remover esta imagem?'))return;var d=SiteData.load();d.gallery=d.gallery.filter(function(g){return g.id!==id;});SiteData.save(d);loadGal(d);loadStats(d);serverSave();}
   document.getElementById('galModalSave').addEventListener('click',function(){
-    var url=document.getElementById('gm_url').value.trim();if(!url){toast('Preencha o URL!',true);return;}
+    var url=normalizePublicMediaPath(document.getElementById('gm_url').value.trim(),'image');if(!url){toast('Preencha o URL!',true);return;}
     var d=SiteData.load(),eid=document.getElementById('gm_id').value;
     var obj={url:url,category:document.getElementById('gm_cat').value,captionPt:document.getElementById('gm_capPt').value,captionEn:document.getElementById('gm_capEn').value};
     if(eid){var it=d.gallery.find(function(g){return g.id===parseInt(eid);});if(it)Object.assign(it,obj);}
     else{var mx=d.gallery.reduce(function(m,g){return g.id>m?g.id:m;},0);obj.id=mx+1;d.gallery.push(obj);}
     SiteData.save(d);loadGal(d);loadStats(d);closeM('galModal');serverSave();
   });
-  document.getElementById('gm_url').addEventListener('input',function(){var u=this.value.trim(),p=document.getElementById('gm_preview');p.innerHTML=u?'<img src="'+esc(u)+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:8px;" onerror="this.parentNode.innerHTML=\'<p style=color:#EF4444;font-size:.8rem;margin-top:8px>Imagem não encontrada</p>\'">':'';});
+  document.getElementById('gm_url').addEventListener('input',function(){var u=normalizePublicMediaPath(this.value.trim(),'image'),p=document.getElementById('gm_preview');p.innerHTML=u?'<img src="'+esc(toPreviewPath(u,'image'))+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:8px;" onerror="this.parentNode.innerHTML=\'<p style=color:#EF4444;font-size:.8rem;margin-top:8px>Imagem não encontrada</p>\'">':'';});
+
+  function loadGalVideos(d){
+    var grid=document.getElementById('galVideoGrid');grid.innerHTML='';
+    (d.galleryVideos||[]).forEach(function(video){
+      var previewVideo=toPreviewPath(video.url,'video');
+      var posterPath=toPreviewPath(video.poster,'image');
+      var title=video.titlePt||video.titleEn||'Vídeo';
+      var div=document.createElement('div');div.className='gal-item';
+      div.innerHTML='<video src="'+esc(previewVideo)+'"'+(posterPath?' poster="'+esc(posterPath)+'"':'')+' muted playsinline preload="metadata"></video>'+
+        '<div class="gal-ov"><span>Vídeo</span><span>'+esc(title)+'</span><div class="actions"><button class="btn-edit" data-gve="'+video.id+'"><i class="fas fa-edit"></i></button><button class="btn-del" data-gvd="'+video.id+'"><i class="fas fa-trash"></i></button></div></div>';
+      grid.appendChild(div);
+    });
+    grid.querySelectorAll('[data-gve]').forEach(function(btn){btn.addEventListener('click',function(){editGalVideo(parseInt(this.dataset.gve,10));});});
+    grid.querySelectorAll('[data-gvd]').forEach(function(btn){btn.addEventListener('click',function(){delGalVideo(parseInt(this.dataset.gvd,10));});});
+  }
+  document.getElementById('addGalVideoBtn').addEventListener('click',function(){openGalVideoM();});
+  function openGalVideoM(){
+    document.getElementById('gvm_url').value='';document.getElementById('gvm_poster').value='';document.getElementById('gvm_titlePt').value='';document.getElementById('gvm_titleEn').value='';document.getElementById('gvm_id').value='';document.getElementById('gvm_preview').innerHTML='';
+    document.getElementById('galVideoModalTitle').innerHTML='<i class="fas fa-video"></i> Adicionar Vídeo';
+    document.getElementById('galVideoModal').classList.add('active');
+  }
+  function editGalVideo(id){
+    var d=SiteData.load(),item=(d.galleryVideos||[]).find(function(v){return v.id===id;});if(!item)return;
+    document.getElementById('gvm_url').value=normalizePublicMediaPath(item.url,'video');document.getElementById('gvm_poster').value=normalizePublicMediaPath(item.poster,'image');document.getElementById('gvm_titlePt').value=item.titlePt||'';document.getElementById('gvm_titleEn').value=item.titleEn||'';document.getElementById('gvm_id').value=id;
+    document.getElementById('gvm_preview').innerHTML=buildVideoPreviewHtml(item.url,item.poster);
+    document.getElementById('galVideoModalTitle').innerHTML='<i class="fas fa-edit"></i> Editar Vídeo';
+    document.getElementById('galVideoModal').classList.add('active');
+  }
+  function delGalVideo(id){if(!confirm('Remover este vídeo?'))return;var d=SiteData.load();d.galleryVideos=(d.galleryVideos||[]).filter(function(v){return v.id!==id;});SiteData.save(d);loadGalVideos(d);serverSave();}
+  document.getElementById('galVideoModalSave').addEventListener('click',function(){
+    var url=normalizePublicMediaPath(document.getElementById('gvm_url').value.trim(),'video');if(!url){toast('Preencha o URL do vídeo!',true);return;}
+    var poster=normalizePublicMediaPath(document.getElementById('gvm_poster').value.trim(),'image');
+    var d=SiteData.load(),eid=document.getElementById('gvm_id').value;d.galleryVideos=d.galleryVideos||[];
+    var obj={url:url,poster:poster,titlePt:document.getElementById('gvm_titlePt').value.trim(),titleEn:document.getElementById('gvm_titleEn').value.trim()};
+    if(eid){var it=d.galleryVideos.find(function(v){return v.id===parseInt(eid,10);});if(it)Object.assign(it,obj);}
+    else{var mx=d.galleryVideos.reduce(function(m,v){return v.id>m?v.id:m;},0);obj.id=mx+1;d.galleryVideos.push(obj);}
+    SiteData.save(d);loadGalVideos(d);closeM('galVideoModal');serverSave();
+  });
+  function refreshGalVideoPreview(){var url=normalizePublicMediaPath(document.getElementById('gvm_url').value.trim(),'video');var poster=normalizePublicMediaPath(document.getElementById('gvm_poster').value.trim(),'image');document.getElementById('gvm_preview').innerHTML=url?buildVideoPreviewHtml(url,poster):'';}
+  document.getElementById('gvm_url').addEventListener('input',refreshGalVideoPreview);
+  document.getElementById('gvm_poster').addEventListener('input',refreshGalVideoPreview);
 
   // ========================= TESTIMONIALS =========================
   var srcIcons={tripadvisor:'fab fa-tripadvisor',google:'fab fa-google',facebook:'fab fa-facebook-f',direct:'fas fa-comment'};
@@ -832,9 +924,11 @@
     xhr.send(JSON.stringify({action:'change_password',current:cur,newPass:np}));
   });
 
-  document.getElementById('a_img').addEventListener('input',function(){var u=this.value.trim(),p=document.getElementById('a_imgPreview');p.innerHTML=u?'<img src="'+esc(u)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;" onerror="this.parentNode.innerHTML=\'<p style=color:#EF4444;font-size:.8rem>Imagem não encontrada</p>\'">':'';});
-  document.getElementById('a_img_file').addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){document.getElementById('a_img').value=u;var p=document.getElementById('a_imgPreview');p.innerHTML='<img src="'+esc(u)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;">';toast('Imagem enviada!');}});});
-  document.getElementById('gm_url_file').addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){document.getElementById('gm_url').value=u;toast('Imagem enviada!');}});});
+  document.getElementById('a_img').addEventListener('input',function(){var u=normalizePublicMediaPath(this.value.trim(),'image'),p=document.getElementById('a_imgPreview');p.innerHTML=u?'<img src="'+esc(toPreviewPath(u,'image'))+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;" onerror="this.parentNode.innerHTML=\'<p style=color:#EF4444;font-size:.8rem>Imagem não encontrada</p>\'">':'';});
+  document.getElementById('a_img_file').addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){document.getElementById('a_img').value=normalizePublicMediaPath(u,'image');var p=document.getElementById('a_imgPreview');p.innerHTML='<img src="'+esc(toPreviewPath(u,'image'))+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;">';toast('Imagem enviada!');}});});
+  document.getElementById('gm_url_file').addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){document.getElementById('gm_url').value=normalizePublicMediaPath(u,'image');document.getElementById('gm_preview').innerHTML='<img src="'+esc(toPreviewPath(u,'image'))+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:8px;">';toast('Imagem enviada!');}});});
+  document.getElementById('gvm_url_file').addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadVideo(f,function(u){if(u){document.getElementById('gvm_url').value=normalizePublicMediaPath(u,'video');refreshGalVideoPreview();toast('Vídeo enviado!');}});});
+  document.getElementById('gvm_poster_file').addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){document.getElementById('gvm_poster').value=normalizePublicMediaPath(u,'image');refreshGalVideoPreview();toast('Poster enviado!');}});});
 
   // ========================= FAQ =========================
   function loadFaq(d){
