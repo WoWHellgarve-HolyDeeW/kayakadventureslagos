@@ -1262,12 +1262,52 @@ button {
   display: block;
 }
 
+.gallery-video-media {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  overflow: hidden;
+  background: linear-gradient(135deg, #111111, #2d3436);
+}
+
+.gallery-video-media:focus-visible {
+  outline: 3px solid rgba(212, 115, 28, 0.55);
+  outline-offset: -3px;
+}
+
 .gallery-video-card video {
   width: 100%;
   aspect-ratio: 4 / 3;
   display: block;
   background: linear-gradient(135deg, #111111, #2d3436);
   object-fit: cover;
+}
+
+.gallery-video-media video {
+  pointer-events: none;
+}
+
+.gallery-video-media-icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 17, 20, 0.72);
+  color: #fff;
+  font-size: 1rem;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.gallery-video-media:hover .gallery-video-media-icon,
+.gallery-video-media:focus-visible .gallery-video-media-icon {
+  transform: scale(1.06);
+  background: rgba(212, 115, 28, 0.92);
 }
 
 .home-gallery-video-card video {
