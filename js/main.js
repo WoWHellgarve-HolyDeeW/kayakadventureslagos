@@ -291,12 +291,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function configureInlineVideoPlayer(videoEl) {
     if (!videoEl) return;
-    videoEl.setAttribute('controls', 'controls');
     videoEl.setAttribute('playsinline', 'playsinline');
     videoEl.setAttribute('preload', 'metadata');
-    videoEl.setAttribute('controlsList', 'nodownload noplaybackrate nofullscreen');
+    videoEl.setAttribute('muted', 'muted');
     videoEl.setAttribute('disablepictureinpicture', 'disablepictureinpicture');
+    videoEl.setAttribute('aria-hidden', 'true');
+    videoEl.setAttribute('tabindex', '-1');
+    videoEl.removeAttribute('controls');
+    videoEl.removeAttribute('controlsList');
+    videoEl.muted = true;
     videoEl.disablePictureInPicture = true;
+  }
+
+  function bindVideoLightboxTrigger(triggerEl, videoData, isPt) {
+    if (!triggerEl) return;
+
+    function handleOpen(event) {
+      event.preventDefault();
+      openVideoLightbox(videoData, isPt);
+    }
+
+    triggerEl.addEventListener('click', handleOpen);
+    if (triggerEl.tagName !== 'BUTTON') {
+      triggerEl.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          handleOpen(event);
+        }
+      });
+    }
   }
 
   function ensureVideoLightbox() {
@@ -860,10 +882,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (icon.classList.contains('fa-signal')) span.textContent = isPt ? d.tour.levelPt : d.tour.levelEn;
         if (icon.classList.contains('fa-language')) span.textContent = d.tour.languages;
       });
-      var previewSchedule = document.getElementById('tourPreviewSchedule');
-      if (previewSchedule) previewSchedule.textContent = buildTourScheduleSummaryText(d.tour.schedules, isPt);
-      var previewNote = document.getElementById('tourPreviewNote');
-      if (previewNote) previewNote.textContent = buildTourBeachStopNotice(d.tour.schedules, isPt);
       var testSlider = document.querySelector('.testimonials-slider');
       if (testSlider && d.testimonials.length > 0) {
         function renderTestimonials(allReviews) {
@@ -1052,20 +1070,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var title = isPt ? (video.titlePt || video.titleEn) : (video.titleEn || video.titlePt);
         var poster = normalizeMediaUrl(video.poster, 'image');
+        var fallbackTitle = title || (isPt ? 'Momento do tour' : 'Tour moment');
         var card = document.createElement('article');
         card.className = 'gallery-video-card fade-in visible';
-        card.innerHTML = '<video' + (poster ? ' poster="' + esc(poster) + '"' : '') + '></video>' +
-          '<div class="gallery-video-body"><span class="gallery-video-tag"><i class="fas fa-play"></i> ' + esc(isPt ? 'Vídeo' : 'Video') + '</span><h3>' + esc(title || (isPt ? 'Momento do tour' : 'Tour moment')) + '</h3><button type="button" class="btn btn-outline btn-sm gallery-video-action" data-open-video>' + (isPt ? '<i class="fas fa-expand"></i> Abrir player' : '<i class="fas fa-expand"></i> Open player') + '</button></div>';
+        card.innerHTML = '<div class="gallery-video-media" data-open-video-media role="button" tabindex="0" aria-label="' + esc((isPt ? 'Abrir vídeo: ' : 'Open video: ') + fallbackTitle) + '"><video' + (poster ? ' poster="' + esc(poster) + '"' : '') + '></video><span class="gallery-video-media-icon" aria-hidden="true"><i class="fas fa-play"></i></span></div>' +
+          '<div class="gallery-video-body"><span class="gallery-video-tag"><i class="fas fa-play"></i> ' + esc(isPt ? 'Vídeo' : 'Video') + '</span><h3>' + esc(fallbackTitle) + '</h3><button type="button" class="btn btn-outline btn-sm gallery-video-action" data-open-video>' + (isPt ? '<i class="fas fa-expand"></i> Abrir player' : '<i class="fas fa-expand"></i> Open player') + '</button></div>';
         galleryVideoGrid.appendChild(card);
 
         var inlineVideo = card.querySelector('video');
         configureInlineVideoPlayer(inlineVideo);
+        bindVideoLightboxTrigger(card.querySelector('[data-open-video-media]'), video, isPt);
         var openBtn = card.querySelector('[data-open-video]');
-        if (openBtn) {
-          openBtn.addEventListener('click', function() {
-            openVideoLightbox(video, isPt);
-          });
-        }
+        bindVideoLightboxTrigger(openBtn, video, isPt);
 
         applyVideoSourceCandidates(inlineVideo, video.url, function() {
           card.classList.add('is-ready');
@@ -1103,20 +1119,18 @@ document.addEventListener('DOMContentLoaded', function() {
       }).slice(0, 2).forEach(function(video) {
         var title = isPt ? (video.titlePt || video.titleEn) : (video.titleEn || video.titlePt);
         var poster = normalizeMediaUrl(video.poster, 'image');
+        var fallbackTitle = title || (isPt ? 'Momento do tour' : 'Tour moment');
         var card = document.createElement('article');
         card.className = 'gallery-video-card home-gallery-video-card fade-in visible';
-        card.innerHTML = '<video' + (poster ? ' poster="' + esc(poster) + '"' : '') + '></video>' +
-          '<div class="gallery-video-body"><span class="gallery-video-tag"><i class="fas fa-play"></i> ' + esc(isPt ? 'Vídeo' : 'Video') + '</span><h3>' + esc(title || (isPt ? 'Momento do tour' : 'Tour moment')) + '</h3><button type="button" class="btn btn-outline btn-sm gallery-video-action" data-open-video>' + (isPt ? '<i class="fas fa-expand"></i> Abrir player' : '<i class="fas fa-expand"></i> Open player') + '</button></div>';
+        card.innerHTML = '<div class="gallery-video-media" data-open-video-media role="button" tabindex="0" aria-label="' + esc((isPt ? 'Abrir vídeo: ' : 'Open video: ') + fallbackTitle) + '"><video' + (poster ? ' poster="' + esc(poster) + '"' : '') + '></video><span class="gallery-video-media-icon" aria-hidden="true"><i class="fas fa-play"></i></span></div>' +
+          '<div class="gallery-video-body"><span class="gallery-video-tag"><i class="fas fa-play"></i> ' + esc(isPt ? 'Vídeo' : 'Video') + '</span><h3>' + esc(fallbackTitle) + '</h3><button type="button" class="btn btn-outline btn-sm gallery-video-action" data-open-video>' + (isPt ? '<i class="fas fa-expand"></i> Abrir player' : '<i class="fas fa-expand"></i> Open player') + '</button></div>';
         homeVideoGrid.appendChild(card);
 
         var inlineVideo = card.querySelector('video');
         configureInlineVideoPlayer(inlineVideo);
+        bindVideoLightboxTrigger(card.querySelector('[data-open-video-media]'), video, isPt);
         var openBtn = card.querySelector('[data-open-video]');
-        if (openBtn) {
-          openBtn.addEventListener('click', function() {
-            openVideoLightbox(video, isPt);
-          });
-        }
+        bindVideoLightboxTrigger(openBtn, video, isPt);
 
         applyVideoSourceCandidates(inlineVideo, video.url, function() {
           card.classList.add('is-ready');
