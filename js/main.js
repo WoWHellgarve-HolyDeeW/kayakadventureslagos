@@ -180,6 +180,12 @@ document.addEventListener('DOMContentLoaded', function() {
     return /\.(mp4|webm|ogg|ogv|mov)(?:$|[?#])/i.test(normalized);
   }
 
+  function normalizeFocusPercent(value) {
+    var number = parseInt(value, 10);
+    if (isNaN(number)) return 50;
+    return Math.max(0, Math.min(100, number));
+  }
+
   function buildMediaCandidates(url, mediaType) {
     if (!url) return [];
 
@@ -1035,9 +1041,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (teamGrid && d.about.team.length > 0) {
       teamGrid.innerHTML = '';
       d.about.team.forEach(function(m) {
+        var teamImagePosition = normalizeFocusPercent(m.focusX) + '% ' + normalizeFocusPercent(m.focusY) + '%';
         var card = document.createElement('div');
         card.className = 'team-card fade-in visible';
-        card.innerHTML = '<div class="team-card-img"><img src="' + esc(normalizeMediaUrl(m.image, 'image')) + '" alt="' + esc(m.name) + '" loading="lazy"></div>' +
+        card.innerHTML = '<div class="team-card-img"><img src="' + esc(normalizeMediaUrl(m.image, 'image')) + '" alt="' + esc(m.name) + '" loading="lazy" style="object-position:' + esc(teamImagePosition) + ';"></div>' +
           '<div class="team-card-info"><h3>' + esc(m.name) + '</h3><span>' + esc(isPt ? m.rolePt : m.roleEn) + '</span></div>';
         teamGrid.appendChild(card);
       });

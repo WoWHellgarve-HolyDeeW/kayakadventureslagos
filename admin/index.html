@@ -539,7 +539,7 @@
 
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Guardado!</span></div>
 
-<script src="../js/site-data.js?v=20260421082546"></script>
+<script src="../js/site-data.js?v=20260422183041"></script>
 <script>
 (function(){
   var adminToken = sessionStorage.getItem('admin_token') || '';
@@ -716,35 +716,48 @@
   });
 
   // ========================= ABOUT =========================
+  function normalizeFocusPercent(value){var n=parseInt(value,10);if(isNaN(n))return 50;return Math.max(0,Math.min(100,n));}
   function loadAbout(d){var a=d.about;document.getElementById('a_img').value=normalizePublicMediaPath(a.image,'image')||'';var pv=document.getElementById('a_imgPreview');var preview=toPreviewPath(a.image,'image');pv.innerHTML=preview?'<img src="'+esc(preview)+'" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;" onerror="this.style.display=\'none\'">':'';document.getElementById('a_storyPt').value=a.storyPt||'';document.getElementById('a_storyEn').value=a.storyEn||'';document.getElementById('a_clients').value=a.statClients||0;document.getElementById('a_years').value=a.statYears||0;document.getElementById('a_tours').value=a.statTours||0;document.getElementById('a_rating').value=a.statRating||'';document.getElementById('a_ratingTA').value=a.ratingTripadvisor||a.statRating||'';document.getElementById('a_ratingGoogle').value=a.ratingGoogle||a.statRating||'';document.getElementById('a_googleReviews').value=a.googleReviewCount||a.statClients||0;renderTeam(a.team||[]);}
   function renderTeam(team){
     var c=document.getElementById('teamList');c.innerHTML='';
     team.forEach(function(m,i){
       var imageValue=normalizePublicMediaPath(m.image,'image')||'';
       var previewImage=toPreviewPath(m.image,'image');
+      var focusX=normalizeFocusPercent(m.focusX);
+      var focusY=normalizeFocusPercent(m.focusY);
       var div=document.createElement('div');div.className='team-block';
       div.innerHTML='<div class="team-top"><strong>Membro #'+(i+1)+'</strong><button class="btn btn-danger btn-sm" data-ti="'+i+'"><i class="fas fa-times"></i></button></div>'+
-        '<div class="form-row"><div class="form-group"><label>Nome</label><input type="text" class="tm-n" value="'+esc(m.name)+'"></div><div class="form-group"><label>Imagem URL</label><div style="display:flex;gap:8px;align-items:center;"><input type="text" class="tm-img" value="'+esc(imageValue)+'" style="flex:1;"><label class="btn btn-outline btn-sm" style="cursor:pointer;white-space:nowrap;"><i class="fas fa-upload"></i> Upload<input type="file" accept="image/*" class="tm-img-file" style="display:none;"></label></div><img class="tm-img-preview" src="'+esc(previewImage||'')+'" alt="Pré-visualização" style="'+(previewImage?'display:block;':'display:none;')+'width:100%;max-height:160px;object-fit:cover;border-radius:10px;margin-top:8px;border:1px solid var(--border);background:#fff;"></div></div>'+
+        '<div class="form-row"><div class="form-group"><label>Nome</label><input type="text" class="tm-n" value="'+esc(m.name)+'"></div><div class="form-group"><label>Imagem URL</label><div style="display:flex;gap:8px;align-items:center;"><input type="text" class="tm-img" value="'+esc(imageValue)+'" style="flex:1;"><label class="btn btn-outline btn-sm" style="cursor:pointer;white-space:nowrap;"><i class="fas fa-upload"></i> Upload<input type="file" accept="image/*" class="tm-img-file" style="display:none;"></label></div><img class="tm-img-preview" src="'+esc(previewImage||'')+'" alt="Pré-visualização" style="'+(previewImage?'display:block;':'display:none;')+'width:100%;max-height:160px;object-fit:cover;object-position:'+focusX+'% '+focusY+'%;border-radius:10px;margin-top:8px;border:1px solid var(--border);background:#fff;"><div class="form-row" style="margin-top:8px;"><div class="form-group"><label>Enquadramento Horizontal</label><input type="range" class="tm-fx" min="0" max="100" value="'+focusX+'" style="width:100%;"><div class="tm-fxv" style="font-size:.75rem;color:var(--text-light);margin-top:4px;">'+focusX+'%</div></div><div class="form-group"><label>Enquadramento Vertical</label><input type="range" class="tm-fy" min="0" max="100" value="'+focusY+'" style="width:100%;"><div class="tm-fyv" style="font-size:.75rem;color:var(--text-light);margin-top:4px;">'+focusY+'%</div></div></div></div></div>'+
         '<div class="form-row"><div class="form-group"><label>Cargo (PT)</label><input type="text" class="tm-rp" value="'+esc(m.rolePt)+'"></div><div class="form-group"><label>Cargo (EN)</label><input type="text" class="tm-re" value="'+esc(m.roleEn)+'"></div></div>';
       c.appendChild(div);
       var imgInput=div.querySelector('.tm-img');
       var imgPreview=div.querySelector('.tm-img-preview');
       var imgFile=div.querySelector('.tm-img-file');
+      var focusXInput=div.querySelector('.tm-fx');
+      var focusYInput=div.querySelector('.tm-fy');
+      var focusXValue=div.querySelector('.tm-fxv');
+      var focusYValue=div.querySelector('.tm-fyv');
       function refreshTeamPreview(){
         var previewPath=toPreviewPath(imgInput.value.trim(),'image');
+        var x=normalizeFocusPercent(focusXInput.value),y=normalizeFocusPercent(focusYInput.value);
+        if(focusXValue)focusXValue.textContent=x+'%';
+        if(focusYValue)focusYValue.textContent=y+'%';
+        imgPreview.style.objectPosition=x+'% '+y+'%';
         if(previewPath){imgPreview.src=previewPath;imgPreview.style.display='block';}
         else{imgPreview.removeAttribute('src');imgPreview.style.display='none';}
       }
       if(imgPreview){imgPreview.addEventListener('error',function(){this.style.display='none';});}
       if(imgInput){imgInput.addEventListener('input',refreshTeamPreview);}
+      if(focusXInput){focusXInput.addEventListener('input',refreshTeamPreview);}
+      if(focusYInput){focusYInput.addEventListener('input',refreshTeamPreview);}
       if(imgFile){imgFile.addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){imgInput.value=normalizePublicMediaPath(u,'image');refreshTeamPreview();toast('Imagem enviada!');}});});}
       div.querySelector('button').addEventListener('click',function(){var d=SiteData.load();d.about.team.splice(i,1);SiteData.save(d);renderTeam(d.about.team);});
     });
   }
-  document.getElementById('addTeamBtn').addEventListener('click',function(){var d=SiteData.load();d.about.team=d.about.team||[];d.about.team.push({name:'',rolePt:'',roleEn:'',image:''});SiteData.save(d);renderTeam(d.about.team);});
+  document.getElementById('addTeamBtn').addEventListener('click',function(){var d=SiteData.load();d.about.team=d.about.team||[];d.about.team.push({name:'',rolePt:'',roleEn:'',image:'',focusX:50,focusY:50});SiteData.save(d);renderTeam(d.about.team);});
   document.getElementById('saveAboutBtn').addEventListener('click',function(){
-    var ns=document.querySelectorAll('.tm-n'),imgInputs=document.querySelectorAll('.tm-img'),rp=document.querySelectorAll('.tm-rp'),re=document.querySelectorAll('.tm-re'),team=[];
-    ns.forEach(function(n,i){team.push({name:n.value,image:normalizePublicMediaPath(imgInputs[i].value.trim(),'image'),rolePt:rp[i].value,roleEn:re[i].value});});
+    var ns=document.querySelectorAll('.tm-n'),imgInputs=document.querySelectorAll('.tm-img'),focusXs=document.querySelectorAll('.tm-fx'),focusYs=document.querySelectorAll('.tm-fy'),rp=document.querySelectorAll('.tm-rp'),re=document.querySelectorAll('.tm-re'),team=[];
+    ns.forEach(function(n,i){team.push({name:n.value,image:normalizePublicMediaPath(imgInputs[i].value.trim(),'image'),focusX:normalizeFocusPercent(focusXs[i].value),focusY:normalizeFocusPercent(focusYs[i].value),rolePt:rp[i].value,roleEn:re[i].value});});
     SiteData.update('about',{image:normalizePublicMediaPath(document.getElementById('a_img').value.trim(),'image'),storyPt:document.getElementById('a_storyPt').value,storyEn:document.getElementById('a_storyEn').value,statClients:parseInt(document.getElementById('a_clients').value)||0,statYears:parseInt(document.getElementById('a_years').value)||0,statTours:parseInt(document.getElementById('a_tours').value)||0,statRating:document.getElementById('a_rating').value,ratingTripadvisor:document.getElementById('a_ratingTA').value,ratingGoogle:document.getElementById('a_ratingGoogle').value,googleReviewCount:parseInt(document.getElementById('a_googleReviews').value)||0,team:team});
     serverSave();
   });
