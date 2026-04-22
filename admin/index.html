@@ -720,18 +720,31 @@
   function renderTeam(team){
     var c=document.getElementById('teamList');c.innerHTML='';
     team.forEach(function(m,i){
+      var imageValue=normalizePublicMediaPath(m.image,'image')||'';
+      var previewImage=toPreviewPath(m.image,'image');
       var div=document.createElement('div');div.className='team-block';
       div.innerHTML='<div class="team-top"><strong>Membro #'+(i+1)+'</strong><button class="btn btn-danger btn-sm" data-ti="'+i+'"><i class="fas fa-times"></i></button></div>'+
-        '<div class="form-row"><div class="form-group"><label>Nome</label><input type="text" class="tm-n" value="'+esc(m.name)+'"></div><div class="form-group"><label>Imagem URL</label><input type="text" class="tm-img" value="'+esc(m.image)+'"></div></div>'+
+        '<div class="form-row"><div class="form-group"><label>Nome</label><input type="text" class="tm-n" value="'+esc(m.name)+'"></div><div class="form-group"><label>Imagem URL</label><div style="display:flex;gap:8px;align-items:center;"><input type="text" class="tm-img" value="'+esc(imageValue)+'" style="flex:1;"><label class="btn btn-outline btn-sm" style="cursor:pointer;white-space:nowrap;"><i class="fas fa-upload"></i> Upload<input type="file" accept="image/*" class="tm-img-file" style="display:none;"></label></div><img class="tm-img-preview" src="'+esc(previewImage||'')+'" alt="Pré-visualização" style="'+(previewImage?'display:block;':'display:none;')+'width:100%;max-height:160px;object-fit:cover;border-radius:10px;margin-top:8px;border:1px solid var(--border);background:#fff;"></div></div>'+
         '<div class="form-row"><div class="form-group"><label>Cargo (PT)</label><input type="text" class="tm-rp" value="'+esc(m.rolePt)+'"></div><div class="form-group"><label>Cargo (EN)</label><input type="text" class="tm-re" value="'+esc(m.roleEn)+'"></div></div>';
       c.appendChild(div);
+      var imgInput=div.querySelector('.tm-img');
+      var imgPreview=div.querySelector('.tm-img-preview');
+      var imgFile=div.querySelector('.tm-img-file');
+      function refreshTeamPreview(){
+        var previewPath=toPreviewPath(imgInput.value.trim(),'image');
+        if(previewPath){imgPreview.src=previewPath;imgPreview.style.display='block';}
+        else{imgPreview.removeAttribute('src');imgPreview.style.display='none';}
+      }
+      if(imgPreview){imgPreview.addEventListener('error',function(){this.style.display='none';});}
+      if(imgInput){imgInput.addEventListener('input',refreshTeamPreview);}
+      if(imgFile){imgFile.addEventListener('change',function(){var f=this.files[0];if(!f)return;uploadImage(f,function(u){if(u){imgInput.value=normalizePublicMediaPath(u,'image');refreshTeamPreview();toast('Imagem enviada!');}});});}
       div.querySelector('button').addEventListener('click',function(){var d=SiteData.load();d.about.team.splice(i,1);SiteData.save(d);renderTeam(d.about.team);});
     });
   }
   document.getElementById('addTeamBtn').addEventListener('click',function(){var d=SiteData.load();d.about.team=d.about.team||[];d.about.team.push({name:'',rolePt:'',roleEn:'',image:''});SiteData.save(d);renderTeam(d.about.team);});
   document.getElementById('saveAboutBtn').addEventListener('click',function(){
-    var ns=document.querySelectorAll('.tm-n'),is=document.querySelectorAll('.tm-img'),rp=document.querySelectorAll('.tm-rp'),re=document.querySelectorAll('.tm-re'),team=[];
-    ns.forEach(function(n,i){team.push({name:n.value,image:is[i].value,rolePt:rp[i].value,roleEn:re[i].value});});
+    var ns=document.querySelectorAll('.tm-n'),imgInputs=document.querySelectorAll('.tm-img'),rp=document.querySelectorAll('.tm-rp'),re=document.querySelectorAll('.tm-re'),team=[];
+    ns.forEach(function(n,i){team.push({name:n.value,image:normalizePublicMediaPath(imgInputs[i].value.trim(),'image'),rolePt:rp[i].value,roleEn:re[i].value});});
     SiteData.update('about',{image:normalizePublicMediaPath(document.getElementById('a_img').value.trim(),'image'),storyPt:document.getElementById('a_storyPt').value,storyEn:document.getElementById('a_storyEn').value,statClients:parseInt(document.getElementById('a_clients').value)||0,statYears:parseInt(document.getElementById('a_years').value)||0,statTours:parseInt(document.getElementById('a_tours').value)||0,statRating:document.getElementById('a_rating').value,ratingTripadvisor:document.getElementById('a_ratingTA').value,ratingGoogle:document.getElementById('a_ratingGoogle').value,googleReviewCount:parseInt(document.getElementById('a_googleReviews').value)||0,team:team});
     serverSave();
   });
