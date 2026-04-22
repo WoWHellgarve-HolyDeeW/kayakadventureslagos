@@ -192,6 +192,9 @@ var SiteData = (function() {
         if (xhr.status === 200) {
           try {
             _serverData = JSON.parse(xhr.responseText);
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(_serverData));
+            } catch (storageError) {}
           } catch(e) { _serverData = null; }
         }
         _serverLoaded = true;
