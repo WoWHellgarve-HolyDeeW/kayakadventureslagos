@@ -193,6 +193,12 @@
       <div class="stat-box"><i class="fas fa-share-alt"></i><div class="sv" id="dSocial">0</div><div class="sl">Redes Sociais Ativas</div></div>
       <div class="stat-box"><i class="fas fa-euro-sign"></i><div class="sv" id="dPrice">€0</div><div class="sl">Preço por Pessoa</div></div>
     </div>
+    <div class="stat-grid" id="analyticsStats" hidden>
+      <div class="stat-box"><i class="fas fa-eye"></i><div class="sv" id="dViewsToday">0</div><div class="sl">Visitas Hoje</div></div>
+      <div class="stat-box"><i class="fas fa-chart-line"></i><div class="sv" id="dViews30">0</div><div class="sl">Visitas 30 Dias</div></div>
+      <div class="stat-box"><i class="fas fa-calendar-check"></i><div class="sv" id="dBookings30">0</div><div class="sl">Cliques Reservar</div></div>
+      <div class="stat-box"><i class="fab fa-whatsapp"></i><div class="sv" id="dWhatsapp30">0</div><div class="sl">Cliques WhatsApp</div></div>
+    </div>
     <div class="card">
       <h3><i class="fas fa-rocket"></i> Acesso Rápido</h3>
       <div class="info"><i class="fas fa-info-circle"></i><p>Bem-vindo ao painel! Todas as alterações são guardadas no servidor e aplicadas automaticamente no site. Use o menu para navegar.</p></div>
@@ -663,7 +669,7 @@
   document.getElementById('faqModalCancel').addEventListener('click',function(){closeM('faqModal');});
 
   // ============================= LOAD ALL =============================
-  function loadAll(){var d=SiteData.load();loadStats(d);loadHP(d);loadTour(d);loadAbout(d);loadGal(d);loadGalVideos(d);loadTest(d);loadSoc(d);loadCont(d);loadSett(d);loadFaq(d);}
+  function loadAll(){var d=SiteData.load();loadStats(d);loadAnalytics();loadHP(d);loadTour(d);loadAbout(d);loadGal(d);loadGalVideos(d);loadTest(d);loadSoc(d);loadCont(d);loadSett(d);loadFaq(d);}
 
   function loadStats(d){
     document.getElementById('dGallery').textContent=d.gallery.length;
@@ -671,6 +677,30 @@
     var sc=0;for(var k in d.social)if(d.social[k] && k!=='instagramHandle')sc++;
     document.getElementById('dSocial').textContent=sc;
     document.getElementById('dPrice').textContent='€'+d.tour.price;
+  }
+
+  function loadAnalytics(){
+    var box=document.getElementById('analyticsStats');
+    if(!box)return;
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET','/api/analytics.php',true);
+    xhr.setRequestHeader('X-Admin-Token',adminToken);
+    xhr.onreadystatechange=function(){
+      if(xhr.readyState!==4)return;
+      if(xhr.status===200){
+        try{
+          var r=JSON.parse(xhr.responseText),t=r.totals||{};
+          document.getElementById('dViewsToday').textContent=t.pageviewsToday||0;
+          document.getElementById('dViews30').textContent=t.pageviews30||0;
+          document.getElementById('dBookings30').textContent=t.bookingClicks30||0;
+          document.getElementById('dWhatsapp30').textContent=t.whatsappClicks30||0;
+          box.hidden=false;
+        }catch(e){box.hidden=true;}
+      }else{
+        box.hidden=true;
+      }
+    };
+    xhr.send();
   }
 
   // ========================= HOMEPAGE =========================

@@ -25,6 +25,43 @@ document.addEventListener('DOMContentLoaded', function() {
       hidePreloader(true);
     }, 6000);
   }
+
+  function trackSiteEvent(type, extra) {
+    try {
+      var payload = extra || {};
+      payload.type = type;
+      payload.path = window.location.pathname || '/';
+      payload.referrer = document.referrer || '';
+      var body = JSON.stringify(payload);
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/analytics.php', new Blob([body], { type: 'application/json' }));
+      } else if (window.fetch) {
+        fetch('/api/analytics.php', { method: 'POST', body: body, headers: { 'Content-Type': 'application/json' }, keepalive: true, credentials: 'same-origin' });
+      }
+    } catch (e) {}
+  }
+
+  trackSiteEvent('pageview');
+
+  document.addEventListener('click', function(event) {
+    var link = event.target && event.target.closest ? event.target.closest('a') : null;
+    if (!link) return;
+    var rawHref = link.getAttribute('href') || '';
+    var href = link.href || rawHref;
+    var isWhatsApp = /(?:wa\.me|api\.whatsapp\.com)/i.test(href);
+    var isFareHarbor = /fareharbor\.com/i.test(href);
+    var isBookingAnchor = /#booking\b/i.test(rawHref) || /#booking\b/i.test(href);
+    var isBookingArea = !!(link.closest('#fareharbor-booking') || link.closest('.sticky-cta') || link.classList.contains('nav-cta'));
+
+    if (isWhatsApp && isBookingArea) {
+      trackSiteEvent('booking_click', { provider: 'whatsapp' });
+    } else if (isWhatsApp) {
+      trackSiteEvent('whatsapp_click');
+    } else if (isFareHarbor || isBookingAnchor || isBookingArea) {
+      trackSiteEvent('booking_click', { provider: isFareHarbor ? 'fareharbor' : 'site' });
+    }
+  }, true);
+
   const header = document.getElementById('header');
   function handleHeaderScroll() {
     if (window.scrollY > 50) {
