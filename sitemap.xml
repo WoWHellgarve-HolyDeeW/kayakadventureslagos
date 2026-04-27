@@ -6,6 +6,7 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://kayakadventureslagos.com/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kayakadventureslagos.com/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kayakadventureslagos.com/"/>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -13,6 +14,8 @@
     <loc>https://kayakadventureslagos.com/tour.html</loc>
     <xhtml:link rel="alternate" hreflang="pt" href="https://kayakadventureslagos.com/tour.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kayakadventureslagos.com/tour.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kayakadventureslagos.com/tour.html"/>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -20,6 +23,8 @@
     <loc>https://kayakadventureslagos.com/about.html</loc>
     <xhtml:link rel="alternate" hreflang="pt" href="https://kayakadventureslagos.com/about.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kayakadventureslagos.com/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kayakadventureslagos.com/about.html"/>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -27,6 +32,8 @@
     <loc>https://kayakadventureslagos.com/gallery.html</loc>
     <xhtml:link rel="alternate" hreflang="pt" href="https://kayakadventureslagos.com/gallery.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kayakadventureslagos.com/gallery.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kayakadventureslagos.com/gallery.html"/>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -34,21 +41,26 @@
     <loc>https://kayakadventureslagos.com/faq.html</loc>
     <xhtml:link rel="alternate" hreflang="pt" href="https://kayakadventureslagos.com/faq.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kayakadventureslagos.com/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kayakadventureslagos.com/faq.html"/>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://kayakadventureslagos.com/privacy.html</loc>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
     <loc>https://kayakadventureslagos.com/cookies.html</loc>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
     <loc>https://kayakadventureslagos.com/gdpr.html</loc>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
