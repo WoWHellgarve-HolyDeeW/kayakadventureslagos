@@ -46,10 +46,10 @@ var SiteData = (function() {
       bookingUrl: ''
     },
     homepage: {
-      heroTitlePt: 'Kayak em Lagos nas<br>Grutas da Ponta da Piedade',
-      heroTitleEn: 'Kayaking in Lagos at<br>the Ponta da Piedade Caves',
-      heroSubPt: 'Descubra a costa da Ponta da Piedade, as grutas e pequenas praias acessíveis pelo mar numa aventura guiada de kayak em Lagos.',
-      heroSubEn: 'Discover the Ponta da Piedade coast, caves and small beaches reached from the sea on a guided kayak adventure in Lagos.',
+      heroTitlePt: 'Explore as Grutas<br>de Lagos de Kayak',
+      heroTitleEn: 'Explore the Caves<br>of Lagos by Kayak',
+      heroSubPt: 'Descubra a magia da Ponta da Piedade e as praias secretas do Algarve numa aventura inesquecível de kayak.',
+      heroSubEn: 'Discover the magic of Ponta da Piedade and the secret beaches of the Algarve on an unforgettable kayak adventure.',
       heroImages: [
         'images/gallery/main.jpg',
         'images/gallery/ponta-da-piedade.jpg',
@@ -59,10 +59,10 @@ var SiteData = (function() {
     },
     about: {
       image: 'images/gallery/about-us-1.jpg',
-      storyPt: 'A Kayak Adventures Lagos nasceu em 2001 da paixão de um grupo de amigos pela costa algarvia. Crescemos na região, passámos a infância a explorar as grutas e praias de Lagos, e quisemos partilhar esta magia com o mundo.',
-      storyEn: 'Kayak Adventures Lagos was born in 2001 from a group of friends\' passion for the Algarve coast. We grew up in the region, spent our childhood exploring the caves and beaches of Lagos, and wanted to share this magic with the world.',
+      storyPt: 'A Kayak Adventures Lagos nasceu em 2018 da paixão de um grupo de amigos pela costa algarvia. Crescemos na região, passámos a infância a explorar as grutas e praias escondidas de Lagos, e quisemos partilhar esta magia com o mundo.',
+      storyEn: 'Kayak Adventures Lagos was born in 2018 from a group of friends\' passion for the Algarve coast. We grew up in the region, spent our childhood exploring the caves and hidden beaches of Lagos, and wanted to share this magic with the world.',
       statClients: 5000,
-      statYears: 25,
+      statYears: 7,
       statTours: 2000,
       statRating: '4.9',
       ratingTripadvisor: '5.0',
