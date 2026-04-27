@@ -1,6 +1,21 @@
 # Custom 404 page
 ErrorDocument 404 /404.html
 
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^en/faq/?$ /faq.html [R=301,L]
+    RewriteRule ^en/gallery/?$ /gallery.html [R=301,L]
+    RewriteRule ^en/contact-us/?$ /#footer [R=301,L,NE]
+    RewriteRule ^en/contact-us/index\.html$ /#footer [R=301,L,NE]
+    RewriteRule ^en/reviews/?$ /#testimonials [R=301,L,NE]
+    RewriteRule ^en/reviews/index\.html$ /#testimonials [R=301,L,NE]
+    RewriteRule ^en/agents/?$ /about.html [R=301,L]
+    RewriteRule ^pt/cometarios/?$ /#testimonials [R=301,L,NE]
+    RewriteRule ^kayak-lagos/?$ /kayak-lagos.html [R=301,L]
+    RewriteRule ^grutas-kayak-lagos/?$ /grutas-kayak-lagos.html [R=301,L]
+    RewriteRule ^aventura-kayak-lagos/?$ /aventura-kayak-lagos.html [R=301,L]
+</IfModule>
+
 # Security Headers
 <IfModule mod_headers.c>
     # Prevent MIME sniffing
