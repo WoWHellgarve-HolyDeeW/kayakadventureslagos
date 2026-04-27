@@ -3,6 +3,7 @@ ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteRule ^index\.html$ / [R=301,L]
     RewriteRule ^en/faq/?$ /faq.html [R=301,L]
     RewriteRule ^en/gallery/?$ /gallery.html [R=301,L]
     RewriteRule ^en/contact-us/?$ /#footer [R=301,L,NE]
