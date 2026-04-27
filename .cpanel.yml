@@ -5,7 +5,7 @@ deployment:
     - /bin/mkdir -p $DEPLOYPATH
     - /bin/mkdir -p $DEPLOYPATH/admin $DEPLOYPATH/api $DEPLOYPATH/css $DEPLOYPATH/js $DEPLOYPATH/images $DEPLOYPATH/videos
     - /bin/cp .htaccess $DEPLOYPATH/.htaccess
-    - /bin/cp 404.html about.html cookies.html faq.html gallery.html gdpr.html index.html privacy.html robots.txt sitemap.xml tour.html $DEPLOYPATH/
+    - /bin/cp 404.html about.html aventura-kayak-lagos.html cookies.html faq.html gallery.html gdpr.html grutas-kayak-lagos.html index.html kayak-lagos.html privacy.html robots.txt sitemap.xml tour.html $DEPLOYPATH/
     - /bin/cp -R admin/* $DEPLOYPATH/admin/
     - /bin/cp -R api/* $DEPLOYPATH/api/
     - /bin/cp -R css/* $DEPLOYPATH/css/
