@@ -1247,8 +1247,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         // Update all aggregateRatings
         if (ld.aggregateRating) {
-          ld.aggregateRating.ratingValue = String(d.about.statRating);
-          ld.aggregateRating.reviewCount = String(d.about.statClients);
+          var schemaRating = d.about.ratingGoogle || d.about.statRating;
+          var schemaReviewCount = d.about.googleReviewCount || d.about.statClients;
+          ld.aggregateRating.ratingValue = String(schemaRating);
+          ld.aggregateRating.reviewCount = String(schemaReviewCount);
+          ld.aggregateRating.ratingCount = String(schemaReviewCount);
         }
         ldScript.textContent = JSON.stringify(ld);
       } catch(e) {}
