@@ -224,8 +224,8 @@
       <div class="stat-grid">
         <div class="stat-box"><i class="fas fa-eye"></i><div class="sv" id="dViewsRange">0</div><div class="sl">Pageviews no período</div></div>
         <div class="stat-box"><i class="fas fa-user-check"></i><div class="sv" id="dVisitorsRange">0</div><div class="sl">Visitantes únicos</div></div>
-        <div class="stat-box"><i class="fas fa-calendar-check"></i><div class="sv" id="dBookingsRange">0</div><div class="sl">Cliques Reserva limpos</div></div>
-        <div class="stat-box"><i class="fab fa-whatsapp"></i><div class="sv" id="dWhatsappRange">0</div><div class="sl">WhatsApp apoio limpo</div></div>
+        <div class="stat-box"><i class="fas fa-calendar-check"></i><div class="sv" id="dBookingsRange">0</div><div class="sl">Cliques Reserva</div></div>
+        <div class="stat-box"><i class="fab fa-whatsapp"></i><div class="sv" id="dWhatsappRange">0</div><div class="sl">Cliques WhatsApp</div></div>
         <div class="stat-box"><i class="fas fa-percent"></i><div class="sv" id="dConversionRange">0%</div><div class="sl">Reserva / pageviews</div></div>
         <div class="stat-box"><i class="fas fa-filter"></i><div class="sv" id="dDuplicatesRange">0</div><div class="sl">Cliques repetidos filtrados</div></div>
       </div>
@@ -726,7 +726,7 @@
   function addDays(d,n){var x=new Date(d.getTime());x.setDate(x.getDate()+n);return x;}
   function fmtNum(n){n=parseInt(n,10)||0;return n.toLocaleString('pt-PT');}
   function pct(n){n=parseFloat(n)||0;return n.toLocaleString('pt-PT',{maximumFractionDigits:2})+'%';}
-  function providerLabel(p){var m={fareharbor:'FareHarbor',whatsapp:'WhatsApp',site:'Site',support:'Apoio',external:'Externo',unknown:'Outro'};return m[p]||p;}
+  function providerLabel(p){var m={fareharbor:'FareHarbor',whatsapp:'WhatsApp',site:'Site',support:'WhatsApp',external:'Externo',unknown:'Outro'};return m[p]||p;}
   function setupAnalyticsControls(){
     if(analyticsReady)return;analyticsReady=true;
     var end=new Date(),start=addDays(end,-29);
@@ -746,11 +746,12 @@
     document.getElementById('analyticsEnd').addEventListener('change',function(){loadAnalytics();});
   }
   function renderMetricList(id,obj,emptyText){
-    var el=document.getElementById(id);if(!el)return;var rows=[],max=0;
-    Object.keys(obj||{}).forEach(function(k){var v=parseInt(obj[k],10)||0;if(v>0){rows.push([k,v]);if(v>max)max=v;}});
+    var el=document.getElementById(id);if(!el)return;var rows=[],max=0,merged={};
+    Object.keys(obj||{}).forEach(function(k){var v=parseInt(obj[k],10)||0;if(v>0){var label=id.indexOf('Providers')>-1?providerLabel(k):k;merged[label]=(merged[label]||0)+v;}});
+    Object.keys(merged).forEach(function(k){var v=merged[k];rows.push([k,v]);if(v>max)max=v;});
     rows.sort(function(a,b){return b[1]-a[1];});
     if(!rows.length){el.innerHTML='<div class="analytics-empty">'+emptyText+'</div>';return;}
-    el.innerHTML=rows.slice(0,8).map(function(r){var label=id.indexOf('Providers')>-1?providerLabel(r[0]):r[0];var w=max?Math.max(6,Math.round((r[1]/max)*100)):0;return '<div class="metric-row"><strong title="'+esc(label)+'">'+esc(label)+'</strong><span>'+fmtNum(r[1])+'</span><div class="metric-bar"><i style="width:'+w+'%"></i></div></div>';}).join('');
+    el.innerHTML=rows.slice(0,8).map(function(r){var label=r[0];var w=max?Math.max(6,Math.round((r[1]/max)*100)):0;return '<div class="metric-row"><strong title="'+esc(label)+'">'+esc(label)+'</strong><span>'+fmtNum(r[1])+'</span><div class="metric-bar"><i style="width:'+w+'%"></i></div></div>';}).join('');
   }
   function renderAnalyticsDays(days){
     var body=document.getElementById('analyticsDays');if(!body)return;

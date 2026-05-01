@@ -84,6 +84,7 @@ function cleanEventType($type) {
 function cleanProvider($provider) {
     $provider = is_string($provider) ? strtolower(trim($provider)) : '';
     $provider = preg_replace('/[^a-z0-9_\-]/', '', $provider);
+    if ($provider === 'support') return 'whatsapp';
     $allowed = ['fareharbor', 'whatsapp', 'site', 'support', 'external', 'unknown'];
     return in_array($provider, $allowed, true) ? $provider : 'unknown';
 }
@@ -165,6 +166,7 @@ function addProviderCounts(&$totals, $stats, $group, $fallbackGroup = null) {
             if (!isset($totals[$type])) $totals[$type] = [];
             foreach ($providers as $provider => $count) {
                 $hasProviderData = true;
+                if ($provider === 'support') $provider = 'whatsapp';
                 if (!isset($totals[$type][$provider])) $totals[$type][$provider] = 0;
                 $totals[$type][$provider] += (int)$count;
             }
@@ -391,7 +393,7 @@ if ($method === 'POST') {
     } else {
         incrementKey($data['days'][$day]['rawEvents'], $type);
         incrementProvider($data['days'][$day]['rawEventProviders'], $type, $provider);
-        $eventKey = hash('sha256', 'event|' . $type . '|' . $provider . '|' . $visitor);
+        $eventKey = hash('sha256', 'event|' . $type . '|' . $visitor);
         if (isset($data['days'][$day]['eventKeys'][$eventKey])) {
             incrementKey($data['days'][$day]['duplicateEvents'], $type);
         } else {

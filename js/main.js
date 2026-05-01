@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (isWhatsApp && isBookingArea) {
       trackSiteEvent('booking_click', { provider: 'whatsapp' });
     } else if (isWhatsApp) {
-      trackSiteEvent('whatsapp_click', { provider: 'support' });
+      trackSiteEvent('whatsapp_click', { provider: 'whatsapp' });
     } else if (isFareHarbor || isBookingAnchor || isBookingArea) {
       trackSiteEvent('booking_click', { provider: isFareHarbor ? 'fareharbor' : 'site' });
     }
