@@ -72,6 +72,19 @@
     .stat-box i{font-size:1.6rem;color:var(--primary);margin-bottom:8px;}
     .stat-box .sv{font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;color:var(--dark);}
     .stat-box .sl{font-size:.78rem;color:var(--text-light);margin-top:3px;}
+    .analytics-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px;}
+    .analytics-head h3{margin-bottom:4px;}.analytics-updated{font-size:.78rem;color:var(--text-light);}
+    .analytics-filters{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr)) auto;gap:12px;align-items:end;margin-bottom:18px;padding:14px;background:#f8fafc;border-radius:12px;border:1px solid var(--border);}
+    .analytics-presets{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+    .analytics-presets .btn{padding:10px 12px;}
+    .analytics-panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px;}
+    .analytics-card{background:#f8fafc;border:1px solid var(--border);border-radius:14px;padding:16px;min-height:190px;}
+    .analytics-card h4{font-size:.86rem;color:var(--dark);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+    .metric-list{display:flex;flex-direction:column;gap:9px;}.metric-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;font-size:.82rem;color:#4b5563;}
+    .metric-row strong{color:var(--dark);font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.metric-row span{font-weight:700;color:var(--primary);}
+    .metric-bar{grid-column:1 / -1;height:5px;border-radius:999px;background:#e5e7eb;overflow:hidden;}.metric-bar i{display:block;height:100%;background:var(--primary);border-radius:999px;}
+    .analytics-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:18px;}.analytics-table th,.analytics-table td{padding:10px 8px;border-bottom:1px solid var(--border);text-align:right;}.analytics-table th:first-child,.analytics-table td:first-child{text-align:left;}.analytics-table th{color:var(--text-light);font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;}
+    .analytics-empty{color:var(--text-light);font-size:.82rem;padding:12px 0;}
     /* Sections */
     .sec{display:none;}.sec.active{display:block;}
     /* Info box */
@@ -138,7 +151,7 @@
     .team-block .team-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
     /* Responsive */
     @media(max-width:1024px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.sidebar-toggle{display:block;}}
-    @media(max-width:768px){.main{padding:18px 14px;}.stat-grid{grid-template-columns:1fr 1fr;}.form-row{grid-template-columns:1fr;}.gal-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}}
+    @media(max-width:768px){.main{padding:18px 14px;}.stat-grid{grid-template-columns:1fr 1fr;}.form-row{grid-template-columns:1fr;}.gal-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}.analytics-filters{grid-template-columns:1fr;}.analytics-table{display:block;overflow-x:auto;white-space:nowrap;}}
     @media(max-width:480px){.stat-grid{grid-template-columns:1fr;}.tabs{gap:0;}.tab-btn{padding:7px 10px;font-size:.78rem;}}
   </style>
 </head>
@@ -193,11 +206,39 @@
       <div class="stat-box"><i class="fas fa-share-alt"></i><div class="sv" id="dSocial">0</div><div class="sl">Redes Sociais Ativas</div></div>
       <div class="stat-box"><i class="fas fa-euro-sign"></i><div class="sv" id="dPrice">€0</div><div class="sl">Preço por Pessoa</div></div>
     </div>
-    <div class="stat-grid" id="analyticsStats" hidden>
-      <div class="stat-box"><i class="fas fa-eye"></i><div class="sv" id="dViewsToday">0</div><div class="sl">Visitas Hoje</div></div>
-      <div class="stat-box"><i class="fas fa-chart-line"></i><div class="sv" id="dViews30">0</div><div class="sl">Visitas 30 Dias</div></div>
-      <div class="stat-box"><i class="fas fa-calendar-check"></i><div class="sv" id="dBookings30">0</div><div class="sl">Cliques Reservar</div></div>
-      <div class="stat-box"><i class="fab fa-whatsapp"></i><div class="sv" id="dWhatsapp30">0</div><div class="sl">Cliques WhatsApp</div></div>
+    <div class="card" id="analyticsStats" hidden>
+      <div class="analytics-head">
+        <div><h3><i class="fas fa-chart-line"></i> Estatísticas do Site</h3><div class="analytics-updated" id="analyticsUpdated">Dados agregados das visitas reais ao site.</div></div>
+        <button class="btn btn-outline btn-sm" id="analyticsRefresh"><i class="fas fa-rotate"></i> Atualizar</button>
+      </div>
+      <div class="analytics-filters">
+        <div class="form-group"><label>De</label><input type="date" id="analyticsStart"></div>
+        <div class="form-group"><label>Até</label><input type="date" id="analyticsEnd"></div>
+        <div class="analytics-presets">
+          <button class="btn btn-outline btn-sm" data-analytics-range="7">7 dias</button>
+          <button class="btn btn-outline btn-sm" data-analytics-range="30">30 dias</button>
+          <button class="btn btn-outline btn-sm" data-analytics-range="month">Este mês</button>
+          <button class="btn btn-outline btn-sm" data-analytics-range="all">Tudo</button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-box"><i class="fas fa-eye"></i><div class="sv" id="dViewsRange">0</div><div class="sl">Pageviews no período</div></div>
+        <div class="stat-box"><i class="fas fa-user-check"></i><div class="sv" id="dVisitorsRange">0</div><div class="sl">Visitantes únicos</div></div>
+        <div class="stat-box"><i class="fas fa-calendar-check"></i><div class="sv" id="dBookingsRange">0</div><div class="sl">Cliques Reserva limpos</div></div>
+        <div class="stat-box"><i class="fab fa-whatsapp"></i><div class="sv" id="dWhatsappRange">0</div><div class="sl">WhatsApp apoio limpo</div></div>
+        <div class="stat-box"><i class="fas fa-percent"></i><div class="sv" id="dConversionRange">0%</div><div class="sl">Reserva / pageviews</div></div>
+        <div class="stat-box"><i class="fas fa-filter"></i><div class="sv" id="dDuplicatesRange">0</div><div class="sl">Cliques repetidos filtrados</div></div>
+      </div>
+      <div class="analytics-panels">
+        <div class="analytics-card"><h4><i class="fas fa-file-lines"></i> Páginas mais vistas</h4><div class="metric-list" id="analyticsTopPages"></div></div>
+        <div class="analytics-card"><h4><i class="fas fa-share-nodes"></i> Origem do tráfego</h4><div class="metric-list" id="analyticsTopReferrers"></div></div>
+        <div class="analytics-card"><h4><i class="fas fa-calendar-check"></i> Canais de reserva</h4><div class="metric-list" id="analyticsBookingProviders"></div></div>
+        <div class="analytics-card"><h4><i class="fab fa-whatsapp"></i> WhatsApp</h4><div class="metric-list" id="analyticsWhatsappProviders"></div></div>
+      </div>
+      <table class="analytics-table">
+        <thead><tr><th>Dia</th><th>Pageviews</th><th>Visitantes</th><th>Reservas</th><th>WhatsApp</th><th>Filtrados</th></tr></thead>
+        <tbody id="analyticsDays"></tbody>
+      </table>
     </div>
     <div class="card">
       <h3><i class="fas fa-rocket"></i> Acesso Rápido</h3>
@@ -680,21 +721,70 @@
     document.getElementById('dPrice').textContent='€'+d.tour.price;
   }
 
-  function loadAnalytics(){
+  var analyticsReady=false;
+  function isoDate(d){var m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return d.getFullYear()+'-'+m+'-'+day;}
+  function addDays(d,n){var x=new Date(d.getTime());x.setDate(x.getDate()+n);return x;}
+  function fmtNum(n){n=parseInt(n,10)||0;return n.toLocaleString('pt-PT');}
+  function pct(n){n=parseFloat(n)||0;return n.toLocaleString('pt-PT',{maximumFractionDigits:2})+'%';}
+  function providerLabel(p){var m={fareharbor:'FareHarbor',whatsapp:'WhatsApp',site:'Site',support:'Apoio',external:'Externo',unknown:'Outro'};return m[p]||p;}
+  function setupAnalyticsControls(){
+    if(analyticsReady)return;analyticsReady=true;
+    var end=new Date(),start=addDays(end,-29);
+    document.getElementById('analyticsStart').value=isoDate(start);
+    document.getElementById('analyticsEnd').value=isoDate(end);
+    document.getElementById('analyticsRefresh').addEventListener('click',function(){loadAnalytics();});
+    document.querySelectorAll('[data-analytics-range]').forEach(function(btn){btn.addEventListener('click',function(){
+      var r=this.dataset.analyticsRange,end=new Date(),start=addDays(end,-29);
+      if(r==='7')start=addDays(end,-6);
+      if(r==='month')start=new Date(end.getFullYear(),end.getMonth(),1);
+      if(r==='all')start=new Date(end.getFullYear()-1,end.getMonth(),end.getDate());
+      document.getElementById('analyticsStart').value=isoDate(start);
+      document.getElementById('analyticsEnd').value=isoDate(end);
+      loadAnalytics(r==='all'?'all':'');
+    });});
+    document.getElementById('analyticsStart').addEventListener('change',function(){loadAnalytics();});
+    document.getElementById('analyticsEnd').addEventListener('change',function(){loadAnalytics();});
+  }
+  function renderMetricList(id,obj,emptyText){
+    var el=document.getElementById(id);if(!el)return;var rows=[],max=0;
+    Object.keys(obj||{}).forEach(function(k){var v=parseInt(obj[k],10)||0;if(v>0){rows.push([k,v]);if(v>max)max=v;}});
+    rows.sort(function(a,b){return b[1]-a[1];});
+    if(!rows.length){el.innerHTML='<div class="analytics-empty">'+emptyText+'</div>';return;}
+    el.innerHTML=rows.slice(0,8).map(function(r){var label=id.indexOf('Providers')>-1?providerLabel(r[0]):r[0];var w=max?Math.max(6,Math.round((r[1]/max)*100)):0;return '<div class="metric-row"><strong title="'+esc(label)+'">'+esc(label)+'</strong><span>'+fmtNum(r[1])+'</span><div class="metric-bar"><i style="width:'+w+'%"></i></div></div>';}).join('');
+  }
+  function renderAnalyticsDays(days){
+    var body=document.getElementById('analyticsDays');if(!body)return;
+    days=days||[];if(!days.length){body.innerHTML='<tr><td colspan="6" class="analytics-empty">Sem dados neste período.</td></tr>';return;}
+    body.innerHTML=days.slice().reverse().map(function(d){return '<tr><td>'+esc(d.date||'')+'</td><td>'+fmtNum(d.pageviews)+'</td><td>'+fmtNum(d.uniqueVisitors)+'</td><td>'+fmtNum(d.bookingClicks)+'</td><td>'+fmtNum(d.whatsappClicks)+'</td><td>'+fmtNum(d.duplicatesFiltered)+'</td></tr>';}).join('');
+  }
+  function loadAnalytics(rangePreset){
     var box=document.getElementById('analyticsStats');
-    if(!box)return;
+    if(!box)return;setupAnalyticsControls();
+    var start=document.getElementById('analyticsStart').value,end=document.getElementById('analyticsEnd').value;
+    var qs='?start='+encodeURIComponent(start)+'&end='+encodeURIComponent(end);
+    if(rangePreset)qs+='&range='+encodeURIComponent(rangePreset);
     var xhr=new XMLHttpRequest();
-    xhr.open('GET','/api/analytics.php',true);
+    xhr.open('GET','/api/analytics.php'+qs,true);
     xhr.setRequestHeader('X-Admin-Token',adminToken);
     xhr.onreadystatechange=function(){
       if(xhr.readyState!==4)return;
       if(xhr.status===200){
         try{
-          var r=JSON.parse(xhr.responseText),t=r.totals||{};
-          document.getElementById('dViewsToday').textContent=t.pageviewsToday||0;
-          document.getElementById('dViews30').textContent=t.pageviews30||0;
-          document.getElementById('dBookings30').textContent=t.bookingClicks30||0;
-          document.getElementById('dWhatsapp30').textContent=t.whatsappClicks30||0;
+          var r=JSON.parse(xhr.responseText),t=r.totals||{},range=r.range||{};
+          if(range.start)document.getElementById('analyticsStart').value=range.start;
+          if(range.end)document.getElementById('analyticsEnd').value=range.end;
+          document.getElementById('dViewsRange').textContent=fmtNum(t.pageviews);
+          document.getElementById('dVisitorsRange').textContent=fmtNum(t.uniqueVisitors);
+          document.getElementById('dBookingsRange').textContent=fmtNum(t.bookingClicks);
+          document.getElementById('dWhatsappRange').textContent=fmtNum(t.whatsappClicks);
+          document.getElementById('dConversionRange').textContent=pct(t.conversionRate);
+          document.getElementById('dDuplicatesRange').textContent=fmtNum(t.duplicatesFiltered);
+          document.getElementById('analyticsUpdated').textContent=r.updatedAt?'Atualizado: '+new Date(r.updatedAt).toLocaleString('pt-PT'):'Dados agregados das visitas reais ao site.';
+          renderMetricList('analyticsTopPages',r.topPages,'Sem páginas registadas.');
+          renderMetricList('analyticsTopReferrers',r.topReferrers,'Sem origens registadas.');
+          renderMetricList('analyticsBookingProviders',(r.providers&&r.providers.booking_click)||{},'Sem cliques de reserva neste período.');
+          renderMetricList('analyticsWhatsappProviders',(r.providers&&r.providers.whatsapp_click)||{},'Sem cliques WhatsApp neste período.');
+          renderAnalyticsDays(r.days||[]);
           box.hidden=false;
         }catch(e){box.hidden=true;}
       }else{

@@ -26,12 +26,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 6000);
   }
 
+  function getAnalyticsVisitorId() {
+    try {
+      if (localStorage.getItem('cookie_consent') !== 'accepted') return '';
+      var key = 'kal_visitor_id';
+      var existing = localStorage.getItem(key);
+      if (existing) return existing;
+      var generated = 'v_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 12);
+      localStorage.setItem(key, generated);
+      return generated;
+    } catch (e) {
+      return '';
+    }
+  }
+
   function trackSiteEvent(type, extra) {
     try {
       var payload = extra || {};
       payload.type = type;
       payload.path = window.location.pathname || '/';
       payload.referrer = document.referrer || '';
+      payload.visitorId = getAnalyticsVisitorId();
       var body = JSON.stringify(payload);
       if (navigator.sendBeacon) {
         navigator.sendBeacon('/api/analytics.php', new Blob([body], { type: 'application/json' }));
@@ -56,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (isWhatsApp && isBookingArea) {
       trackSiteEvent('booking_click', { provider: 'whatsapp' });
     } else if (isWhatsApp) {
-      trackSiteEvent('whatsapp_click');
+      trackSiteEvent('whatsapp_click', { provider: 'support' });
     } else if (isFareHarbor || isBookingAnchor || isBookingArea) {
       trackSiteEvent('booking_click', { provider: isFareHarbor ? 'fareharbor' : 'site' });
     }
