@@ -1416,13 +1416,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var bookingUrl = (d.tour.bookingUrl || '').trim();
     var bookingUrlIsWhatsApp = /(?:wa\.me|api\.whatsapp\.com)/i.test(bookingUrl);
-    var bookingUrlIsFareHarbor = /fareharbor\.com/i.test(bookingUrl);
+    var bookingUrlIsFareHarbor = /^https?:\/\/[^\s"']*fareharbor\.com/i.test(bookingUrl);
     var configuredFhShortname = (d.tour.fareharbor || d.settings.fareharbor || '').replace(/[^a-zA-Z0-9_-]/g, '');
     var configuredFhFlow = String(d.tour.fareharborFlow || d.settings.fareharborFlow || '').replace(/[^0-9]/g, '');
-    var shouldUseDefaultFareHarbor = !bookingUrl || bookingUrlIsWhatsApp || bookingUrlIsFareHarbor;
+    var shouldUseDefaultFareHarbor = !bookingUrl || bookingUrlIsWhatsApp;
     var fhShortname = configuredFhShortname || (shouldUseDefaultFareHarbor ? 'kayakadventureslagos' : '');
     var fhFlow = configuredFhFlow || (fhShortname === 'kayakadventureslagos' ? '1622572' : '');
-    if (fhShortname) {
+    if (bookingUrlIsFareHarbor) {
+      if (!document.getElementById('fh-lightframe')) {
+        var directFhScript = document.createElement('script');
+        directFhScript.id = 'fh-lightframe';
+        directFhScript.src = 'https://fareharbor.com/embeds/api/v1/?autolightframe=yes';
+        directFhScript.async = true;
+        document.head.appendChild(directFhScript);
+      }
+      updateBookingLinks(bookingUrl, false);
+      var directFhDiv = document.getElementById('fareharbor-booking');
+      if (directFhDiv) {
+        directFhDiv.innerHTML = '<a href="' + esc(bookingUrl) + '" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center;" data-i18n="tour_book_now">' +
+          '<i class="fas fa-calendar-check"></i> ' + (isPt ? 'Reservar Agora' : 'Book Now') + '</a>';
+      }
+    } else if (fhShortname) {
       if (!document.getElementById('fh-lightframe')) {
         var fhScript = document.createElement('script');
         fhScript.id = 'fh-lightframe';
