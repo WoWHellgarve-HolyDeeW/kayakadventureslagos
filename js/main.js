@@ -1400,25 +1400,42 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(fpScript);
       }
     }
-    var bookingUrl = d.tour.bookingUrl || '';
+    function updateBookingLinks(url, external) {
+      document.querySelectorAll('a[href*="#booking"], a[href*="fareharbor.com/embeds/book"], #fareharbor-booking a, .sticky-cta a, .nav-cta').forEach(function(a) {
+        if (a.classList.contains('whatsapp-float')) return;
+        a.href = url;
+        if (external) {
+          a.target = '_blank';
+          a.rel = 'noopener';
+        } else {
+          a.removeAttribute('target');
+          a.removeAttribute('rel');
+        }
+      });
+    }
+
+    var bookingUrl = (d.tour.bookingUrl || '').trim();
+    var bookingUrlIsWhatsApp = /(?:wa\.me|api\.whatsapp\.com)/i.test(bookingUrl);
+    var bookingUrlIsFareHarbor = /fareharbor\.com/i.test(bookingUrl);
     var configuredFhShortname = (d.tour.fareharbor || d.settings.fareharbor || '').replace(/[^a-zA-Z0-9_-]/g, '');
     var configuredFhFlow = String(d.tour.fareharborFlow || d.settings.fareharborFlow || '').replace(/[^0-9]/g, '');
-    var fhShortname = configuredFhShortname || (!bookingUrl ? 'kayakadventureslagos' : '');
-    var fhFlow = configuredFhFlow || (!bookingUrl ? '1622572' : '');
-    if (fhShortname && !document.getElementById('fh-lightframe')) {
-      var fhScript = document.createElement('script');
-      fhScript.id = 'fh-lightframe';
-      fhScript.src = 'https://fareharbor.com/embeds/api/v1/?autolightframe=yes';
-      fhScript.async = true;
-      document.head.appendChild(fhScript);
+    var shouldUseDefaultFareHarbor = !bookingUrl || bookingUrlIsWhatsApp || bookingUrlIsFareHarbor;
+    var fhShortname = configuredFhShortname || (shouldUseDefaultFareHarbor ? 'kayakadventureslagos' : '');
+    var fhFlow = configuredFhFlow || (fhShortname === 'kayakadventureslagos' ? '1622572' : '');
+    if (fhShortname) {
+      if (!document.getElementById('fh-lightframe')) {
+        var fhScript = document.createElement('script');
+        fhScript.id = 'fh-lightframe';
+        fhScript.src = 'https://fareharbor.com/embeds/api/v1/?autolightframe=yes';
+        fhScript.async = true;
+        document.head.appendChild(fhScript);
+      }
 
       var fhBookUrl = 'https://fareharbor.com/embeds/book/' + fhShortname + '/?full-items=yes';
       if (fhFlow) {
         fhBookUrl += '&flow=' + fhFlow;
       }
-      document.querySelectorAll('a[href*="#booking"]').forEach(function(a) {
-        a.href = fhBookUrl;
-      });
+      updateBookingLinks(fhBookUrl, false);
       var fhDiv = document.getElementById('fareharbor-booking');
       if (fhDiv) {
         fhDiv.innerHTML = '<a href="' + fhBookUrl + '" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center;" data-i18n="tour_book_now">' +
@@ -1426,11 +1443,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     } else if (bookingUrl && /^https?:\/\//i.test(bookingUrl)) {
       // External booking URL (GetYourGuide, Viator, Bookeo, etc.)
-      document.querySelectorAll('a[href*="#booking"]').forEach(function(a) {
-        a.href = bookingUrl;
-        a.target = '_blank';
-        a.rel = 'noopener';
-      });
+      updateBookingLinks(bookingUrl, true);
       var fhDiv = document.getElementById('fareharbor-booking');
       if (fhDiv) {
         fhDiv.innerHTML = '<a href="' + esc(bookingUrl) + '" target="_blank" rel="noopener" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center;" data-i18n="tour_book_now">' +
