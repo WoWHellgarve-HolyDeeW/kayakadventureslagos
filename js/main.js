@@ -1400,8 +1400,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(fpScript);
       }
     }
-    var fhShortname = (d.tour.fareharbor || d.settings.fareharbor || '').replace(/[^a-zA-Z0-9_-]/g, '');
     var bookingUrl = d.tour.bookingUrl || '';
+    var configuredFhShortname = (d.tour.fareharbor || d.settings.fareharbor || '').replace(/[^a-zA-Z0-9_-]/g, '');
+    var configuredFhFlow = String(d.tour.fareharborFlow || d.settings.fareharborFlow || '').replace(/[^0-9]/g, '');
+    var fhShortname = configuredFhShortname || (!bookingUrl ? 'kayakadventureslagos' : '');
+    var fhFlow = configuredFhFlow || (!bookingUrl ? '1622572' : '');
     if (fhShortname && !document.getElementById('fh-lightframe')) {
       var fhScript = document.createElement('script');
       fhScript.id = 'fh-lightframe';
@@ -1409,7 +1412,10 @@ document.addEventListener('DOMContentLoaded', function() {
       fhScript.async = true;
       document.head.appendChild(fhScript);
 
-      var fhBookUrl = 'https://fareharbor.com/embeds/book/' + fhShortname + '/items/?ref=website';
+      var fhBookUrl = 'https://fareharbor.com/embeds/book/' + fhShortname + '/?full-items=yes';
+      if (fhFlow) {
+        fhBookUrl += '&flow=' + fhFlow;
+      }
       document.querySelectorAll('a[href*="#booking"]').forEach(function(a) {
         a.href = fhBookUrl;
       });
