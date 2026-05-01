@@ -945,7 +945,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (newSlides.length > 1) startSlider();
       }
       var tourPrice = document.querySelector('#tour-preview .tour-price');
-      if (tourPrice) tourPrice.innerHTML = '€' + esc(String(d.tour.price)) + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa' : '/ person') + '</small>';
+      if (tourPrice) tourPrice.innerHTML = '€' + esc(String(d.tour.price)) + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa em loja' : '/ person in-store') + '</small>';
       var tourTitle = document.querySelector('#tour-preview [data-i18n="tour_preview_title"]');
       if (tourTitle) tourTitle.textContent = isPt ? d.tour.namePt : d.tour.nameEn;
       var tourDetails = document.querySelectorAll('#tour-preview .tour-detail');
@@ -1059,7 +1059,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (icon.classList.contains('fa-calendar-alt')) span.innerHTML = '<strong>' + (isPt ? 'Época:' : 'Season:') + '</strong> ' + esc(isPt ? d.tour.season : (d.tour.seasonEn || d.tour.season));
       });
       var sPrice = tourSidebar.querySelector('.tour-price');
-      if (sPrice) sPrice.innerHTML = '€' + esc(String(d.tour.price)) + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa' : '/ person') + '</small>';
+      if (sPrice) sPrice.innerHTML = '€' + esc(String(d.tour.price)) + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa em loja' : '/ person in-store') + '</small>';
       var sSchedule = tourSidebar.querySelector('[data-i18n="tour_sidebar_schedule"]');
       if (sSchedule) sSchedule.innerHTML = buildTourScheduleHtml(d.tour.schedules, isPt);
     }
@@ -1543,7 +1543,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var sName = stickyCta.querySelector('.tour-name');
         if (sName && sd.tour) sName.textContent = lang === 'pt' ? sd.tour.namePt : sd.tour.nameEn;
         var sPrice = stickyCta.querySelector('.sticky-cta-price');
-        if (sPrice && sd.tour) sPrice.innerHTML = '€' + esc(String(sd.tour.price)) + ' <small>' + (lang === 'pt' ? '/ pessoa' : '/ person') + '</small>';
+        if (sPrice && sd.tour) sPrice.innerHTML = '€' + esc(String(sd.tour.price)) + ' <small>' + (lang === 'pt' ? '/ pessoa em loja' : '/ person in-store') + '</small>';
       } catch(e) {}
     }
   }
