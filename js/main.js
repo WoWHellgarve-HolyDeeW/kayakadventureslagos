@@ -822,7 +822,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   if (typeof SiteData !== 'undefined') {
-    applySiteData();
     SiteData.loadFromServer(function() {
       applySiteData();
       siteDataReady = true;
@@ -840,6 +839,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function safeBr(s) { if (!s) return ''; return esc(s).replace(/&lt;br\s*\/?&gt;/gi, '<br>'); }
     function safeUrl(s) { if (!s) return ''; return /^https?:\/\//i.test(s) ? esc(s) : ''; }
     function ratingToStars(n) { var full = Math.floor(n); var half = (n - full) >= 0.3; var s = ''; for (var i = 0; i < full; i++) s += '★'; if (half) s += '★'; return s || '★★★★★'; }
+    function isLegacyPlaceholderVideo(url) {
+      return /^videos\/gallery\/video-[123]\.mp4$/i.test(normalizeMediaUrl(url, 'video'));
+    }
+    function getGalleryVideos(videos) {
+      var list = Array.isArray(videos) ? videos : [];
+      var hasUploadedVideo = list.some(function(video) {
+        return !!(video && video.url && looksLikeVideoUrl(video.url) && !isLegacyPlaceholderVideo(video.url));
+      });
+      return list.filter(function(video) {
+        return !!(video && video.url && looksLikeVideoUrl(video.url) && !(hasUploadedVideo && isLegacyPlaceholderVideo(video.url)));
+      });
+    }
     // Apply logo from settings
     var logoUrl = d.settings.logoUrl || 'images/logo.png';
     document.querySelectorAll('.logo img, .footer-logo img, .preloader-logo, .login-logo img, .sidebar-brand img').forEach(function(img) {
@@ -1142,8 +1153,7 @@ document.addEventListener('DOMContentLoaded', function() {
       galleryVideoGrid.innerHTML = '';
       galleryVideosSection.hidden = true;
 
-      (Array.isArray(d.galleryVideos) ? d.galleryVideos : []).forEach(function(video) {
-        if (!video || !video.url || !looksLikeVideoUrl(video.url)) return;
+      getGalleryVideos(d.galleryVideos).forEach(function(video) {
 
         var title = isPt ? (video.titlePt || video.titleEn) : (video.titleEn || video.titlePt);
         var poster = normalizeMediaUrl(video.poster, 'image');
@@ -1191,9 +1201,7 @@ document.addEventListener('DOMContentLoaded', function() {
       homeVideoGrid.innerHTML = '';
       homeVideoWrap.hidden = true;
 
-      (Array.isArray(d.galleryVideos) ? d.galleryVideos : []).filter(function(video) {
-        return !!(video && video.url && looksLikeVideoUrl(video.url));
-      }).slice(0, 2).forEach(function(video) {
+      getGalleryVideos(d.galleryVideos).slice(0, 2).forEach(function(video) {
         var title = isPt ? (video.titlePt || video.titleEn) : (video.titleEn || video.titlePt);
         var poster = normalizeMediaUrl(video.poster, 'image');
         var fallbackTitle = title || (isPt ? 'Momento do tour' : 'Tour moment');

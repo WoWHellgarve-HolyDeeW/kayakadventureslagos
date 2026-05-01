@@ -126,11 +126,7 @@ var SiteData = (function() {
       { id: 11, url: 'images/gallery/20200622104939.jpg', category: 'adventure', captionPt: 'Costa Dourada', captionEn: 'Golden Coast' },
       { id: 12, url: 'images/gallery/20190924142240.jpg', category: 'caves', captionPt: 'Arcos Naturais', captionEn: 'Natural Arches' }
     ],
-    galleryVideos: [
-      { id: 1, url: 'videos/gallery/video-1.mp4', poster: 'images/gallery/ponta-da-piedade.jpg', titlePt: 'Saída para o mar', titleEn: 'Heading out to sea' },
-      { id: 2, url: 'videos/gallery/video-2.mp4', poster: 'images/gallery/20190924134811.jpg', titlePt: 'Dentro das grutas', titleEn: 'Inside the caves' },
-      { id: 3, url: 'videos/gallery/video-3.mp4', poster: 'images/gallery/20200622104802.jpg', titlePt: 'Costa de Lagos', titleEn: 'Lagos coastline' }
-    ],
+    galleryVideos: [],
     faq: [
       { id: 1, qPt: 'Preciso de experiência em kayak?', qEn: 'Do I need kayaking experience?', aPt: 'Não! O nosso tour é adequado para todos os níveis, incluindo iniciantes completos. Antes de partirmos, damos um briefing completo com todas as técnicas necessárias. Os nossos guias estão sempre presentes para ajudar durante todo o percurso.', aEn: 'No! Our tour is suitable for all levels, including complete beginners. Before we set off, we give a full briefing with all the necessary techniques. Our guides are always present to help throughout the route.' },
       { id: 2, qPt: 'Qual é a idade mínima para participar?', qEn: 'What is the minimum age to participate?', aPt: 'A idade mínima é 4 anos, sempre acompanhados por um adulto no mesmo kayak (kayak duplo). Crianças abaixo de 12 anos devem estar acompanhadas por um tutor legal.', aEn: 'The minimum age is 4 years, always accompanied by an adult in the same kayak (double kayak). Children under 12 must be accompanied by a legal guardian.' },
@@ -220,13 +216,6 @@ var SiteData = (function() {
         }
       } catch (e) {}
     }
-    // Try localStorage before server responds
-    try {
-      var stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        return deepMerge(defaults, JSON.parse(stored));
-      }
-    } catch (e) {}
     return deepClone(defaults);
   }
 
