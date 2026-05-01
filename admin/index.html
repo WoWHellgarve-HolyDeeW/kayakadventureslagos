@@ -104,6 +104,12 @@
     /* Gallery grid */
     .gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-top:14px;}
     .gal-item{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;}
+    .gal-image-item{cursor:grab;}
+    .gal-image-item:active{cursor:grabbing;}
+    .gal-image-item.dragging{opacity:.45;transform:scale(.98);}
+    .gal-image-item.drag-over{outline:3px solid rgba(212,115,28,.7);outline-offset:3px;}
+    .gal-order-badge{position:absolute;top:8px;left:8px;z-index:2;display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:rgba(17,17,17,.7);color:#fff;font-size:.68rem;font-weight:700;box-shadow:0 6px 16px rgba(0,0,0,.18);pointer-events:none;}
+    .gal-order-badge.home{background:var(--primary);}
     .gal-item img,.gal-item video{width:100%;height:100%;object-fit:cover;transition:transform .3s;display:block;background:#111;}
     .gal-item:hover img,.gal-item:hover video{transform:scale(1.05);}
     .gal-video-item::before{content:'\f04b';font-family:'Font Awesome 6 Free';font-weight:900;position:absolute;top:10px;left:10px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.58);color:#fff;font-size:.82rem;z-index:2;pointer-events:none;box-shadow:0 6px 16px rgba(0,0,0,.2);}
@@ -366,7 +372,7 @@
   <div class="sec" id="s-gallery">
     <div class="card">
       <h3><i class="fas fa-images"></i> Gestão da Galeria</h3>
-      <div class="info"><i class="fas fa-image"></i><p>Adicione URLs de imagens. Para imagens locais use: images/foto.jpg ou uploads/foto.jpg. Para vídeos, use o botão de upload ou um URL MP4/WebM válido.</p></div>
+      <div class="info"><i class="fas fa-image"></i><p>Arraste as imagens para alterar a ordem. As primeiras 5 aparecem na página inicial. Para imagens locais use: images/foto.jpg ou uploads/foto.jpg.</p></div>
       <button class="btn btn-primary btn-sm" id="addGalBtn"><i class="fas fa-plus"></i> Adicionar Imagem</button>
       <div class="gal-grid" id="galGrid"></div>
     </div>
@@ -888,15 +894,52 @@
   var catNames={caves:'Grutas',beaches:'Praias',sunset:'Pôr do Sol',adventure:'Aventura'};
   function loadGal(d){
     var g=document.getElementById('galGrid');g.innerHTML='';
-    d.gallery.forEach(function(img){
+    d.gallery.forEach(function(img,index){
       var previewUrl=toPreviewPath(img.url,'image');
-      var div=document.createElement('div');div.className='gal-item';
-      div.innerHTML='<img src="'+esc(previewUrl)+'" alt="'+esc(img.captionPt)+'" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22><rect fill=%22%23eee%22 width=%22200%22 height=%22150%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2213%22>Sem Imagem</text></svg>\'">'+
+      var div=document.createElement('div');div.className='gal-item gal-image-item';div.draggable=true;div.dataset.gid=img.id;div.title='Arraste para alterar a ordem';
+      var badgeText=index<5?'Home '+(index+1):String(index+1);
+      var badgeClass=index<5?'gal-order-badge home':'gal-order-badge';
+      div.innerHTML='<span class="'+badgeClass+'">'+esc(badgeText)+'</span><img src="'+esc(previewUrl)+'" alt="'+esc(img.captionPt)+'" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22><rect fill=%22%23eee%22 width=%22200%22 height=%22150%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2213%22>Sem Imagem</text></svg>\'">'+
         '<div class="gal-ov"><span>'+(catNames[img.category]||img.category)+'</span><span>'+esc(img.captionPt)+'</span><div class="actions"><button class="btn-edit" data-ge="'+img.id+'"><i class="fas fa-edit"></i></button><button class="btn-del" data-gd="'+img.id+'"><i class="fas fa-trash"></i></button></div></div>';
       g.appendChild(div);
     });
+    applyGalleryDragSorting(g);
     g.querySelectorAll('[data-ge]').forEach(function(b){b.addEventListener('click',function(){editGal(parseInt(this.dataset.ge));});});
     g.querySelectorAll('[data-gd]').forEach(function(b){b.addEventListener('click',function(){delGal(parseInt(this.dataset.gd));});});
+  }
+  function applyGalleryDragSorting(grid){
+    var draggedId=null;
+    grid.querySelectorAll('.gal-image-item').forEach(function(item){
+      item.addEventListener('dragstart',function(e){
+        if(e.target.closest('button')){e.preventDefault();return;}
+        draggedId=parseInt(item.dataset.gid,10);item.classList.add('dragging');
+        if(e.dataTransfer){e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(draggedId));}
+      });
+      item.addEventListener('dragover',function(e){
+        e.preventDefault();
+        if(parseInt(item.dataset.gid,10)!==draggedId)item.classList.add('drag-over');
+        if(e.dataTransfer)e.dataTransfer.dropEffect='move';
+      });
+      item.addEventListener('dragleave',function(){item.classList.remove('drag-over');});
+      item.addEventListener('drop',function(e){
+        e.preventDefault();item.classList.remove('drag-over');
+        var sourceId=draggedId||(e.dataTransfer?parseInt(e.dataTransfer.getData('text/plain'),10):0);
+        reorderGalleryImage(sourceId,parseInt(item.dataset.gid,10));
+      });
+      item.addEventListener('dragend',function(){
+        draggedId=null;item.classList.remove('dragging');
+        grid.querySelectorAll('.drag-over').forEach(function(el){el.classList.remove('drag-over');});
+      });
+    });
+  }
+  function reorderGalleryImage(sourceId,targetId){
+    if(!sourceId||!targetId||sourceId===targetId)return;
+    var d=SiteData.load(),list=Array.isArray(d.gallery)?d.gallery:[];
+    var from=list.findIndex(function(img){return img.id===sourceId;});
+    var to=list.findIndex(function(img){return img.id===targetId;});
+    if(from<0||to<0)return;
+    var moved=list.splice(from,1)[0];list.splice(to,0,moved);d.gallery=list;
+    SiteData.save(d);loadGal(d);loadStats(d);serverSave(function(){toast('Ordem atualizada. As primeiras 5 aparecem na homepage.');});
   }
   document.getElementById('addGalBtn').addEventListener('click',function(){openGalM();});
   function openGalM(id){
