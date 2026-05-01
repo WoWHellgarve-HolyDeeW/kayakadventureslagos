@@ -91,6 +91,7 @@
     .info{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:14px 16px;margin-bottom:18px;display:flex;gap:11px;align-items:start;}
     .info i{color:#3B82F6;font-size:1rem;margin-top:2px;flex-shrink:0;}
     .info p{font-size:.82rem;color:#1E40AF;line-height:1.5;}
+    .admin-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     /* Social rows */
     .soc-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #f0f2f5;}
     .soc-row:last-child{border:none;}
@@ -372,14 +373,20 @@
   <div class="sec" id="s-gallery">
     <div class="card">
       <h3><i class="fas fa-images"></i> Gestão da Galeria</h3>
-      <div class="info"><i class="fas fa-image"></i><p>Arraste as imagens para alterar a ordem. As primeiras 5 aparecem na página inicial. Para imagens locais use: images/foto.jpg ou uploads/foto.jpg.</p></div>
-      <button class="btn btn-primary btn-sm" id="addGalBtn"><i class="fas fa-plus"></i> Adicionar Imagem</button>
+      <div class="info"><i class="fas fa-image"></i><p>Arraste as imagens para alterar a ordem. As primeiras 5 aparecem na página inicial. Pode fazer upload de várias imagens de uma vez.</p></div>
+      <div class="admin-actions">
+        <button class="btn btn-primary btn-sm" id="addGalBtn"><i class="fas fa-plus"></i> Adicionar Imagem</button>
+        <label class="btn btn-outline btn-sm" style="cursor:pointer;"><i class="fas fa-upload"></i> Upload Múltiplo<input type="file" accept="image/*" id="galMultiImageInput" multiple style="display:none;"></label>
+      </div>
       <div class="gal-grid" id="galGrid"></div>
     </div>
     <div class="card">
       <h3><i class="fas fa-video"></i> Vídeos da Galeria</h3>
-      <div class="info"><i class="fas fa-film"></i><p>Faça upload dos vídeos pequenos diretamente aqui. O formato recomendado é MP4; também aceitamos WebM, OGG e MOV. O poster é opcional, mas ajuda a deixar a grelha mais bonita antes de carregar no play.</p></div>
-      <button class="btn btn-primary btn-sm" id="addGalVideoBtn"><i class="fas fa-plus"></i> Adicionar Vídeo</button>
+      <div class="info"><i class="fas fa-film"></i><p>Faça upload dos vídeos pequenos diretamente aqui. Pode enviar vários vídeos de uma vez. O formato recomendado é MP4; também aceitamos WebM, OGG e MOV.</p></div>
+      <div class="admin-actions">
+        <button class="btn btn-primary btn-sm" id="addGalVideoBtn"><i class="fas fa-plus"></i> Adicionar Vídeo</button>
+        <label class="btn btn-outline btn-sm" style="cursor:pointer;"><i class="fas fa-upload"></i> Upload Múltiplo<input type="file" accept="video/mp4,video/webm,video/ogg,video/quicktime" id="galMultiVideoInput" multiple style="display:none;"></label>
+      </div>
       <div class="gal-grid" id="galVideoGrid"></div>
     </div>
   </div>
@@ -671,6 +678,26 @@
     xhr.send(fd);
   }
 
+  function titleFromFileName(name,fallback){
+    var base=String(name||'').replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim();
+    if(!base)return fallback||'Novo item';
+    return base.replace(/\b\w/g,function(ch){return ch.toUpperCase();});
+  }
+  function uploadFilesSequential(files,uploadFn,progressLabel,callback){
+    var list=Array.prototype.slice.call(files||[]),uploaded=[],idx=0;
+    if(!list.length){callback(uploaded);return;}
+    function next(){
+      if(idx>=list.length){callback(uploaded);return;}
+      var file=list[idx++];
+      toast(progressLabel+' '+idx+'/'+list.length+'...');
+      uploadFn(file,function(url){
+        if(url)uploaded.push({url:url,file:file});
+        next();
+      });
+    }
+    next();
+  }
+
   var loginForm=document.getElementById('loginForm'),loginErr=document.getElementById('loginError');
   var loginDiv=document.getElementById('adminLogin'),dashDiv=document.getElementById('adminDashboard');
   if(adminToken && csrfToken)showDash();
@@ -942,6 +969,21 @@
     SiteData.save(d);loadGal(d);loadStats(d);serverSave(function(){toast('Ordem atualizada. As primeiras 5 aparecem na homepage.');});
   }
   document.getElementById('addGalBtn').addEventListener('click',function(){openGalM();});
+  document.getElementById('galMultiImageInput').addEventListener('change',function(){
+    var input=this,files=input.files;if(!files||!files.length)return;
+    uploadFilesSequential(files,uploadImage,'A enviar imagem',function(items){
+      input.value='';
+      if(!items.length){toast('Nenhuma imagem foi adicionada.',true);return;}
+      var d=SiteData.load();d.gallery=Array.isArray(d.gallery)?d.gallery:[];
+      var mx=d.gallery.reduce(function(m,g){return g.id>m?g.id:m;},0);
+      items.forEach(function(item){
+        var title=titleFromFileName(item.file&&item.file.name,'Imagem '+(mx+1));
+        d.gallery.push({id:++mx,url:normalizePublicMediaPath(item.url,'image'),category:'adventure',captionPt:title,captionEn:title});
+      });
+      SiteData.save(d);loadGal(d);loadStats(d);
+      serverSave(function(){toast(items.length+' imagens adicionadas. Arraste para escolher as 5 da homepage.');});
+    });
+  });
   function openGalM(id){
     document.getElementById('gm_url').value='';document.getElementById('gm_cat').value='caves';document.getElementById('gm_capPt').value='';document.getElementById('gm_capEn').value='';document.getElementById('gm_id').value='';document.getElementById('gm_preview').innerHTML='';
     document.getElementById('galModalTitle').innerHTML='<i class="fas fa-image"></i> Adicionar Imagem';
@@ -981,6 +1023,21 @@
     grid.querySelectorAll('[data-gvd]').forEach(function(btn){btn.addEventListener('click',function(){delGalVideo(parseInt(this.dataset.gvd,10));});});
   }
   document.getElementById('addGalVideoBtn').addEventListener('click',function(){openGalVideoM();});
+  document.getElementById('galMultiVideoInput').addEventListener('change',function(){
+    var input=this,files=input.files;if(!files||!files.length)return;
+    uploadFilesSequential(files,uploadVideo,'A enviar vídeo',function(items){
+      input.value='';
+      if(!items.length){toast('Nenhum vídeo foi adicionado.',true);return;}
+      var d=SiteData.load();d.galleryVideos=Array.isArray(d.galleryVideos)?d.galleryVideos:[];
+      var mx=d.galleryVideos.reduce(function(m,v){return v.id>m?v.id:m;},0);
+      items.forEach(function(item){
+        var title=titleFromFileName(item.file&&item.file.name,'Vídeo '+(mx+1));
+        d.galleryVideos.push({id:++mx,url:normalizePublicMediaPath(item.url,'video'),poster:'',titlePt:title,titleEn:title});
+      });
+      SiteData.save(d);loadGalVideos(d);
+      serverSave(function(){toast(items.length+' vídeos adicionados. Pode editar títulos e posters quando quiser.');});
+    });
+  });
   function openGalVideoM(){
     document.getElementById('gvm_url').value='';document.getElementById('gvm_poster').value='';document.getElementById('gvm_titlePt').value='';document.getElementById('gvm_titleEn').value='';document.getElementById('gvm_id').value='';document.getElementById('gvm_preview').innerHTML='';
     document.getElementById('galVideoModalTitle').innerHTML='<i class="fas fa-video"></i> Adicionar Vídeo';
