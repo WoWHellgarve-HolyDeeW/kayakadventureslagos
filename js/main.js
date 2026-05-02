@@ -723,6 +723,14 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
+  function getResolvedScheduleSlots(scheduleText) {
+    var slots = extractScheduleSlots(scheduleText);
+    if (slots.length === 0) {
+      return getDefaultScheduleSlots();
+    }
+    return slots;
+  }
+
   function getDefaultScheduleSlots() {
     return [
       { time: '10:00', raw: '10:00' },
@@ -748,16 +756,56 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function isSunsetScheduleSlot(slot, index, slots) {
-    return /sunset|p[oô]r do sol/i.test(slot.raw) || (slot.time === '18:00' && index === slots.length - 1);
+    return /sunset|p[oô]r do sol/i.test(slot.raw) || (/^1[78]:/.test(slot.time) && index === slots.length - 1);
+  }
+
+  function buildFareHarborAvailabilityHtml(isPt) {
+    var label = isPt ? 'Disponibilidade' : 'Availability';
+    var message = isPt
+      ? 'Horários e vagas ao vivo no calendário FareHarbor abaixo.'
+      : 'Live times and availability are shown in the FareHarbor calendar below.';
+
+    return '<span class="tour-schedule-label">' + esc(label) + '</span><span class="tour-schedule-times">' + esc(message) + '</span>';
+  }
+
+  function buildFareHarborBookUrl(shortname, flow) {
+    var url = 'https://fareharbor.com/embeds/book/' + shortname + '/?full-items=yes';
+    if (flow) url += '&flow=' + flow;
+    return url;
+  }
+
+  function buildFareHarborItemsUrl(shortname, flow) {
+    var url = 'https://fareharbor.com/embeds/book/' + shortname + '/items/?full-items=yes';
+    if (flow) url += '&flow=' + flow;
+    return url;
+  }
+
+  function getFareHarborSiteBookingHref() {
+    var path = window.location.pathname || '';
+    if (/\/tour\.html$/i.test(path)) return '#booking';
+    return 'tour.html#booking';
+  }
+
+  function renderFareHarborBookingEmbed(container, bookUrl, itemsUrl, isPt) {
+    if (!container) return;
+
+    container.innerHTML =
+      '<iframe class="fareharbor-inline-frame" src="' + esc(itemsUrl) + '" loading="lazy" allow="payment" referrerpolicy="strict-origin-when-cross-origin" title="FareHarbor booking calendar"></iframe>' +
+      '<div class="fareharbor-mobile-card">' +
+      '<div class="fareharbor-mobile-icon"><i class="fas fa-calendar-check"></i></div>' +
+      '<div><h3>' + esc(isPt ? 'Reservar com FareHarbor' : 'Book with FareHarbor') + '</h3>' +
+      '<p>' + esc(isPt ? 'Veja horários e disponibilidade ao vivo numa página otimizada para o telemóvel.' : 'See live times and availability on a mobile-optimized booking page.') + '</p></div>' +
+      '<a href="' + esc(bookUrl) + '" target="_blank" rel="noopener" data-keep-booking-link="true" class="btn btn-secondary btn-lg">' +
+      '<i class="fas fa-up-right-from-square"></i> ' + esc(isPt ? 'Abrir calendário FareHarbor' : 'Open FareHarbor calendar') + '</a>' +
+      '</div>' +
+      '<p class="fareharbor-inline-note">' + esc(isPt ? 'Reserva segura e disponibilidade ao vivo via FareHarbor.' : 'Secure booking and live availability via FareHarbor.') + '</p>' +
+      '<a href="' + esc(bookUrl) + '" target="_blank" rel="noopener" data-keep-booking-link="true" class="btn btn-outline btn-lg fareharbor-inline-link">' +
+      '<i class="fas fa-up-right-from-square"></i> ' + esc(isPt ? 'Abrir em ecrã completo' : 'Open full screen') + '</a>';
   }
 
   function buildTourScheduleSummaryText(scheduleText, isPt) {
     var sunsetLabel = isPt ? 'Pôr do Sol' : 'Sunset Tour';
-    var slots = extractScheduleSlots(scheduleText);
-
-    if (slots.length === 0) {
-      slots = getDefaultScheduleSlots();
-    }
+    var slots = getResolvedScheduleSlots(scheduleText);
 
     return slots.map(function(slot, index) {
       var timeLabel = formatScheduleTime(slot.time, isPt);
@@ -768,46 +816,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }).join(' | ');
   }
 
-  function buildTourBeachStopNotice(scheduleText, isPt) {
-    var slots = extractScheduleSlots(scheduleText);
-
-    if (slots.length === 0) {
-      slots = getDefaultScheduleSlots();
-    }
-
-    var sunsetSlot = null;
-    slots.forEach(function(slot, index) {
-      if (!sunsetSlot && isSunsetScheduleSlot(slot, index, slots)) {
-        sunsetSlot = slot;
-      }
-    });
-
-    if (!sunsetSlot) {
-      sunsetSlot = slots[slots.length - 1];
-    }
-
-    var timeLabel = formatScheduleTime(sunsetSlot.time, isPt);
+  function buildTourBeachStopNotice(isPt) {
     return isPt
-      ? 'O tour das ' + timeLabel + ' é o Pôr do Sol e não inclui paragem na praia.'
-      : 'The ' + timeLabel + ' departure is the Sunset Tour and does not include a beach stop.';
+      ? 'O tour Sunset não inclui paragem na praia.'
+      : 'The Sunset Tour does not include a beach stop.';
   }
 
-  function buildTourSnorkelText(scheduleText, isPt) {
+  function buildTourSnorkelText(isPt) {
     var base = isPt
       ? 'Nos tours com paragem na praia, temos máscaras de snorkel para quem quiser aproveitar a paragem e entrar um pouco na água.'
       : 'On tours with a beach stop, we have snorkel masks available for anyone who wants to make the most of the stop and get in the water.';
 
-    return base + ' ' + buildTourBeachStopNotice(scheduleText, isPt);
+    return base + ' ' + buildTourBeachStopNotice(isPt);
   }
 
   function buildTourScheduleHtml(scheduleText, isPt) {
     var label = isPt ? 'Horários' : 'Times';
     var sunsetLabel = isPt ? 'Pôr do Sol' : 'Sunset Tour';
-    var slots = extractScheduleSlots(scheduleText);
-
-    if (slots.length === 0) {
-      slots = getDefaultScheduleSlots();
-    }
+    var slots = getResolvedScheduleSlots(scheduleText);
 
     var rendered = slots.map(function(slot, index) {
       var timeLabel = formatScheduleTime(slot.time, isPt);
@@ -836,6 +862,15 @@ document.addEventListener('DOMContentLoaded', function() {
     var d = SiteData.load();
     var lang = localStorage.getItem('lang_preference') || 'pt';
     var isPt = (lang === 'pt');
+    var bookingUrl = (d.tour.bookingUrl || '').trim();
+    var bookingUrlIsWhatsApp = /(?:wa\.me|api\.whatsapp\.com)/i.test(bookingUrl);
+    var bookingUrlIsFareHarbor = /^https?:\/\/[^\s"']*fareharbor\.com/i.test(bookingUrl);
+    var configuredFhShortname = (d.tour.fareharbor || d.settings.fareharbor || '').replace(/[^a-zA-Z0-9_-]/g, '');
+    var configuredFhFlow = String(d.tour.fareharborFlow || d.settings.fareharborFlow || '').replace(/[^0-9]/g, '');
+    var shouldUseDefaultFareHarbor = !bookingUrl || bookingUrlIsWhatsApp;
+    var fhShortname = configuredFhShortname || (shouldUseDefaultFareHarbor ? 'kayakadventureslagos' : '');
+    var fhFlow = configuredFhFlow || (fhShortname === 'kayakadventureslagos' ? '1622572' : '');
+    var usesFareHarborBooking = bookingUrlIsFareHarbor || !!fhShortname;
     function safeBr(s) { if (!s) return ''; return esc(s).replace(/&lt;br\s*\/?&gt;/gi, '<br>'); }
     function safeUrl(s) { if (!s) return ''; return /^https?:\/\//i.test(s) ? esc(s) : ''; }
     function ratingToStars(n) { var full = Math.floor(n); var half = (n - full) >= 0.3; var s = ''; for (var i = 0; i < full; i++) s += '★'; if (half) s += '★'; return s || '★★★★★'; }
@@ -956,7 +991,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (newSlides.length > 1) startSlider();
       }
       var tourPrice = document.querySelector('#tour-preview .tour-price');
-      if (tourPrice) tourPrice.innerHTML = '€' + esc(String(d.tour.price)) + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa em loja' : '/ person in-store') + '</small>';
+      if (tourPrice) tourPrice.remove();
       var tourTitle = document.querySelector('#tour-preview [data-i18n="tour_preview_title"]');
       if (tourTitle) tourTitle.textContent = isPt ? d.tour.namePt : d.tour.nameEn;
       var tourDetails = document.querySelectorAll('#tour-preview .tour-detail');
@@ -1070,9 +1105,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (icon.classList.contains('fa-calendar-alt')) span.innerHTML = '<strong>' + (isPt ? 'Época:' : 'Season:') + '</strong> ' + esc(isPt ? d.tour.season : (d.tour.seasonEn || d.tour.season));
       });
       var sPrice = tourSidebar.querySelector('.tour-price');
-      if (sPrice) sPrice.innerHTML = '€' + esc(String(d.tour.price)) + ' <small data-i18n="tour_price_per">' + (isPt ? '/ pessoa em loja' : '/ person in-store') + '</small>';
+      if (sPrice) sPrice.remove();
       var sSchedule = tourSidebar.querySelector('[data-i18n="tour_sidebar_schedule"]');
-      if (sSchedule) sSchedule.innerHTML = buildTourScheduleHtml(d.tour.schedules, isPt);
+      if (sSchedule) sSchedule.innerHTML = usesFareHarborBooking ? buildFareHarborAvailabilityHtml(isPt) : buildTourScheduleHtml(d.tour.schedules, isPt);
     }
     // Apply tour description from admin to tour page
     var tourDesc = isPt ? d.tour.descPt : d.tour.descEn;
@@ -1085,13 +1120,13 @@ document.addEventListener('DOMContentLoaded', function() {
       if (desc3) desc3.style.display = 'none';
     }
     var snorkelText = document.querySelector('[data-i18n="tour_snorkel_text"]');
-    if (snorkelText) snorkelText.textContent = buildTourSnorkelText(d.tour.schedules, isPt);
+    if (snorkelText) snorkelText.textContent = buildTourSnorkelText(isPt);
     var step4Text = document.querySelector('[data-i18n="tour_step4_text"]');
     if (step4Text) {
       var step4Base = isPt
         ? 'Paramos numa praia para um mergulho e snorkelling leve, com máscaras de snorkel incluídas nos tours com paragem na praia, antes de regressar ao ponto de partida. Nas águas claras de Lagos, junto às rochas douradas da Ponta da Piedade, este é um dos momentos favoritos dos nossos clientes.'
         : 'We stop at a beach for a quick swim and light snorkelling. Snorkel masks are included on tours with a beach stop before we return to the starting point. In Lagos\' clear waters, framed by the golden rock formations of Ponta da Piedade, this is one of our guests\' favourite moments.';
-      step4Text.textContent = step4Base + ' ' + (isPt ? 'Nota: ' : 'Note: ') + buildTourBeachStopNotice(d.tour.schedules, isPt);
+      step4Text.textContent = step4Base + ' ' + (isPt ? 'Nota: ' : 'Note: ') + buildTourBeachStopNotice(isPt);
     }
     // Apply tour name to tour page title
     var tourPageTitle = document.querySelector('[data-i18n="tour_page_title"]');
@@ -1303,7 +1338,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update Product schema
         if (ld['@type'] === 'Product') {
           ld.name = (isPt ? d.tour.namePt : d.tour.nameEn) + ' - Lagos';
-          if (ld.offers) ld.offers.price = String(d.tour.price);
+          if (ld.offers) {
+            delete ld.offers.price;
+            delete ld.offers.priceCurrency;
+          }
         }
         // Update all aggregateRatings
         if (ld.aggregateRating) {
@@ -1426,6 +1464,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateBookingLinks(url, external) {
       document.querySelectorAll('a[href*="#booking"], a[href*="fareharbor.com/embeds/book"], #fareharbor-booking a, .sticky-cta a, .nav-cta').forEach(function(a) {
         if (a.classList.contains('whatsapp-float')) return;
+        if (a.getAttribute('data-keep-booking-link') === 'true') return;
         a.href = url;
         if (external) {
           a.target = '_blank';
@@ -1436,47 +1475,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     }
-
-    var bookingUrl = (d.tour.bookingUrl || '').trim();
-    var bookingUrlIsWhatsApp = /(?:wa\.me|api\.whatsapp\.com)/i.test(bookingUrl);
-    var bookingUrlIsFareHarbor = /^https?:\/\/[^\s"']*fareharbor\.com/i.test(bookingUrl);
-    var configuredFhShortname = (d.tour.fareharbor || d.settings.fareharbor || '').replace(/[^a-zA-Z0-9_-]/g, '');
-    var configuredFhFlow = String(d.tour.fareharborFlow || d.settings.fareharborFlow || '').replace(/[^0-9]/g, '');
-    var shouldUseDefaultFareHarbor = !bookingUrl || bookingUrlIsWhatsApp;
-    var fhShortname = configuredFhShortname || (shouldUseDefaultFareHarbor ? 'kayakadventureslagos' : '');
-    var fhFlow = configuredFhFlow || (fhShortname === 'kayakadventureslagos' ? '1622572' : '');
     if (bookingUrlIsFareHarbor) {
-      if (!document.getElementById('fh-lightframe')) {
-        var directFhScript = document.createElement('script');
-        directFhScript.id = 'fh-lightframe';
-        directFhScript.src = 'https://fareharbor.com/embeds/api/v1/?autolightframe=yes';
-        directFhScript.async = true;
-        document.head.appendChild(directFhScript);
-      }
-      updateBookingLinks(bookingUrl, false);
+      var directItemsUrl = /\/items\//.test(bookingUrl) ? bookingUrl : bookingUrl.replace(/\/\?(.*)?$/, '/items/?$1');
+      if (directItemsUrl === bookingUrl) directItemsUrl = bookingUrl;
+      updateBookingLinks(getFareHarborSiteBookingHref(), false);
       var directFhDiv = document.getElementById('fareharbor-booking');
       if (directFhDiv) {
-        directFhDiv.innerHTML = '<a href="' + esc(bookingUrl) + '" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center;" data-i18n="tour_book_now">' +
-          '<i class="fas fa-calendar-check"></i> ' + (isPt ? 'Reservar Agora' : 'Book Now') + '</a>';
+        renderFareHarborBookingEmbed(directFhDiv, bookingUrl, directItemsUrl, isPt);
       }
     } else if (fhShortname) {
-      if (!document.getElementById('fh-lightframe')) {
-        var fhScript = document.createElement('script');
-        fhScript.id = 'fh-lightframe';
-        fhScript.src = 'https://fareharbor.com/embeds/api/v1/?autolightframe=yes';
-        fhScript.async = true;
-        document.head.appendChild(fhScript);
-      }
-
-      var fhBookUrl = 'https://fareharbor.com/embeds/book/' + fhShortname + '/?full-items=yes';
-      if (fhFlow) {
-        fhBookUrl += '&flow=' + fhFlow;
-      }
-      updateBookingLinks(fhBookUrl, false);
+      var fhBookUrl = buildFareHarborBookUrl(fhShortname, fhFlow);
+      var fhItemsUrl = buildFareHarborItemsUrl(fhShortname, fhFlow);
+      updateBookingLinks(getFareHarborSiteBookingHref(), false);
       var fhDiv = document.getElementById('fareharbor-booking');
       if (fhDiv) {
-        fhDiv.innerHTML = '<a href="' + fhBookUrl + '" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center;" data-i18n="tour_book_now">' +
-          '<i class="fas fa-calendar-check"></i> ' + (isPt ? 'Reservar Agora' : 'Book Now') + '</a>';
+        renderFareHarborBookingEmbed(fhDiv, fhBookUrl, fhItemsUrl, isPt);
       }
     } else if (bookingUrl && /^https?:\/\//i.test(bookingUrl)) {
       // External booking URL (GetYourGuide, Viator, Bookeo, etc.)
@@ -1551,7 +1564,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var sName = stickyCta.querySelector('.tour-name');
         if (sName && sd.tour) sName.textContent = lang === 'pt' ? sd.tour.namePt : sd.tour.nameEn;
         var sPrice = stickyCta.querySelector('.sticky-cta-price');
-        if (sPrice && sd.tour) sPrice.innerHTML = '€' + esc(String(sd.tour.price)) + ' <small>' + (lang === 'pt' ? '/ pessoa em loja' : '/ person in-store') + '</small>';
+        if (sPrice) sPrice.remove();
       } catch(e) {}
     }
   }
@@ -1569,11 +1582,11 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       function updateCountdown() {
         var now = new Date();
-        var schedules = ['10:00', '13:00', '15:30', '18:00'];
+        var schedules = getDefaultScheduleSlots().map(function(slot) { return slot.time; });
         if (typeof SiteData !== 'undefined') {
           var sd = SiteData.load();
           if (sd.tour && sd.tour.schedules && sd.tour.schedules.indexOf(':') !== -1) {
-            var parsed = extractScheduleSlots(sd.tour.schedules).map(function(slot) { return slot.time; });
+            var parsed = getResolvedScheduleSlots(sd.tour.schedules).map(function(slot) { return slot.time; });
             if (parsed.length > 0) schedules = parsed;
           }
         }
@@ -1597,9 +1610,13 @@ document.addEventListener('DOMContentLoaded', function() {
         var h = Math.floor(diff / 3600000);
         var m = Math.floor((diff % 3600000) / 60000);
         var s = Math.floor((diff % 60000) / 1000);
-        document.getElementById('cdHours').textContent = h < 10 ? '0' + h : h;
-        document.getElementById('cdMins').textContent = m < 10 ? '0' + m : m;
-        document.getElementById('cdSecs').textContent = s < 10 ? '0' + s : s;
+        var cdHours = document.getElementById('cdHours');
+        var cdMins = document.getElementById('cdMins');
+        var cdSecs = document.getElementById('cdSecs');
+        if (!countdownBar.isConnected || !cdHours || !cdMins || !cdSecs) return;
+        cdHours.textContent = h < 10 ? '0' + h : h;
+        cdMins.textContent = m < 10 ? '0' + m : m;
+        cdSecs.textContent = s < 10 ? '0' + s : s;
       }
       updateCountdown();
       setInterval(updateCountdown, 1000);

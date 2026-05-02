@@ -1667,6 +1667,164 @@ button {
   color: var(--primary-dark);
 }
 
+.fareharbor-booking-shell {
+  display: grid;
+  gap: 14px;
+}
+
+.fareharbor-inline-frame {
+  width: 100%;
+  min-height: 640px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: #fff;
+  box-shadow: 0 18px 40px rgba(17, 17, 17, 0.08);
+}
+
+.fareharbor-inline-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  text-align: left;
+}
+
+.fareharbor-inline-link {
+  width: 100%;
+  justify-content: center;
+}
+
+.fareharbor-mobile-card {
+  display: none;
+  width: 100%;
+  min-width: 0;
+}
+
+.fareharbor-mobile-icon {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(212, 115, 28, 0.12);
+  color: var(--primary);
+  font-size: 1.2rem;
+}
+
+.fareharbor-mobile-card h3 {
+  margin: 0 0 6px;
+  color: var(--dark);
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.fareharbor-mobile-card p {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.fareharbor-mobile-card .btn {
+  width: 100%;
+  min-width: 0;
+  justify-content: center;
+  padding: 16px 18px;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.25;
+}
+
+.fareharbor-mobile-card .btn i {
+  flex: 0 0 auto;
+}
+
+.tour-sidebar-booking-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.booking-section {
+  padding-top: 0;
+  scroll-margin-top: 120px;
+}
+
+.booking-panel {
+  overflow: hidden;
+  padding: 30px;
+  background: #fff;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.booking-panel-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: end;
+  margin-bottom: 24px;
+}
+
+.booking-eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.booking-panel h2 {
+  margin: 0 0 8px;
+  color: var(--dark);
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.booking-panel p {
+  max-width: 680px;
+  margin: 0;
+  color: var(--text-light);
+}
+
+.booking-panel-meta {
+  display: grid;
+  gap: 10px;
+  min-width: 270px;
+}
+
+.booking-panel-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.booking-panel-meta-item i {
+  width: 18px;
+  flex: 0 0 18px;
+  color: var(--primary);
+  text-align: center;
+}
+
+.booking-section .fareharbor-booking-shell {
+  gap: 16px;
+}
+
+.booking-section .fareharbor-inline-frame {
+  min-height: 760px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  box-shadow: none;
+}
+
+.booking-section .fareharbor-inline-note {
+  text-align: center;
+}
+
 .tour-content-section h2 {
   font-family: var(--font-heading);
   font-size: 1.8rem;
@@ -1992,6 +2150,15 @@ button {
     box-shadow: none !important;
   }
 
+  .header.menu-open .logo-text {
+    color: #fff;
+  }
+
+  .header.menu-open .lang-switcher {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+  }
+
   .nav.mobile-active {
     display: flex;
     flex-direction: column;
@@ -2015,15 +2182,25 @@ button {
     transition: var(--transition);
   }
 
-  .nav.mobile-active a:hover {
+  .header.menu-open .nav.mobile-active a,
+  .header.scrolled.menu-open .nav.mobile-active a {
+    color: rgba(255, 255, 255, 0.82);
+    background: transparent;
+  }
+
+  .nav.mobile-active a:hover,
+  .header.menu-open .nav.mobile-active a:hover,
+  .header.scrolled.menu-open .nav.mobile-active a:hover {
     color: #fff;
     background: rgba(255, 255, 255, 0.08);
   }
 
-  .nav.mobile-active a.active {
-    color: var(--primary);
-    background: rgba(212, 115, 28, 0.12);
-    border: 1px solid rgba(212, 115, 28, 0.25);
+  .nav.mobile-active a.active,
+  .header.menu-open .nav.mobile-active a.active,
+  .header.scrolled.menu-open .nav.mobile-active a.active {
+    color: #fff;
+    background: rgba(212, 115, 28, 0.32);
+    border: 1px solid rgba(212, 115, 28, 0.5);
     font-weight: 600;
   }
 
@@ -2153,6 +2330,28 @@ button {
 
   .tour-sidebar {
     padding: 28px;
+  }
+
+  .booking-section {
+    padding-top: 40px;
+  }
+
+  .booking-panel {
+    padding: 24px;
+  }
+
+  .booking-panel-header {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .booking-panel-meta {
+    min-width: 0;
+  }
+
+  .booking-section .fareharbor-inline-frame {
+    min-height: 680px;
   }
 
   .tour-content-section {
@@ -2310,6 +2509,38 @@ button {
   .tour-sidebar-detail {
     padding: 10px 0;
     font-size: 0.88rem;
+  }
+
+  .fareharbor-inline-frame {
+    min-height: 560px;
+  }
+
+  .booking-panel {
+    padding: 20px;
+  }
+
+  .booking-panel h2 {
+    font-size: 1.45rem;
+  }
+
+  .booking-section .fareharbor-inline-frame {
+    min-height: 620px;
+  }
+
+  .booking-section .fareharbor-inline-frame,
+  .booking-section .fareharbor-inline-note,
+  .booking-section .fareharbor-inline-link {
+    display: none;
+  }
+
+  .fareharbor-mobile-card {
+    display: grid;
+    gap: 16px;
+    padding: 20px;
+    background: rgba(212, 115, 28, 0.06);
+    border: 1px solid rgba(212, 115, 28, 0.18);
+    border-radius: var(--radius);
+    text-align: left;
   }
 
   .tour-content-section {
